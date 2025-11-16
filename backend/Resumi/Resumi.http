@@ -1,4 +1,4 @@
-@Resumi_HostAddress = http://localhost:8080
+@Resumi_HostAddress = http://localhost:5018
 
 GET {{Resumi_HostAddress}}/api/hello
 Accept: application/json
