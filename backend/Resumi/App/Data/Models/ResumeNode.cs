@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Resumi.App.Data.Models;
 
@@ -7,6 +8,8 @@ namespace Resumi.App.Data.Models;
 /// </summary>
 public abstract class ResumeNode : Entity
 {
+    [Required]
+    [ForeignKey(nameof(Resume))]
     public int ResumeId { get; set; }
     public Resume? Resume { get; set; }
 
