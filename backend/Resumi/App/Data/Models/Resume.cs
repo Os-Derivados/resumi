@@ -40,4 +40,5 @@ public class Resume : Entity
     public string? Keywords { get; set; }
 
     public ICollection<Experience>? Experiences { get; set; }
+    public ICollection<AcademicDegree>? AcademicDegrees { get; set; }
 }
