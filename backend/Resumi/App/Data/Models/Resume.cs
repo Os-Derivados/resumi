@@ -38,4 +38,6 @@ public class Resume : Entity
     /// Representa palavras-chave associadas ao currículo, para facilitar buscas.
     /// </summary>
     public string? Keywords { get; set; }
+
+    public ICollection<Experience>? Experiences { get; set; }
 }
