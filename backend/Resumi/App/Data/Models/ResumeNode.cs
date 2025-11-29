@@ -5,7 +5,7 @@ namespace Resumi.App.Data.Models;
 /// <summary>
 /// Este contrato representa um item de uma seção dentro de um <see cref="Resume"/>.
 /// </summary>
-public abstract class ResumeNode
+public abstract class ResumeNode : Entity
 {
     public int ResumeId { get; set; }
     public Resume? Resume { get; set; }
