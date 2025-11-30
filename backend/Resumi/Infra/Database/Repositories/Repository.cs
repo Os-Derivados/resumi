@@ -102,7 +102,28 @@ public abstract class Repository<TEntity> : IRepository<TEntity>
 
     public Task<bool> DeleteAsync(int id)
     {
-        throw new NotImplementedException();
+        try
+        {
+            var entity = Data.Find(id);
+
+            if (entity == null)
+                return Task.FromResult(false);
+
+            Data.Remove(entity);
+
+            return Task.FromResult(true);
+        }
+        catch (Exception ex)
+        {
+            Logger.LogError(
+                ex,
+                "Error while deleting entity via: {Id} - {ErrorMesssage}",
+                id,
+                ex.Message
+            );
+
+            return Task.FromResult(false);
+        }
     }
 
     public Task<bool> ExistsAsync(TEntity entity)
