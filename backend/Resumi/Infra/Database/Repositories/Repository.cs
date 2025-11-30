@@ -38,9 +38,24 @@ public abstract class Repository<TEntity> : IRepository<TEntity>
         }
     }
 
-    public Task<IEnumerable<TEntity>> GetAllAsync(int skip = 0, int take = 100)
+    public Task<IEnumerable<TEntity>?> GetAllAsync(int skip = 0, int take = 100)
     {
-        throw new NotImplementedException();
+        try
+        {
+            return Task.FromResult<IEnumerable<TEntity>?>(
+                Data.AsNoTracking().Skip(skip).Take(take).OfType<TEntity>()
+            );
+        }
+        catch (Exception ex)
+        {
+            Logger.LogError(
+                ex,
+                "Error while retrieving all entities - {ErrorMesssage}",
+                ex.Message
+            );
+
+            return Task.FromResult<IEnumerable<TEntity>?>(null);
+        }
     }
 
     public Task<TEntity?> AddAsync(TEntity entity)

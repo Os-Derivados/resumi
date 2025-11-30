@@ -25,7 +25,7 @@ public interface IRepository<TEntity>
     /// <param name="skip">Número de entidades a serem ignoradas.</param>
     /// <param name="take">Número máximo de entidades a serem retornadas.</param>
     /// <returns>Uma coleção de entidades primárias.</returns>
-    Task<IEnumerable<TEntity>> GetAllAsync(int skip = 0, int take = 100);
+    Task<IEnumerable<TEntity>?> GetAllAsync(int skip = 0, int take = 100);
 
     /// <summary>
     /// Adiciona uma nova entidade primária ao banco de dados.
