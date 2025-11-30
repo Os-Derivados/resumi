@@ -9,6 +9,11 @@ namespace Resumi.App.Data.Models;
 [Table(("Resumes"))]
 public class Resume : Entity
 {
+    [Required]
+    [ForeignKey(nameof(User))]
+    public int UserId { get; set; }
+    public AppUser? User { get; set; }
+
     /// <summary>
     /// Representa o título do currículo enquanto arquivo, para metadado.
     /// </summary>
