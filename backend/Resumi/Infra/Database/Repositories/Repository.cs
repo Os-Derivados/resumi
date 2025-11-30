@@ -81,7 +81,23 @@ public abstract class Repository<TEntity> : IRepository<TEntity>
 
     public Task<TEntity?> UpdateAsync(TEntity entity)
     {
-        throw new NotImplementedException();
+        try
+        {
+            var updateResult = Data.Update(entity);
+
+            return Task.FromResult<TEntity?>(updateResult.Entity);
+        }
+        catch (Exception ex)
+        {
+            Logger.LogError(
+                ex,
+                "Error while updating entity: {Entity} - {ErrorMesssage}",
+                entity,
+                ex.Message
+            );
+
+            return Task.FromResult<TEntity?>(null);
+        }
     }
 
     public Task<bool> DeleteAsync(int id)
