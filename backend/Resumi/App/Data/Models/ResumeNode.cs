@@ -21,6 +21,10 @@ public abstract class ResumeNode : Entity
     [StringLength(256)]
     public string? Description { get; set; }
 
+    /// <summary>
+    /// Representa o nome da empresa, instituição de ensino ou ONG associada a <see cref="Experience"/>,
+    /// <see cref="AcademicDegree"/> ou <see cref="VolunteerExperience"/>, respectivamente.
+    /// </summary>
     [Required]
     [StringLength(128)]
     public string? InstitutionName { get; set; }
