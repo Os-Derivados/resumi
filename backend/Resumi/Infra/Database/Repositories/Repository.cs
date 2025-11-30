@@ -126,8 +126,22 @@ public abstract class Repository<TEntity> : IRepository<TEntity>
         }
     }
 
-    public Task<bool> ExistsAsync(TEntity entity)
+    public virtual Task<bool> ExistsAsync(TEntity entity)
     {
-        throw new NotImplementedException();
+        try
+        {
+            return Data.AnyAsync(e => e.Id == entity.Id);
+        }
+        catch (Exception ex)
+        {
+            Logger.LogError(
+                ex,
+                "Error while checking existence of entity: {Entity} - {ErrorMesssage}",
+                entity,
+                ex.Message
+            );
+
+            return Task.FromResult(false);
+        }
     }
 }
