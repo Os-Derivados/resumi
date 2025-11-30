@@ -8,7 +8,7 @@ namespace Resumi.Api.Data.Models;
 /// de elementos de um <see cref="Resume"/>, como
 /// <see cref="Experience"/>, <see cref="AcademicDegree"/> ou <see cref="VolunteerExperience"/>
 /// </summary>
-public abstract record AddNodeModel
+public abstract record AddResumeNodeModel
 {
     [Required]
     public int ResumeId { get; init; }

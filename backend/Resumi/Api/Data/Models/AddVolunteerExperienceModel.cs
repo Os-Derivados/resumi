@@ -6,4 +6,4 @@ namespace Resumi.Api.Data.Models;
 /// Representa um objeto de parâmetros para a atribuição
 /// de um <see cref="VolunteerExperience"/> dentro de um <see cref="Resume"/>.
 /// </summary>
-public record AddVolunteerExperienceModel : AddNodeModel;
+public record AddVolunteerExperienceModel : AddResumeNodeModel;

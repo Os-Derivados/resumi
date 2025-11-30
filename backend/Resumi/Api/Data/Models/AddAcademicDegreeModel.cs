@@ -6,4 +6,4 @@ namespace Resumi.Api.Data.Models;
 /// Representa um objeto de parâmetros para a atribuição
 /// de um <see cref="AcademicDegree"/> dentro de um <see cref="Resume"/>.
 /// </summary>
-public record AddAcademicDegreeModel(string? Highlights, string? DegreeLevel) : AddNodeModel;
+public record AddAcademicDegreeModel(string? Highlights, string? DegreeLevel) : AddResumeNodeModel;
