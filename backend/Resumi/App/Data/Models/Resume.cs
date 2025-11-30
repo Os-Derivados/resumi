@@ -42,4 +42,5 @@ public class Resume : Entity
     public ICollection<Experience>? Experiences { get; set; }
     public ICollection<AcademicDegree>? AcademicDegrees { get; set; }
     public ICollection<VolunteerExperience>? VolunteerExperiences { get; set; }
+    public ICollection<Certificate>? Certificates { get; set; }
 }
