@@ -58,9 +58,25 @@ public abstract class Repository<TEntity> : IRepository<TEntity>
         }
     }
 
-    public Task<TEntity?> AddAsync(TEntity entity)
+    public async Task<TEntity?> AddAsync(TEntity entity)
     {
-        throw new NotImplementedException();
+        try
+        {
+            var addResult = await Data.AddAsync(entity);
+
+            return addResult.Entity;
+        }
+        catch (Exception ex)
+        {
+            Logger.LogError(
+                ex,
+                "Error while adding entity: {Entity} - {ErrorMesssage}",
+                entity,
+                ex.Message
+            );
+
+            return null;
+        }
     }
 
     public Task<TEntity?> UpdateAsync(TEntity entity)
