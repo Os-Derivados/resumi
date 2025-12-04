@@ -28,7 +28,7 @@ FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
 ARG BUILD_CONFIGURATION=Release
 
 WORKDIR /src
-COPY ["Resumi/Resumi.csproj", "Resumi/"]
+COPY ["backend/Resumi/Resumi.csproj", "Resumi/"]
 RUN dotnet restore "Resumi/Resumi.csproj"
 COPY . .
 
