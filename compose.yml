@@ -1,9 +1,11 @@
 services:
-  webapi:
+  backend:
     container_name: resumi-backend
     build:
       context: .
       dockerfile: Dockerfile
+      labels:
+        - org.osderivados=resumi
     environment:
       - JWT_SINGING_KEY=${JWT_SINGING_KEY}
       - JWT_ISSUER=${JWT_ISSUER}
@@ -17,6 +19,8 @@ services:
       - ALLOWED_CORS_DOMAINS=${ALLOWED_CORS_DOMAINS}
       - ASPNETCORE_URLS=http://+:8080
       - ASPNETCORE_ENVIRONMENT=Development
+    env_file:
+      - .env
     ports:
       - "8080:8080"
       - "8081:8081"
@@ -36,8 +40,7 @@ services:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
-    entrypoint:
-      - backend/Resumi/Infra/Database/Migrations/Schema.sql:/docker-entrypoint-initdb.d/schema.sql
+      - ./backend/Resumi/Infra/Database/Migrations/Schema.sql:/docker-entrypoint-initdb.d/schema.sql:ro
     networks:
       - resumi-network
 

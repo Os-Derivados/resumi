@@ -1,45 +1,19 @@
-FROM mcr.microsoft.com/dotnet/aspnet:9.0 AS base
-USER $APP_UID
-
-ARG JWT_SINGING_KEY
-ARG JWT_ISSUER
-ARG JWT_AUDIENCE
-ARG DB_HOST
-ARG DB_PORT
-ARG DB_NAME
-ARG DB_USER
-ARG DB_PASSWORD
-
-ENV JWT_SINGING_KEY=$JWT_SINGING_KEY
-ENV JWT_ISSUER=$JWT_ISSUER
-ENV JWT_AUDIENCE=$JWT_AUDIENCE
-ENV DB_HOST=$DB_HOST
-ENV DB_PORT=$DB_PORT
-ENV DB_NAME=$DB_NAME
-ENV DB_USER=$DB_USER
-ENV DB_PASSWORD=$DB_PASSWORD
-
-WORKDIR /app
-EXPOSE 8080
-EXPOSE 8081
-
+# https://hub.docker.com/_/microsoft-dotnet
 FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
+WORKDIR /source
 
-ARG BUILD_CONFIGURATION=Release
+# copy solution and project files and restore as distinct layers
+COPY backend/Resumi.sln .
+# copy project source files (copy full project folders before restore to ensure analyzers and assets are available)
+COPY backend/Resumi/. ./Resumi/
+COPY backend/TestResumi/. ./TestResumi/
+RUN dotnet restore
 
-WORKDIR /src
-COPY ["backend/Resumi/Resumi.csproj", "Resumi/"]
-RUN dotnet restore "Resumi/Resumi.csproj"
-COPY . .
+WORKDIR /source/Resumi
+RUN dotnet publish -c Release -o /app --no-restore
 
-WORKDIR "/src/Resumi"
-RUN dotnet build "Resumi.csproj" -c $BUILD_CONFIGURATION -o /app/build
-
-FROM build AS publish
-ARG BUILD_CONFIGURATION=Release
-RUN dotnet publish "Resumi.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
-
-FROM base AS final
+# final stage/image
+FROM mcr.microsoft.com/dotnet/aspnet:9.0
 WORKDIR /app
-COPY --from=publish /app/publish .
+COPY --from=build /app ./
 ENTRYPOINT ["dotnet", "Resumi.dll"]
