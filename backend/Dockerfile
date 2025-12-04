@@ -1,0 +1,45 @@
+FROM mcr.microsoft.com/dotnet/aspnet:9.0 AS base
+USER $APP_UID
+
+ARG JWT_SINGING_KEY
+ARG JWT_ISSUER
+ARG JWT_AUDIENCE
+ARG DB_HOST
+ARG DB_PORT
+ARG DB_NAME
+ARG DB_USER
+ARG DB_PASSWORD
+
+ENV JWT_SINGING_KEY=$JWT_SINGING_KEY
+ENV JWT_ISSUER=$JWT_ISSUER
+ENV JWT_AUDIENCE=$JWT_AUDIENCE
+ENV DB_HOST=$DB_HOST
+ENV DB_PORT=$DB_PORT
+ENV DB_NAME=$DB_NAME
+ENV DB_USER=$DB_USER
+ENV DB_PASSWORD=$DB_PASSWORD
+
+WORKDIR /app
+EXPOSE 8080
+EXPOSE 8081
+
+FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
+
+ARG BUILD_CONFIGURATION=Release
+
+WORKDIR /src
+COPY ["Resumi/Resumi.csproj", "Resumi/"]
+RUN dotnet restore "Resumi/Resumi.csproj"
+COPY . .
+
+WORKDIR "/src/Resumi"
+RUN dotnet build "Resumi.csproj" -c $BUILD_CONFIGURATION -o /app/build
+
+FROM build AS publish
+ARG BUILD_CONFIGURATION=Release
+RUN dotnet publish "Resumi.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
+
+FROM base AS final
+WORKDIR /app
+COPY --from=publish /app/publish .
+ENTRYPOINT ["dotnet", "Resumi.dll"]
