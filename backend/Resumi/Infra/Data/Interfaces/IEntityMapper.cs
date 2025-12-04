@@ -11,7 +11,7 @@ namespace Resumi.Infra.Data.Interfaces;
 /// <typeparam name="TDto">
 /// Um DTO (Data Transfer Object).
 /// </typeparam>
-public interface IEntityMapper<TEntity, out TDto> where TEntity : ITrackable
+public interface IEntityMapper<TEntity, out TDto, in TCreaate, in TUpdate> where TEntity : ITrackable
 {
   /// <summary>
   /// Cria uma nova entidade de domínio a partir de um modelo de criação.
@@ -19,13 +19,10 @@ public interface IEntityMapper<TEntity, out TDto> where TEntity : ITrackable
   /// <param name="createModel">
   /// Objeto de parâmetro de criação.
   /// </param>
-  /// <typeparam name="TCreate">
-  /// Tipo do modelo de criação.
-  /// </typeparam>
   /// <returns>
   /// A instância da entidade de domínio criada.
   /// </returns>
-  TEntity? NewDomainModel<TCreate>(TCreate? createModel);
+  TEntity? NewDomainModel(TCreaate? createModel);
 
   /// <summary>
   /// Atualiza uma entidade de domínio existente a partir de um modelo de atualização.
@@ -36,13 +33,10 @@ public interface IEntityMapper<TEntity, out TDto> where TEntity : ITrackable
   /// <param name="entity">
   /// A entidade de domínio a ser atualizada.
   /// </param>
-  /// <typeparam name="TUpdate">
-  /// Tipo do modelo de atualização.
-  /// </typeparam>
   /// <returns>
   /// A instância da entidade de domínio atualizada.
   /// </returns>
-  TEntity? UpdatedDomainModel<TUpdate>(TUpdate? updateModel, TEntity? entity);
+  TEntity? UpdatedDomainModel(TUpdate? updateModel, TEntity? entity);
 
   /// <summary>
   /// Converte uma entidade de domínio em um DTO (Data Transfer Object).
