@@ -1,3 +1,4 @@
+using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Resumi.Api.Data.Models;
@@ -19,6 +20,12 @@ public class ResumesController : ControllerBase
     public IActionResult Read(int id)
     {
         throw new NotImplementedException("Retrieving a resume by ID is not implemented yet.");
+    }
+
+    [HttpGet]
+    public IActionResult ReadAll([Required] int userId, int skip = 0, int take = 20)
+    {
+        throw new NotImplementedException("Retrieving all resumes with pagination is not implemented yet.");
     }
 
     [HttpPut("{id:int}")]
