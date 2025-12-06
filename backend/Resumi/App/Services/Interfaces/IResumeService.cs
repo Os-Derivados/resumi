@@ -35,7 +35,7 @@ public interface IResumeService
 	/// Uma <see cref="Task"/>, representando uma instância de <see cref="Result{T}"/>,
 	/// contendo o resultado da operação.
 	/// </returns>
-	Task<Result<IEnumerable<Resume>>> FindByUserIdAsync(int userId, int skip = 0, int take = 20);
+	Task<Result<IEnumerable<Resume>>> FindByUserAsync(int userId, int skip = 0, int take = 20);
 
 	/// <summary>
 	/// Atualiza um currículo existente.
