@@ -18,6 +18,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddApiDocumentation();
 builder.Services.AddDomainServices();
 builder.Services.AddDomainValidators();
+builder.Services.AddEntityMappers();
 
 var app = builder.Build();
 

@@ -2,21 +2,58 @@ using Microsoft.OpenApi.Models;
 using Resumi.App.Services;
 using Resumi.App.Services.Interfaces;
 using Resumi.App.Services.Validators;
+using Resumi.Infra.Data.Interfaces;
+using Resumi.Infra.Data.Mappers;
 
 namespace Resumi.Infra.Extensions;
 
 public static class StartupExtensions
 {
+    /// <summary>
+    /// Inclui os serviços de domínio no contêiner de injeção de dependência.
+    /// Esses serviços são responsáveis pela lógica de negócios da aplicação.
+    /// </summary>
+    /// <param name="services">
+    /// O contêiner de serviços onde os serviços de domínio serão registrados.
+    /// </param>
     public static void AddDomainServices(this IServiceCollection services)
     {
         services.AddScoped<IResumeService, ResumeService>();
     }
 
+    /// <summary>
+    /// Inclui os validadores de domínio no contêiner de injeção de dependência.
+    /// Esses validadores são responsáveis por garantir que os dados atendam às regras de negócio antes
+    /// de serem processados ou persistidos.
+    /// </summary>
+    /// <param name="services">
+    /// O contêiner de serviços onde os validadores de domínio serão registrados.
+    /// </param>
     public static void AddDomainValidators(this IServiceCollection services)
     {
         services.AddScoped<IResumeValidator, ResumeValidator>();
     }
 
+    /// <summary>
+    /// Registra os mapeadores de entidades no contêiner de injeção de dependência.
+    /// Esses mapeadores são responsáveis por converter entre modelos de domínio e modelos de dados.
+    /// </summary>
+    /// <param name="services">
+    /// O contêiner de serviços onde os mapeadores serão registrados.
+    /// </param>
+    public static void AddEntityMappers(this IServiceCollection services)
+    {
+        services.AddScoped<IResumeMapper, ResumeMapper>();
+        services.AddScoped<IUserMapper, UserMapper>();
+    }
+
+    /// <summary>
+    /// Configura a documentação da API usando Swagger.
+    /// Isso permite que a API gere uma documentação conforme a especificação OpenAPI.
+    /// </summary>
+    /// <param name="services">
+    /// O contêiner de serviços onde a configuração do Swagger será registrada.
+    /// </param>
     public static void AddApiDocumentation(this IServiceCollection services)
     {
         services.AddSwaggerGen(c =>

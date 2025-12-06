@@ -10,9 +10,7 @@ public record UpdateUserModel
 {
   public string? FullName { get; init; }
 
-  [Phone]
-  public string? PhoneNumber { get; init; }
+  [Phone] public string? PhoneNumber { get; init; }
 
-  [EmailAddress]
-  public string? Email { get; init; }
+  [EmailAddress] public string? Email { get; init; }
 }
