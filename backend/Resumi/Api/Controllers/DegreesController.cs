@@ -18,7 +18,7 @@ public class DegreesController : ControllerBase
     [HttpGet]
     public IActionResult ReadAll(int resumeId)
     {
-        throw new NotImplementedException("Retrieving experiences for a resume is not implemented yet.");
+        throw new NotImplementedException("Retrieving degrees for a resume is not implemented yet.");
     }
 
     [HttpPut("{id:int}")]
