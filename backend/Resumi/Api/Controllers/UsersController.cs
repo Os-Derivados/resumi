@@ -28,6 +28,12 @@ public class UsersController : ControllerBase
         throw new NotImplementedException("Retrieving a user by ID is not implemented yet.");
     }
 
+    [HttpGet]
+    public IActionResult ReadAll(int skip = 0, int take = 20)
+    {
+        throw new NotImplementedException("Retrieving all users is not implemented yet.");
+    }
+
     [HttpPut("{id:int}")]
     public IActionResult Update(int id, [FromBody] UpdateUserModel model)
     {
