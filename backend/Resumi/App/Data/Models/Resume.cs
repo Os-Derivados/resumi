@@ -9,9 +9,7 @@ namespace Resumi.App.Data.Models;
 [Table(("Resumes"))]
 public class Resume : Entity
 {
-    [Required]
-    [ForeignKey(nameof(User))]
-    public int UserId { get; set; }
+    [Required] [ForeignKey(nameof(User))] public int UserId { get; set; }
     public AppUser? User { get; set; }
 
     /// <summary>
@@ -30,14 +28,11 @@ public class Resume : Entity
 
     public string? Location { get; set; }
 
-    [Required]
-    public string? Email { get; set; }
+    [Required] public string? Email { get; set; }
 
-    [Required]
-    public string? NormalizedEmail { get; set; }
+    [Required] public string? NormalizedEmail { get; set; }
 
-    [Required]
-    public string? PhoneNumber { get; set; }
+    [Required] public string? PhoneNumber { get; set; }
 
     /// <summary>
     /// Representa palavras-chave associadas ao currículo, para facilitar buscas.
@@ -45,7 +40,7 @@ public class Resume : Entity
     public string? Keywords { get; set; }
 
     public ICollection<Experience>? Experiences { get; set; }
-    public ICollection<AcademicDegree>? AcademicDegrees { get; set; }
-    public ICollection<VolunteerExperience>? VolunteerExperiences { get; set; }
+    public ICollection<Degree>? AcademicDegrees { get; set; }
+    public ICollection<Volunteership>? VolunteerExperiences { get; set; }
     public ICollection<Certificate>? Certificates { get; set; }
 }

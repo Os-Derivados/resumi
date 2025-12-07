@@ -10,7 +10,7 @@ namespace Resumi.Api.Controllers;
 public class DegreesController : ControllerBase
 {
     [HttpPost]
-    public IActionResult Create(int resumeId, [FromBody] AddAcademicDegreeModel model)
+    public IActionResult Create(int resumeId, [FromBody] AddDegreeModel model)
     {
         throw new NotImplementedException("Degree creation is not implemented yet.");
     }

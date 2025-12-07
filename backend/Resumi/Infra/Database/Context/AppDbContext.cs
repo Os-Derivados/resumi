@@ -13,8 +13,8 @@ public class AppDbContext : IdentityDbContext<AppUser, IdentityRole<int>, int>, 
 
     public DbSet<Resume> Resumes => Set<Resume>();
     public DbSet<Experience> Experiences => Set<Experience>();
-    public DbSet<AcademicDegree> AcademicDegrees => Set<AcademicDegree>();
-    public DbSet<VolunteerExperience> VolunteerExperiences => Set<VolunteerExperience>();
+    public DbSet<Degree> AcademicDegrees => Set<Degree>();
+    public DbSet<Volunteership> VolunteerExperiences => Set<Volunteership>();
     public DbSet<Certificate> Certificates => Set<Certificate>();
 
     public async Task<bool> CommitAsync()

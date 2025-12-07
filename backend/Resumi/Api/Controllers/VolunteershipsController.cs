@@ -10,7 +10,7 @@ namespace Resumi.Api.Controllers;
 public class VolunteershipsController : ControllerBase
 {
     [HttpPost]
-    public IActionResult Create(int resumeId, [FromBody] AddVolunteerExperienceModel model)
+    public IActionResult Create(int resumeId, [FromBody] AddVolunteershipModel model)
     {
         throw new NotImplementedException("Volunteership creation is not implemented yet.");
     }
@@ -22,7 +22,7 @@ public class VolunteershipsController : ControllerBase
     }
 
     [HttpPut("{id:int}")]
-    public IActionResult Update(int resumeId, int id, [FromBody] UpdateVolunteerExperienceModel model)
+    public IActionResult Update(int resumeId, int id, [FromBody] UpdateVolunteershipModel model)
     {
         throw new NotImplementedException("Updating a volunteership is not implemented yet.");
     }
