@@ -3,4 +3,4 @@ using Resumi.App.Data.Models;
 
 namespace Resumi.Infra.Data.Interfaces;
 
-public interface IResumeMapper : IEntityMapper<Resume, ReadResumeModel, CreateResumeModel, UpdateResumeModel>;
+public interface IResumeMapper : IEntityMapper<Resume, ResumeModel, CreateResumeModel, UpdateResumeModel>;

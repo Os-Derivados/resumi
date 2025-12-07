@@ -16,7 +16,7 @@ public class UserMapper : IUserMapper
         throw new NotImplementedException();
     }
 
-    public ReadUserModel? ToDto(AppUser? entity)
+    public UserModel? ToDto(AppUser? entity)
     {
         throw new NotImplementedException();
     }

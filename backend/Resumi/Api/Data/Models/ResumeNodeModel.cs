@@ -1,6 +1,6 @@
 namespace Resumi.Api.Data.Models;
 
-public record ReadResumeNodeModel
+public record ResumeNodeModel
 {
     public int Id { get; init; }
     public int ResumeId { get; init; }

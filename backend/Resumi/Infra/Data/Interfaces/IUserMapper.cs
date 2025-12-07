@@ -3,4 +3,4 @@ using Resumi.App.Data.Models;
 
 namespace Resumi.Infra.Data.Interfaces;
 
-public interface IUserMapper : IEntityMapper<AppUser, ReadUserModel, CreateUserModel, UpdateUserModel>;
+public interface IUserMapper : IEntityMapper<AppUser, UserModel, CreateUserModel, UpdateUserModel>;

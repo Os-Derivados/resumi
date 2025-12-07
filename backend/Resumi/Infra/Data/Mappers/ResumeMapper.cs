@@ -16,7 +16,7 @@ public class ResumeMapper : IResumeMapper
         throw new NotImplementedException();
     }
 
-    public ReadResumeModel? ToDto(Resume? entity)
+    public ResumeModel? ToDto(Resume? entity)
     {
         throw new NotImplementedException();
     }
