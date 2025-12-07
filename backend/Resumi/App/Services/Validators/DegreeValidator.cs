@@ -4,24 +4,24 @@ using Resumi.Infra.Data.Models;
 
 namespace Resumi.App.Services.Validators;
 
-public class ResumeValidator : IDomainValidator<Resume>
+public class DegreeValidator : IDomainValidator<Degree>
 {
-    public Result<Resume> ValidateCreation(Resume? newResume)
+    public Result<Degree> ValidateCreation(Degree? newDegree)
     {
         throw new NotImplementedException();
     }
 
-    public Result<Resume> ValidateSearch(Resume? targetResume)
+    public Result<Degree> ValidateSearch(Degree? targetDegree)
     {
         throw new NotImplementedException();
     }
 
-    public Result<Resume> ValidateUpdate(Resume? current, Resume? updated)
+    public Result<Degree> ValidateUpdate(Degree? current, Degree? updated)
     {
         throw new NotImplementedException();
     }
 
-    public Result<Resume> ValidateDeletion(Resume? targetResume)
+    public Result<Degree> ValidateDeletion(Degree? targetDegree)
     {
         throw new NotImplementedException();
     }

@@ -1,4 +1,5 @@
 using Microsoft.OpenApi.Models;
+using Resumi.App.Data.Models;
 using Resumi.App.Services;
 using Resumi.App.Services.Interfaces;
 using Resumi.App.Services.Validators;
@@ -31,7 +32,12 @@ public static class StartupExtensions
     /// </param>
     public static void AddDomainValidators(this IServiceCollection services)
     {
-        services.AddScoped<IResumeValidator, ResumeValidator>();
+        services.AddScoped<IDomainValidator<Resume>, ResumeValidator>();
+        services.AddScoped<IDomainValidator<Degree>, DegreeValidator>();
+        services.AddScoped<IDomainValidator<Certificate>, CertificateValidator>();
+        services.AddScoped<IDomainValidator<Experience>, ExperienceValidator>();
+        services.AddScoped<IDomainValidator<AppUser>, UserValidator>();
+        services.AddScoped<IDomainValidator<Volunteership>, VolunteershipValidator>();
     }
 
     /// <summary>

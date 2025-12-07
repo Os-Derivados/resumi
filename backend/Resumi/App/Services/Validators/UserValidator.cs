@@ -4,24 +4,24 @@ using Resumi.Infra.Data.Models;
 
 namespace Resumi.App.Services.Validators;
 
-public class ResumeValidator : IDomainValidator<Resume>
+public class UserValidator : IDomainValidator<AppUser>
 {
-    public Result<Resume> ValidateCreation(Resume? newResume)
+    public Result<AppUser> ValidateCreation(AppUser? newEntity)
     {
         throw new NotImplementedException();
     }
 
-    public Result<Resume> ValidateSearch(Resume? targetResume)
+    public Result<AppUser> ValidateSearch(AppUser? targetEntity)
     {
         throw new NotImplementedException();
     }
 
-    public Result<Resume> ValidateUpdate(Resume? current, Resume? updated)
+    public Result<AppUser> ValidateUpdate(AppUser? current, AppUser? updated)
     {
         throw new NotImplementedException();
     }
 
-    public Result<Resume> ValidateDeletion(Resume? targetResume)
+    public Result<AppUser> ValidateDeletion(AppUser? targetEntity)
     {
         throw new NotImplementedException();
     }

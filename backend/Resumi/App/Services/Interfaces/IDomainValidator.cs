@@ -3,6 +3,12 @@ using Resumi.Infra.Data.Models;
 
 namespace Resumi.App.Services.Interfaces;
 
+/// <summary>
+/// Este contrato fornece APIs para efetuar a validação de operações básicas no domínio da aplicação.
+/// </summary>
+/// <typeparam name="TEntity">
+/// Uma entidade <see cref="ITrackable"/> que pertença ao domínio da aplicação.
+/// </typeparam>
 public interface IDomainValidator<TEntity> where TEntity : ITrackable
 {
     /// <summary>
