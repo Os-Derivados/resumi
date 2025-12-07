@@ -20,6 +20,11 @@ public static class StartupExtensions
     public static void AddDomainServices(this IServiceCollection services)
     {
         services.AddScoped<IResumeService, ResumeService>();
+        services.AddScoped<IUserService, UserService>();
+        services.AddScoped<ICertificateService, CertificateService>();
+        services.AddScoped<IDegreeService, DegreeService>();
+        services.AddScoped<IExperienceService, ExperienceService>();
+        services.AddScoped<IVolunteershipService, VolunteershipService>();
     }
 
     /// <summary>
