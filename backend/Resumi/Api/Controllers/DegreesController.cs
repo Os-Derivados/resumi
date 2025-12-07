@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Resumi.Api.Data.Models;
+using Resumi.App.Modules;
 
 namespace Resumi.Api.Controllers;
 
@@ -9,6 +10,13 @@ namespace Resumi.Api.Controllers;
 [Authorize]
 public class DegreesController : ControllerBase
 {
+    private readonly DegreesModule _module;
+
+    public DegreesController(DegreesModule module)
+    {
+        _module = module;
+    }
+
     [HttpPost]
     public IActionResult Create(int resumeId, [FromBody] AddDegreeModel model)
     {
@@ -22,7 +30,7 @@ public class DegreesController : ControllerBase
     }
 
     [HttpPut("{id:int}")]
-    public IActionResult Update(int resumeId, int id, [FromBody] UpdateAcademicDegreeModel model)
+    public IActionResult Update(int resumeId, int id, [FromBody] UpdateDegreeModel model)
     {
         throw new NotImplementedException("Updating a degree is not implemented yet.");
     }

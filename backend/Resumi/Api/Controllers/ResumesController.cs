@@ -2,6 +2,7 @@ using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Resumi.Api.Data.Models;
+using Resumi.App.Modules;
 
 namespace Resumi.Api.Controllers;
 
@@ -10,6 +11,13 @@ namespace Resumi.Api.Controllers;
 [Authorize]
 public class ResumesController : ControllerBase
 {
+    private readonly ResumesModule _module;
+
+    public ResumesController(ResumesModule module)
+    {
+        _module = module;
+    }
+
     [HttpPost]
     public IActionResult Create([FromBody] CreateResumeModel model)
     {

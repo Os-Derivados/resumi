@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Resumi.Api.Data.Models;
+using Resumi.App.Modules;
 
 namespace Resumi.Api.Controllers;
 
@@ -9,6 +10,13 @@ namespace Resumi.Api.Controllers;
 [Authorize]
 public class UsersController : ControllerBase
 {
+    private readonly UsersModule _module;
+
+    public UsersController(UsersModule module)
+    {
+        _module = module;
+    }
+
     [HttpPost]
     [AllowAnonymous]
     public IActionResult Create([FromBody] CreateUserModel model)

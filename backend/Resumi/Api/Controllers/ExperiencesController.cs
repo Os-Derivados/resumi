@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Resumi.Api.Data.Models;
+using Resumi.App.Modules;
 
 namespace Resumi.Api.Controllers;
 
@@ -9,6 +10,13 @@ namespace Resumi.Api.Controllers;
 [Authorize]
 public class ExperiencesController : ControllerBase
 {
+    private readonly ExperiencesModule _module;
+
+    public ExperiencesController(ExperiencesModule module)
+    {
+        _module = module;
+    }
+
     [HttpPost]
     public IActionResult Create(int resumeId, [FromBody] AddExperienceModel model)
     {
