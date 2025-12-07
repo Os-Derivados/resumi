@@ -1,5 +1,6 @@
 using Microsoft.OpenApi.Models;
 using Resumi.App.Data.Models;
+using Resumi.App.Modules;
 using Resumi.App.Services;
 using Resumi.App.Services.Interfaces;
 using Resumi.App.Services.Validators;
@@ -10,6 +11,23 @@ namespace Resumi.Infra.Extensions;
 
 public static class StartupExtensions
 {
+    /// <summary>
+    /// Inclui os módulos de domínio no contêiner de injeção de dependência.
+    /// Esses módulos são responsáveis por agrupar funcionalidades relacionadas a um determinado domínio da aplicação.
+    /// </summary>
+    /// <param name="services">
+    /// O contêiner de serviços onde os módulos de domínio serão registrados.
+    /// </param>
+    public static void AddDomainModules(this IServiceCollection services)
+    {
+        services.AddScoped<ResumesModule>();
+        services.AddScoped<UsersModule>();
+        services.AddScoped<DegreesModule>();
+        services.AddScoped<CertificatesModule>();
+        services.AddScoped<ExperiencesModule>();
+        services.AddScoped<VolunteershipsModule>();
+    }
+
     /// <summary>
     /// Inclui os serviços de domínio no contêiner de injeção de dependência.
     /// Esses serviços são responsáveis pela lógica de negócios da aplicação.

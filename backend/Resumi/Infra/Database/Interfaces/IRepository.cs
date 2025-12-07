@@ -10,7 +10,7 @@ namespace Resumi.Infra.Database.Interfaces;
 /// Tipo da entidade primária.
 /// </typeparam>
 public interface IRepository<TEntity>
-    where TEntity : Entity
+    where TEntity : ITrackable
 {
     /// <summary>
     /// Obtém uma entidade primária pelo seu identificador.
