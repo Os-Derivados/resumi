@@ -1,15 +1,21 @@
+using System.Text.Json;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using Resumi.Api.Data.Models;
 using Resumi.App.Data.Models;
+using Resumi.Infra.Constants;
 using Resumi.Infra.Database.Interfaces;
+using Resumi.Infra.Exceptions;
 
 namespace Resumi.Infra.Database.Context;
 
 public class AppDbContext : IdentityDbContext<AppUser, IdentityRole<int>, int>, IDbTracker
 {
     public AppDbContext(DbContextOptions<AppDbContext> options)
-        : base(options) { }
+        : base(options)
+    {
+    }
 
     public DbSet<Resume> Resumes => Set<Resume>();
     public DbSet<Experience> Experiences => Set<Experience>();
