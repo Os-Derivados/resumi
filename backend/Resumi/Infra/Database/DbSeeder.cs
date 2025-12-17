@@ -29,7 +29,7 @@ public static class DbSeeder
 
         var newAdminUser = userMapper.NewDomainModel(adminUserModel)
                            ?? throw new InfrastructureException("Failed to map admin user model to domain model.");
-        var createResult = await userManager.CreateAsync(newAdminUser);
+        var createResult = await userManager.CreateAsync(newAdminUser, adminUserModel.Password);
 
         return createResult.Succeeded;
     }
