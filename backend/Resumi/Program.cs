@@ -1,4 +1,6 @@
 using Microsoft.EntityFrameworkCore;
+using Resumi.App.Data.Models;
+using Resumi.Infra.Database;
 using Resumi.Infra.Database.Context;
 using Resumi.Infra.Extensions;
 
@@ -19,8 +21,13 @@ builder.Services.AddApiDocumentation();
 builder.Services.AddDomainServices();
 builder.Services.AddDomainValidators();
 builder.Services.AddEntityMappers();
+builder.Services.AddIdentityCore<AppUser>()
+    .AddEntityFrameworkStores<AppDbContext>();
 
 var app = builder.Build();
+
+using var seedScope = app.Services.CreateScope();
+_ = await DbSeeder.SeedDatabaseAsync(seedScope.ServiceProvider);
 
 if (app.Environment.IsDevelopment())
 {
