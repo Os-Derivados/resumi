@@ -30,4 +30,9 @@ public class ResumeService : IResumeService
     {
         throw new NotImplementedException();
     }
+
+    public Task<Result<IEnumerable<Resume>>> FindAllAsync(int skip = 0, int take = 20)
+    {
+        throw new NotImplementedException();
+    }
 }
