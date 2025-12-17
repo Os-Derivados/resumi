@@ -7,7 +7,7 @@ services:
       labels:
         - org.osderivados=resumi
     environment:
-      - JWT_SINGING_KEY=${JWT_SINGING_KEY}
+      - JWT_SIGNING_KEY=${JWT_SIGNING_KEY}
       - JWT_ISSUER=${JWT_ISSUER}
       - JWT_AUDIENCE=${JWT_AUDIENCE}
       - ALLOWED_HOSTS=${ALLOWED_HOSTS}
