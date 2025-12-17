@@ -6,9 +6,15 @@ namespace Resumi.Infra.Data.Mappers;
 
 public class UserMapper : IUserMapper
 {
-    public AppUser? NewDomainModel(CreateUserModel? dtoCreate)
+    public AppUser? NewDomainModel(CreateUserModel dtoCreate)
     {
-        throw new NotImplementedException();
+        return new AppUser
+        {
+            FullName = dtoCreate.FullName,
+            Email = dtoCreate.Email,
+            UserName = dtoCreate.Email,
+            PhoneNumber = dtoCreate.PhoneNumber
+        };
     }
 
     public AppUser? UpdatedDomainModel(UpdateUserModel? dtoUpdate, AppUser? entity)
