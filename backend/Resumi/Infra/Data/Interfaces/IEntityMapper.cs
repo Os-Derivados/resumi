@@ -28,7 +28,7 @@ public interface IEntityMapper<TEntity, out TDto, in TCreate, in TUpdate> where 
   /// <returns>
   /// A instância da entidade de domínio criada.
   /// </returns>
-  TEntity? NewDomainModel(TCreate? dtoCreate);
+  TEntity? NewDomainModel(TCreate dtoCreate);
 
   /// <summary>
   /// Atualiza uma entidade de domínio existente a partir de um modelo de atualização.
