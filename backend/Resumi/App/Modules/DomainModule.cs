@@ -17,14 +17,14 @@ public abstract class DomainModule<TEntity> where TEntity : ITrackable
     public readonly IDomainValidator<TEntity> Validator;
     public readonly IRepository<TEntity> Repository;
     public readonly UserManager<AppUser> UserManager;
-    public readonly RoleManager<IdentityRole> RoleManager;
+    public readonly RoleManager<IdentityRole<int>> RoleManager;
 
     protected DomainModule(
         IDomainService<TEntity> service,
         IDomainValidator<TEntity> validator,
         IRepository<TEntity> repository,
         UserManager<AppUser> userManager,
-        RoleManager<IdentityRole> roleManager
+        RoleManager<IdentityRole<int>> roleManager
     )
     {
         Service = service;

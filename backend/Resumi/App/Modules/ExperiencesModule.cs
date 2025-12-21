@@ -12,7 +12,7 @@ public class ExperiencesModule : DomainModule<Experience>
         IDomainValidator<Experience> validator,
         IRepository<Experience> repository,
         UserManager<AppUser> userManager,
-        RoleManager<IdentityRole> roleManager
+        RoleManager<IdentityRole<int>> roleManager
     )
         : base(service, validator, repository, userManager, roleManager)
     {

@@ -1,7 +1,7 @@
 namespace Resumi.Infra.Data.Models;
 
 /// <summary>
-/// Encpasula o resultado de uma operação, incluindo sucesso ou falha e mensagens associadas.
+/// Encapsula o resultado de uma operação, incluindo sucesso ou falha e mensagens associadas.
 /// </summary>
 /// <typeparam name="T">Tipo do valor retornado em caso de sucesso.</typeparam>
 public class Result<T>

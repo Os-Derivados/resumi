@@ -9,5 +9,5 @@ public record UserModel
 {
     public string? FullName { get; init; }
     public string? PhoneNumber { get; init; }
-    public string? Emai { get; init; }
+    public string? Email { get; init; }
 }

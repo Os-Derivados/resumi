@@ -12,7 +12,7 @@ public class DegreesModule : DomainModule<Degree>
         IDomainValidator<Degree> validator,
         IRepository<Degree> repository,
         UserManager<AppUser> userManager,
-        RoleManager<IdentityRole> roleManager
+        RoleManager<IdentityRole<int>> roleManager
     )
         : base(service, validator, repository, userManager, roleManager)
     {

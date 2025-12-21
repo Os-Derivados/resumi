@@ -12,7 +12,7 @@ public class ResumesModule : DomainModule<Resume>
         IDomainValidator<Resume> validator,
         IRepository<Resume> repository,
         UserManager<AppUser> userManager,
-        RoleManager<IdentityRole> roleManager
+        RoleManager<IdentityRole<int>> roleManager
     )
         : base(service, validator, repository, userManager, roleManager)
     {
