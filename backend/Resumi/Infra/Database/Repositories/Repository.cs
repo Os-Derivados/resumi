@@ -29,7 +29,7 @@ public abstract class Repository<TEntity> : IRepository<TEntity>
         {
             Logger.LogError(
                 ex,
-                "Error while retrieveing entity via: {Id} - {ErrorMessage}",
+                "Error while retrieving entity via: {Id} - {ErrorMessage}",
                 id,
                 ex.Message
             );
