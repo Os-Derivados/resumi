@@ -30,7 +30,7 @@ builder.Services.AddExceptionHandler((options) =>
     {
         var logger = context.RequestServices.GetRequiredService<ILogger<Program>>();
         var exception = context.Features.Get<Microsoft.AspNetCore.Diagnostics.IExceptionHandlerFeature>()?.Error;
-        
+
         logger.LogError(exception, "An unhandled exception occurred.");
 
         context.Response.StatusCode = StatusCodes.Status500InternalServerError;
@@ -43,6 +43,7 @@ builder.Services.AddExceptionHandler((options) =>
 });
 
 builder.Services.AddProblemDetails();
+builder.Services.AddDomainModules();
 
 var app = builder.Build();
 
