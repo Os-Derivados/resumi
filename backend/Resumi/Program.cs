@@ -18,9 +18,10 @@ if (!string.IsNullOrEmpty(defaultConnection))
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddApiDocumentation();
-builder.Services.AddDomainServices();
-builder.Services.AddDomainValidators();
+builder.Services.AddRepositories();
 builder.Services.AddEntityMappers();
+builder.Services.AddDomainValidators();
+builder.Services.AddDomainServices();
 builder.Services.AddIdentityCore<AppUser>()
     .AddEntityFrameworkStores<AppDbContext>();
 
@@ -43,7 +44,7 @@ builder.Services.AddExceptionHandler((options) =>
 });
 
 builder.Services.AddProblemDetails();
-builder.Services.AddDomainModules();
+builder.Services.AddDomainModules() ;
 
 var app = builder.Build();
 
