@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Resumi.Api.Data.Models;
 using Resumi.App.Modules;
+using Resumi.Infra.Data.Models;
 
 namespace Resumi.Api.Controllers;
 
@@ -19,9 +20,21 @@ public class UsersController : ControllerBase
 
     [HttpPost]
     [AllowAnonymous]
-    public IActionResult Create([FromBody] CreateUserModel model)
+    public async Task<IActionResult> Create([FromBody] CreateUserModel model)
     {
-        throw new NotImplementedException("User creation is not implemented yet.");
+        var newUser = _module.Mapper.NewDomainModel(model);
+        var creationResult = await _module.Service.CreateAsync(newUser);
+
+        if (!creationResult.Succeeded)
+        {
+            return BadRequest(creationResult);
+        }
+
+        var createdUser = _module.Mapper.ToDto(creationResult.Data);
+
+        if (createdUser is null) return UnprocessableEntity();
+
+        return Created($"/api/users/{createdUser.Id}", Result<UserModel>.Success(createdUser));
     }
 
     [HttpGet("/me")]
