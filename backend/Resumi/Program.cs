@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Resumi.App.Data.Models;
 using Resumi.Infra.Database;
@@ -23,6 +24,8 @@ builder.Services.AddEntityMappers();
 builder.Services.AddDomainValidators();
 builder.Services.AddDomainServices();
 builder.Services.AddIdentityCore<AppUser>()
+    .AddRoles<IdentityRole<int>>()
+    .AddRoleManager<RoleManager<IdentityRole<int>>>()
     .AddEntityFrameworkStores<AppDbContext>();
 
 builder.Services.AddExceptionHandler((options) =>
@@ -44,7 +47,7 @@ builder.Services.AddExceptionHandler((options) =>
 });
 
 builder.Services.AddProblemDetails();
-builder.Services.AddDomainModules() ;
+builder.Services.AddDomainModules();
 
 var app = builder.Build();
 
