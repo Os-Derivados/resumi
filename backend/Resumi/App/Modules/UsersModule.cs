@@ -12,7 +12,7 @@ public class UsersModule : DomainModule<AppUser>
         IDomainValidator<AppUser> validator,
         IRepository<AppUser> repository,
         UserManager<AppUser> userManager,
-        RoleManager<IdentityRole> roleManager
+        RoleManager<IdentityRole<int>> roleManager
     )
         : base(service, validator, repository, userManager, roleManager)
     {

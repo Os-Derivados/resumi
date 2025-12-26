@@ -12,7 +12,7 @@ public class VolunteershipsModule : DomainModule<Volunteership>
         IDomainValidator<Volunteership> validator,
         IRepository<Volunteership> repository,
         UserManager<AppUser> userManager,
-        RoleManager<IdentityRole> roleManager
+        RoleManager<IdentityRole<int>> roleManager
     )
         : base(service, validator, repository, userManager, roleManager)
     {

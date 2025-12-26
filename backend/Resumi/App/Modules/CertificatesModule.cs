@@ -12,7 +12,7 @@ public class CertificatesModule : DomainModule<Certificate>
         IDomainValidator<Certificate> validator,
         IRepository<Certificate> repository,
         UserManager<AppUser> userManager,
-        RoleManager<IdentityRole> roleManager
+        RoleManager<IdentityRole<int>> roleManager
     )
         : base(service, validator, repository, userManager, roleManager)
     {

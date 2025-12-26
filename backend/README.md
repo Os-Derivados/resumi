@@ -10,5 +10,5 @@ JWT_ISSUER=osderivados.org
 JWT_AUDIENCE=osderivados.org
 ALLOWED_HOSTS=*
 ALLOWED_CORS_DOMAINS=*
-ADMIN_USER={"FullName":"Thiago R Santos","PhoneNumber":"+5561940028922","Email":"thiago.dev2k3@gmail.com","Password":"skibi_toilet234#"}
+ADMIN_USER={"FullName":"Admin User","PhoneNumber":"+5500000000000","Email":"admin@example.com","Password":"change_me_123!"}
 ```

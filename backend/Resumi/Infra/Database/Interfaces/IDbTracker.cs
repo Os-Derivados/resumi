@@ -3,7 +3,7 @@ using Resumi.App.Data.Models;
 namespace Resumi.Infra.Database.Interfaces;
 
 /// <summary>
-/// Este ccontrato oferece APIs para rastreamento de operações de banco de dados.
+/// Este contrato oferece APIs para rastreamento de operações de banco de dados.
 /// </summary>
 public interface IDbTracker
 {

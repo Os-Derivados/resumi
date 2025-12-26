@@ -29,7 +29,7 @@ public abstract class Repository<TEntity> : IRepository<TEntity>
         {
             Logger.LogError(
                 ex,
-                "Error while retrieveing entity via: {Id} - {ErrorMesssage}",
+                "Error while retrieving entity via: {Id} - {ErrorMessage}",
                 id,
                 ex.Message
             );
@@ -50,7 +50,7 @@ public abstract class Repository<TEntity> : IRepository<TEntity>
         {
             Logger.LogError(
                 ex,
-                "Error while retrieving all entities - {ErrorMesssage}",
+                "Error while retrieving all entities - {ErrorMessage}",
                 ex.Message
             );
 
@@ -70,7 +70,7 @@ public abstract class Repository<TEntity> : IRepository<TEntity>
         {
             Logger.LogError(
                 ex,
-                "Error while adding entity: {Entity} - {ErrorMesssage}",
+                "Error while adding entity: {Entity} - {ErrorMessage}",
                 entity,
                 ex.Message
             );
@@ -91,7 +91,7 @@ public abstract class Repository<TEntity> : IRepository<TEntity>
         {
             Logger.LogError(
                 ex,
-                "Error while updating entity: {Entity} - {ErrorMesssage}",
+                "Error while updating entity: {Entity} - {ErrorMessage}",
                 entity,
                 ex.Message
             );
@@ -117,7 +117,7 @@ public abstract class Repository<TEntity> : IRepository<TEntity>
         {
             Logger.LogError(
                 ex,
-                "Error while deleting entity via: {Id} - {ErrorMesssage}",
+                "Error while deleting entity via: {Id} - {ErrorMessage}",
                 id,
                 ex.Message
             );
@@ -136,7 +136,7 @@ public abstract class Repository<TEntity> : IRepository<TEntity>
         {
             Logger.LogError(
                 ex,
-                "Error while checking existence of entity: {Entity} - {ErrorMesssage}",
+                "Error while checking existence of entity: {Entity} - {ErrorMessage}",
                 entity,
                 ex.Message
             );
