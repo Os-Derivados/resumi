@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Identity;
 using Resumi.App.Data.Models;
 using Resumi.App.Exceptions;
 using Resumi.App.Modules;
@@ -8,11 +9,11 @@ namespace Resumi.App.Services;
 
 public class UserService : IUserService
 {
-    private readonly UsersModule _module;
+    private readonly UserManager<AppUser> _userManager;
 
-    public UserService(UsersModule module)
+    public UserService(UserManager<AppUser> userManager)
     {
-        _module = module;
+        _userManager = userManager;
     }
 
     public Task<Result<AppUser>> CreateAsync(AppUser? newEntity)
@@ -42,7 +43,7 @@ public class UserService : IUserService
 
     public async Task<Result<AppUser>> CreateAsync(AppUser? newEntity, string password)
     {
-        var existingUser = await _module.UserManager.FindByEmailAsync(newEntity?.Email ?? string.Empty);
+        var existingUser = await _userManager.FindByEmailAsync(newEntity?.Email ?? string.Empty);
 
         if (newEntity is not null && existingUser is not null)
         {
@@ -52,7 +53,7 @@ public class UserService : IUserService
             );
         }
 
-        var creationResult = await _module.UserManager.CreateAsync(newEntity!, password);
+        var creationResult = await _userManager.CreateAsync(newEntity!, password);
 
         if (!creationResult.Succeeded)
         {
