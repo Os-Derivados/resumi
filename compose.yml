@@ -1,0 +1,59 @@
+services:
+  backend:
+    container_name: resumi-backend
+    build:
+      context: .
+      dockerfile: Dockerfile
+      labels:
+        - org.osderivados=resumi
+    environment:
+      - JWT_SIGNING_KEY=${JWT_SIGNING_KEY}
+      - JWT_ISSUER=${JWT_ISSUER}
+      - JWT_AUDIENCE=${JWT_AUDIENCE}
+      - ALLOWED_HOSTS=${ALLOWED_HOSTS}
+      - ALLOWED_CORS_DOMAINS=${ALLOWED_CORS_DOMAINS}
+      - ASPNETCORE_URLS=http://+:8080
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ADMIN_USER=${ADMIN_USER}
+    env_file:
+      - .env
+    ports:
+      - "8080:8080"
+      - "8081:8081"
+    depends_on:
+      db:
+        condition: service_healthy
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:8080/health" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - resumi-network
+
+  db:
+    container_name: resumi-db
+    image: docker.io/library/postgres:18-alpine
+    environment:
+      - POSTGRES_DB=resumi
+      - POSTGRES_USER=resumi
+      - POSTGRES_PASSWORD=postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./backend/Resumi/Infra/Database/Migrations/Schema.sql:/docker-entrypoint-initdb.d/schema.sql:ro
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U resumi" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - resumi-network
+
+volumes:
+  postgres_data:
+
+
+networks:
+  resumi-network:
