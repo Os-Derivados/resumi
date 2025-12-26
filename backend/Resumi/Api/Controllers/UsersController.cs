@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Resumi.Api.Data.Models;
 using Resumi.App.Modules;
+using Resumi.App.Services.Interfaces;
 using Resumi.Infra.Data.Models;
 
 namespace Resumi.Api.Controllers;
@@ -23,7 +24,8 @@ public class UsersController : ControllerBase
     public async Task<IActionResult> Create([FromBody] CreateUserModel model)
     {
         var newUser = _module.Mapper.NewDomainModel(model);
-        var creationResult = await _module.Service.CreateAsync(newUser);
+        var userService = (IUserService)_module.Service;
+        var creationResult = await userService.CreateAsync(newUser, model.Password);
 
         if (!creationResult.Succeeded)
         {
