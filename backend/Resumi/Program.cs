@@ -24,6 +24,26 @@ builder.Services.AddEntityMappers();
 builder.Services.AddIdentityCore<AppUser>()
     .AddEntityFrameworkStores<AppDbContext>();
 
+builder.Services.AddExceptionHandler((options) =>
+{
+    options.ExceptionHandler = async context =>
+    {
+        var logger = context.RequestServices.GetRequiredService<ILogger<Program>>();
+        var exception = context.Features.Get<Microsoft.AspNetCore.Diagnostics.IExceptionHandlerFeature>()?.Error;
+        
+        logger.LogError(exception, "An unhandled exception occurred.");
+
+        context.Response.StatusCode = StatusCodes.Status500InternalServerError;
+
+        await context.Response.WriteAsJsonAsync(new
+        {
+            Error = "An unexpected error occurred. Please try again later."
+        });
+    };
+});
+
+builder.Services.AddProblemDetails();
+
 var app = builder.Build();
 
 using var seedScope = app.Services.CreateScope();
