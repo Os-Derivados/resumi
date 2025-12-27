@@ -10,11 +10,10 @@ public class DegreesModule : DomainModule<Degree>
     public DegreesModule(
         IDomainService<Degree> service,
         IDomainValidator<Degree> validator,
-        IRepository<Degree> repository,
         UserManager<AppUser> userManager,
-        RoleManager<IdentityRole<int>> roleManager
-    )
-        : base(service, validator, repository, userManager, roleManager)
+        RoleManager<IdentityRole<int>> roleManager,
+        IRepository<Degree>? repository = null)
+        : base(service, validator, userManager, roleManager, repository)
     {
     }
 }

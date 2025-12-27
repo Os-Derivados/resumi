@@ -22,15 +22,15 @@ public abstract class DomainModule<TEntity> where TEntity : ITrackable
     protected DomainModule(
         IDomainService<TEntity> service,
         IDomainValidator<TEntity> validator,
-        IRepository<TEntity>? repository,
         UserManager<AppUser> userManager,
-        RoleManager<IdentityRole<int>> roleManager
+        RoleManager<IdentityRole<int>> roleManager,
+        IRepository<TEntity>? repository = null
     )
     {
         Service = service;
         Validator = validator;
-        Repository = repository;
         UserManager = userManager;
         RoleManager = roleManager;
+        Repository = repository;
     }
 }

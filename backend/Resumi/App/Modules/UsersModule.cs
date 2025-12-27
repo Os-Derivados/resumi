@@ -11,12 +11,13 @@ public class UsersModule : DomainModule<AppUser>
     public readonly IUserMapper Mapper;
 
     public UsersModule(
+        IUserMapper mapper,
         IDomainService<AppUser> service,
         IDomainValidator<AppUser> validator,
-        IRepository<AppUser> repository,
         UserManager<AppUser> userManager,
-        RoleManager<IdentityRole<int>> roleManager, IUserMapper mapper)
-        : base(service, validator, repository, userManager, roleManager)
+        RoleManager<IdentityRole<int>> roleManager,
+        IRepository<AppUser>? repository = null)
+        : base(service, validator, userManager, roleManager, repository)
     {
         Mapper = mapper;
     }
