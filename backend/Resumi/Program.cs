@@ -54,6 +54,8 @@ var app = builder.Build();
 using var seedScope = app.Services.CreateScope();
 _ = await DbSeeder.SeedDatabaseAsync(seedScope.ServiceProvider);
 
+app.UseExceptionHandler();
+
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
