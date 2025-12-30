@@ -10,11 +10,9 @@ services:
       - JWT_SIGNING_KEY=${JWT_SIGNING_KEY}
       - JWT_ISSUER=${JWT_ISSUER}
       - JWT_AUDIENCE=${JWT_AUDIENCE}
-      - ALLOWED_HOSTS=${ALLOWED_HOSTS}
-      - ALLOWED_CORS_DOMAINS=${ALLOWED_CORS_DOMAINS}
-      - ASPNETCORE_URLS=http://+:8080
       - ASPNETCORE_ENVIRONMENT=Development
       - ADMIN_USER=${ADMIN_USER}
+      - ALLOWED_ORIGIN=${ALLOWED_ORIGIN}
     env_file:
       - .env
     ports:

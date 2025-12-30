@@ -1,16 +1,30 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Resumi.App.Data.Models;
+using Resumi.Infra.Constants;
 using Resumi.Infra.Database;
 using Resumi.Infra.Database.Context;
+using Resumi.Infra.Exceptions;
 using Resumi.Infra.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Services
+builder.Services.AddCors(options =>
+{
+    var allowedOrigin = Environment.GetEnvironmentVariable(EnvironmentVariables.AllowedOrigin)
+                        ?? throw new InfrastructureException(
+                            $"Environment variable '{EnvironmentVariables.AllowedOrigin}' is not set.");
+
+    options.AddDefaultPolicy(policy =>
+    {
+        policy.WithOrigins(allowedOrigin)
+            .AllowAnyHeader()
+            .AllowAnyMethod();
+    });
+});
+
 builder.Services.AddControllers();
 
-// Configure EF Core with Npgsql (PostgreSQL)
 var defaultConnection = builder.Configuration.GetConnectionString("DefaultConnection");
 if (!string.IsNullOrEmpty(defaultConnection))
 {
@@ -55,6 +69,7 @@ using var seedScope = app.Services.CreateScope();
 _ = await DbSeeder.SeedDatabaseAsync(seedScope.ServiceProvider);
 
 app.UseExceptionHandler();
+app.UseCors();
 
 if (app.Environment.IsDevelopment())
 {
