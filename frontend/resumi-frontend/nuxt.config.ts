@@ -14,7 +14,8 @@ export default defineNuxtConfig({
   css: ['~/assets/css/main.css'],
   runtimeConfig: {
     public: {
-      backendUrl: ''
+      backendUrl: '',
+      environment: 'development'
     }
   }
 })
