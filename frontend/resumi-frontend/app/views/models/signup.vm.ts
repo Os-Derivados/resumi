@@ -2,10 +2,9 @@ import type { FormSubmitEvent } from "@nuxt/ui";
 import { z } from "zod";
 import type { CreateUserModel } from "~/data/api/create-user-model";
 import { createUserAsync } from "~/infra/api/user-service";
+import { getEnvironmentVariable, isDevelopment } from "~/infra/utils/environment-utils";
 
 export class SignupViewModel {
-	private readonly _runtimeConfig = useRuntimeConfig()
-
 	constructor() {
 		this.schema = z.object({
 			fullName: z.string().min(1).max(128),
@@ -32,8 +31,12 @@ export class SignupViewModel {
 		const toast = useToast()
 
 		try {
+			const backendUrl = getEnvironmentVariable('backendUrl')
+
+			if (!backendUrl) throw new Error('Backend URL is not defined.')
+
 			const newUser = this.schema.parse(this.state) as CreateUserModel
-			const result = await createUserAsync(this._runtimeConfig.public.backendUrl, newUser)
+			const result = await createUserAsync(backendUrl, newUser)
 
 			const resultDisplay = result.succeeded
 				? 'Usuário criado com sucesso!'
@@ -48,7 +51,9 @@ export class SignupViewModel {
 
 			// if (result.succeeded) await useRouter().push('/login')
 		}
-		catch {
+		catch (error) {
+			if (isDevelopment()) console.error(error)
+
 			toast.add({
 				title: 'Cadastrar Usuário',
 				description: 'Ocorreu um erro ao processar sua solicitação.',
