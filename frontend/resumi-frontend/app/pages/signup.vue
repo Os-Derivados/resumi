@@ -37,7 +37,7 @@
 					</p>
 				</fieldset>
 
-				<UButton type="submit" size="xl" class="block mx-auto">
+				<UButton type="submit" size="xl" class="block mx-auto" @click="(e) => vm.requestUserCreationAsync(e)">
 					Registrar
 				</UButton>
 			</UForm>

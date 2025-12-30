@@ -1,8 +1,9 @@
 import { z } from "zod";
+import type { CreateUserModel } from "~/data/api/create-user-model";
+import { createUserAsync } from "~/infra/api/user-service";
 
 export class SignupViewModel {
-	public readonly schema
-	public readonly state
+	private readonly _runtimeConfig = useRuntimeConfig()
 
 	constructor() {
 		this.schema = z.object({
@@ -22,7 +23,26 @@ export class SignupViewModel {
 		})
 	}
 
-	public requestUseCreationAsync(): Promise<void> {
-		return Promise.resolve(console.table(this.state))
+	public readonly schema
+	public readonly state
+
+	public requestUserCreationAsync = async (event: MouseEvent): Promise<void> => {
+		event.preventDefault()
+
+		const toast = useToast()
+
+		const newUser = this.schema.parse(this.state) as CreateUserModel
+		const result = await createUserAsync(this._runtimeConfig.public.backendUrl, newUser)
+
+		const resultDisplay = result.succeeded
+			? 'Usuário criado com sucesso!'
+			: 'Falha ao criar usuário'
+
+		toast.add({
+			title: 'Cadastrar Usuário',
+			description: resultDisplay,
+			color: result.succeeded ? 'success' : 'error',
+			duration: 5000
+		})
 	}
 }
