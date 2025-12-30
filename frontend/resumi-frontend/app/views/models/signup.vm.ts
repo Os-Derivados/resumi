@@ -1,3 +1,4 @@
+import type { FormSubmitEvent } from "@nuxt/ui";
 import { z } from "zod";
 import type { CreateUserModel } from "~/data/api/create-user-model";
 import { createUserAsync } from "~/infra/api/user-service";
@@ -26,23 +27,36 @@ export class SignupViewModel {
 	public readonly schema
 	public readonly state
 
-	public requestUserCreationAsync = async (event: MouseEvent): Promise<void> => {
+	public requestUserCreationAsync = async (event: FormSubmitEvent<typeof this.state>): Promise<void> => {
 		event.preventDefault()
-
 		const toast = useToast()
 
-		const newUser = this.schema.parse(this.state) as CreateUserModel
-		const result = await createUserAsync(this._runtimeConfig.public.backendUrl, newUser)
+		try {
+			const newUser = this.schema.parse(this.state) as CreateUserModel
+			const result = await createUserAsync(this._runtimeConfig.public.backendUrl, newUser)
 
-		const resultDisplay = result.succeeded
-			? 'Usuário criado com sucesso!'
-			: 'Falha ao criar usuário'
+			const resultDisplay = result.succeeded
+				? 'Usuário criado com sucesso!'
+				: 'Falha ao criar usuário'
 
-		toast.add({
-			title: 'Cadastrar Usuário',
-			description: resultDisplay,
-			color: result.succeeded ? 'success' : 'error',
-			duration: 5000
-		})
+			toast.add({
+				title: 'Cadastrar Usuário',
+				description: resultDisplay,
+				color: result.succeeded ? 'success' : 'error',
+				duration: 5000
+			})
+
+			// if (result.succeeded) await useRouter().push('/login')
+		}
+		catch {
+			toast.add({
+				title: 'Cadastrar Usuário',
+				description: 'Ocorreu um erro ao processar sua solicitação.',
+				color: 'error',
+				duration: 5000
+			})
+
+			await useRouter().push('/signup')
+		}
 	}
 }

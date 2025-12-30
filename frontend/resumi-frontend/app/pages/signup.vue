@@ -11,7 +11,8 @@
 		<section
 			class="grid grid-cols-1 grid-rows-2 place-items-center md:grid-cols-2 md:grid-rows-1 gap-16 md:gap-32 justify-center items-center">
 			<UForm :schema="vm.schema" :state="vm.state"
-				class="rounded-2xl shadow-md p-6 sm:p-8 max-w-md md:max-w-lg md:justify-self-end">
+				class="rounded-2xl shadow-md p-6 sm:p-8 max-w-md md:max-w-lg md:justify-self-end"
+				@submit="(e) => vm.requestUserCreationAsync(e)">
 				<fieldset class="space-y-4  w-full flex flex-col items-center mb-8 ">
 					<legend class="text-lg mb-8 font-medium">Informações Básicas</legend>
 
@@ -37,7 +38,7 @@
 					</p>
 				</fieldset>
 
-				<UButton type="submit" size="xl" class="block mx-auto" @click="(e) => vm.requestUserCreationAsync(e)">
+				<UButton type="submit" size="xl" class="block mx-auto">
 					Registrar
 				</UButton>
 			</UForm>
