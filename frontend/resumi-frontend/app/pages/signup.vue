@@ -24,7 +24,7 @@
 						<UInput v-model="vm.state.email" class="w-full" />
 					</UFormField>
 
-					<UFormField label="Telefone" name="phoneNumber" class="w-full">
+					<UFormField v-maska="PhoneNumberMask" label="Telefone" name="phoneNumber" class="w-full">
 						<UInput v-model="vm.state.phoneNumber" class="w-full" />
 					</UFormField>
 
@@ -63,6 +63,8 @@
 </template>
 
 <script setup lang="ts">
+import { vMaska } from 'maska/vue';
+import { PhoneNumberMask } from '~/infra/utils/input-masks';
 import { SignupViewModel } from '~/views/models/signup.vm'
 
 definePageMeta({
