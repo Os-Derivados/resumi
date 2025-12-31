@@ -9,5 +9,13 @@ export default defineNuxtConfig({
     '@nuxt/test-utils',
     '@nuxt/image',
     '@nuxt/hints'
-  ]
+  ],
+
+  css: ['~/assets/css/main.css'],
+  runtimeConfig: {
+    public: {
+      backendUrl: '',
+      environment: 'development'
+    }
+  }
 })

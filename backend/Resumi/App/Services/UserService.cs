@@ -1,4 +1,7 @@
+using Microsoft.AspNetCore.Identity;
 using Resumi.App.Data.Models;
+using Resumi.App.Exceptions;
+using Resumi.App.Modules;
 using Resumi.App.Services.Interfaces;
 using Resumi.Infra.Data.Models;
 
@@ -6,9 +9,16 @@ namespace Resumi.App.Services;
 
 public class UserService : IUserService
 {
+    private readonly UserManager<AppUser> _userManager;
+
+    public UserService(UserManager<AppUser> userManager)
+    {
+        _userManager = userManager;
+    }
+
     public Task<Result<AppUser>> CreateAsync(AppUser? newEntity)
     {
-        throw new NotImplementedException();
+        throw new DomainException("Use CreateAsync with password parameter for creating users.");
     }
 
     public Task<Result<AppUser>> FindAsync(int id)
@@ -29,5 +39,30 @@ public class UserService : IUserService
     public Task<Result<bool>> DeleteAsync(int id)
     {
         throw new NotImplementedException();
+    }
+
+    public async Task<Result<AppUser>> CreateAsync(AppUser? newEntity, string password)
+    {
+        var existingUser = await _userManager.FindByEmailAsync(newEntity?.Email ?? string.Empty);
+
+        if (newEntity is not null && existingUser is not null)
+        {
+            return Result<AppUser>.Failure(
+                nameof(AppUser),
+                "User with the same email already exists."
+            );
+        }
+
+        var creationResult = await _userManager.CreateAsync(newEntity!, password);
+
+        if (!creationResult.Succeeded)
+        {
+            return Result<AppUser>.Failure(
+                nameof(AppUser),
+                string.Join("; ", creationResult.Errors.Select(e => e.Description))
+            );
+        }
+
+        return Result<AppUser>.Success(newEntity!);
     }
 }

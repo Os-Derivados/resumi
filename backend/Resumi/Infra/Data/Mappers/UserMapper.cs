@@ -24,6 +24,15 @@ public class UserMapper : IUserMapper
 
     public UserModel? ToDto(AppUser? entity)
     {
-        throw new NotImplementedException();
+        if (entity is null) return null;
+
+        return new UserModel()
+
+        {
+            Id = entity.Id,
+            FullName = entity.FullName,
+            Email = entity.Email,
+            PhoneNumber = entity.PhoneNumber
+        };
     }
 }

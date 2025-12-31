@@ -10,11 +10,10 @@ public class ExperiencesModule : DomainModule<Experience>
     public ExperiencesModule(
         IDomainService<Experience> service,
         IDomainValidator<Experience> validator,
-        IRepository<Experience> repository,
         UserManager<AppUser> userManager,
-        RoleManager<IdentityRole<int>> roleManager
-    )
-        : base(service, validator, repository, userManager, roleManager)
+        RoleManager<IdentityRole<int>> roleManager,
+        IRepository<Experience>? repository = null)
+        : base(service, validator, userManager, roleManager, repository)
     {
     }
 }

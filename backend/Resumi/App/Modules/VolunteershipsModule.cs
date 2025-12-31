@@ -10,11 +10,10 @@ public class VolunteershipsModule : DomainModule<Volunteership>
     public VolunteershipsModule(
         IDomainService<Volunteership> service,
         IDomainValidator<Volunteership> validator,
-        IRepository<Volunteership> repository,
         UserManager<AppUser> userManager,
-        RoleManager<IdentityRole<int>> roleManager
-    )
-        : base(service, validator, repository, userManager, roleManager)
+        RoleManager<IdentityRole<int>> roleManager,
+        IRepository<Volunteership>? repository = null)
+        : base(service, validator, userManager, roleManager, repository)
     {
     }
 }

@@ -73,3 +73,14 @@ bun run preview
 ```
 
 Check out the [deployment documentation](https://nuxt.com/docs/getting-started/deployment) for more information.
+
+## Variáveis de Ambiente
+
+Para facilitar a leitura, variáveis de ambiente são definidas em `nuxt.config.ts`, sendo acessíveis através do utilitário `getEnvironmentVariable`.
+
+> [!NOTE]
+> Variáveis com o prefixo `NUXT_PUBLIC` são variáveis somente em client-side.
+
+```sh
+NUXT_PUBLIC_BACKEND_URL=http://localhost:8080/api
+```

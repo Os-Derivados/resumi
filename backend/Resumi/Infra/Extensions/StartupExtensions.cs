@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Identity;
 using Microsoft.OpenApi.Models;
 using Resumi.App.Data.Models;
 using Resumi.App.Modules;
@@ -6,6 +7,8 @@ using Resumi.App.Services.Interfaces;
 using Resumi.App.Services.Validators;
 using Resumi.Infra.Data.Interfaces;
 using Resumi.Infra.Data.Mappers;
+using Resumi.Infra.Database.Interfaces;
+using Resumi.Infra.Database.Repositories;
 
 namespace Resumi.Infra.Extensions;
 
@@ -37,12 +40,12 @@ public static class StartupExtensions
     /// </param>
     public static void AddDomainServices(this IServiceCollection services)
     {
-        services.AddScoped<IResumeService, ResumeService>();
-        services.AddScoped<IUserService, UserService>();
-        services.AddScoped<ICertificateService, CertificateService>();
-        services.AddScoped<IDegreeService, DegreeService>();
-        services.AddScoped<IExperienceService, ExperienceService>();
-        services.AddScoped<IVolunteershipService, VolunteershipService>();
+        services.AddScoped<IDomainService<Resume>, ResumeService>();
+        services.AddScoped<IDomainService<AppUser>, UserService>();
+        services.AddScoped<IDomainService<Certificate>, CertificateService>();
+        services.AddScoped<IDomainService<Degree>, DegreeService>();
+        services.AddScoped<IDomainService<Experience>, ExperienceService>();
+        services.AddScoped<IDomainService<Volunteership>, VolunteershipService>();
     }
 
     /// <summary>
@@ -74,6 +77,25 @@ public static class StartupExtensions
     {
         services.AddScoped<IResumeMapper, ResumeMapper>();
         services.AddScoped<IUserMapper, UserMapper>();
+    }
+
+
+    /// <summary>
+    /// Registra os repositórios de dados no contêiner de injeção de dependência.
+    /// Esses repositórios são responsáveis por interagir com a camada de persistência de dados.
+    /// <remarks>Para entidades <see cref="AppUser"/> e <see cref="IdentityRole{TKey}"/>,
+    /// devem ser utilizados os componentes do Identity.</remarks>
+    /// </summary>
+    /// <param name="services">
+    /// O contêiner de serviços onde os repositórios serão registrados.
+    /// </param>
+    public static void AddRepositories(this IServiceCollection services)
+    {
+        services.AddScoped<IRepository<Resume>, ResumeRepository>();
+        services.AddScoped<IRepository<Experience>, ExperienceRepository>();
+        services.AddScoped<IRepository<Degree>, DegreeRepository>();
+        services.AddScoped<IRepository<Certificate>, CertificateRepository>();
+        services.AddScoped<IRepository<Volunteership>, VolunteershipRepository>();
     }
 
     /// <summary>

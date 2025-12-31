@@ -1,15 +1,30 @@
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Resumi.App.Data.Models;
+using Resumi.Infra.Constants;
 using Resumi.Infra.Database;
 using Resumi.Infra.Database.Context;
+using Resumi.Infra.Exceptions;
 using Resumi.Infra.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Services
+builder.Services.AddCors(options =>
+{
+    var allowedOrigin = Environment.GetEnvironmentVariable(EnvironmentVariables.AllowedOrigin)
+                        ?? throw new InfrastructureException(
+                            $"Environment variable '{EnvironmentVariables.AllowedOrigin}' is not set.");
+
+    options.AddDefaultPolicy(policy =>
+    {
+        policy.WithOrigins(allowedOrigin)
+            .AllowAnyHeader()
+            .AllowAnyMethod();
+    });
+});
+
 builder.Services.AddControllers();
 
-// Configure EF Core with Npgsql (PostgreSQL)
 var defaultConnection = builder.Configuration.GetConnectionString("DefaultConnection");
 if (!string.IsNullOrEmpty(defaultConnection))
 {
@@ -18,16 +33,43 @@ if (!string.IsNullOrEmpty(defaultConnection))
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddApiDocumentation();
-builder.Services.AddDomainServices();
-builder.Services.AddDomainValidators();
+builder.Services.AddRepositories();
 builder.Services.AddEntityMappers();
+builder.Services.AddDomainValidators();
+builder.Services.AddDomainServices();
 builder.Services.AddIdentityCore<AppUser>()
+    .AddRoles<IdentityRole<int>>()
+    .AddRoleManager<RoleManager<IdentityRole<int>>>()
     .AddEntityFrameworkStores<AppDbContext>();
+
+builder.Services.AddExceptionHandler((options) =>
+{
+    options.ExceptionHandler = async context =>
+    {
+        var logger = context.RequestServices.GetRequiredService<ILogger<Program>>();
+        var exception = context.Features.Get<Microsoft.AspNetCore.Diagnostics.IExceptionHandlerFeature>()?.Error;
+
+        logger.LogError(exception, "An unhandled exception occurred.");
+
+        context.Response.StatusCode = StatusCodes.Status500InternalServerError;
+
+        await context.Response.WriteAsJsonAsync(new
+        {
+            Error = "An unexpected error occurred. Please try again later."
+        });
+    };
+});
+
+builder.Services.AddProblemDetails();
+builder.Services.AddDomainModules();
 
 var app = builder.Build();
 
 using var seedScope = app.Services.CreateScope();
 _ = await DbSeeder.SeedDatabaseAsync(seedScope.ServiceProvider);
+
+app.UseExceptionHandler();
+app.UseCors();
 
 if (app.Environment.IsDevelopment())
 {
