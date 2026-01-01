@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Resumi.App.Data.Models;
+using Resumi.Infra;
 using Resumi.Infra.Constants;
 using Resumi.Infra.Database;
 using Resumi.Infra.Database.Context;
@@ -62,6 +63,7 @@ builder.Services.AddExceptionHandler((options) =>
 
 builder.Services.AddProblemDetails();
 builder.Services.AddDomainModules();
+builder.AddJwtAuth();
 
 var app = builder.Build();
 
