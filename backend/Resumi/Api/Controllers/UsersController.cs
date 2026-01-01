@@ -68,4 +68,10 @@ public class UsersController : ControllerBase
     {
         throw new NotImplementedException("Deleting a user is not implemented yet.");
     }
+
+    [HttpPost("login")]
+    public IActionResult Login([FromBody] LoginModel model)
+    {
+        throw new NotImplementedException("User login is not implemented yet.");
+    }
 }
