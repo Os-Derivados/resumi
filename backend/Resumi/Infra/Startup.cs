@@ -1,4 +1,5 @@
 using System.Text;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Resumi.Infra.Constants;
 using Resumi.Infra.Exceptions;
@@ -48,6 +49,21 @@ public static class Startup
                         ValidateLifetime = true
                     };
                     options.MapInboundClaims = false;
+                    options.Events = new JwtBearerEvents
+
+                    {
+                        OnMessageReceived = context =>
+                        {
+                            var accessToken = context.Request.Cookies[AuthConstants.JwtCookie];
+
+                            if (!string.IsNullOrEmpty(accessToken))
+                            {
+                                context.Token = accessToken;
+                            }
+
+                            return Task.CompletedTask;
+                        }
+                    };
                 });
     }
 }
