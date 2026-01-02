@@ -1,9 +1,10 @@
 <template>
-	<main class="w-full min-h-screen px-4 sm:px-8 md:px-16 lg:px-24 py-8 sm:py-12 md:py-16 grid items-center">
+	<main
+		class="w-full min-h-screen px-4 sm:px-8 md:px-16 lg:px-24 py-8 sm:py-12 md:py-16 grid place-items-center bg-gray-50 md:items-center md:justify-start login-container">
 		<UForm :schema="vm.schema" :state="vm.state" class="rounded-2xl shadow-md p-6 sm:p-8 max-w-md md:max-w-lg"
 			@submit="(e) => vm.requestLoginAsync(e)">
 			<fieldset class="space-y-4  w-full flex flex-col items-center mb-8">
-				<legend class="text-lg mb-8 font-medium">Iniciar Sessão</legend>
+				<legend class="text-lg mb-8 font-medium text-center">Iniciar Sessão</legend>
 
 				<UFormField label="Email" name="email" class="w-full">
 					<UInput v-model="vm.state.email" class="w-full" />
@@ -26,6 +27,7 @@
 	</main>
 </template>
 
+
 <script setup lang="ts">
 import { LoginViewModel } from '~/views/models/login.vm';
 
@@ -35,3 +37,7 @@ definePageMeta({
 
 const vm = new LoginViewModel()
 </script>
+
+<style lang="css">
+@import '~/assets/css/login.css';
+</style>
