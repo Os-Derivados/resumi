@@ -40,7 +40,8 @@ export async function loginAsync(model: LoginModel): Promise<Result<AuthResponse
 			headers: {
 				"Content-Type": "application/json",
 			},
-			body: JSON.stringify(model)
+			body: JSON.stringify(model),
+			credentials: 'include'
 		})
 
 		return loginResult.data.value as Result<AuthResponse>
