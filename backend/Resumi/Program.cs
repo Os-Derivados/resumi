@@ -83,6 +83,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI(c => { c.SwaggerEndpoint("/swagger/v1/swagger.json", "Resumi API v1"); });
 }
 
+app.UseHsts();
 app.UseHttpsRedirection();
 app.MapControllers();
 app.Run();
