@@ -3,6 +3,9 @@ using Microsoft.AspNetCore.Mvc;
 using Resumi.Api.Data.Models;
 using Resumi.App.Modules;
 using Resumi.App.Services.Interfaces;
+using Resumi.Infra.Auth;
+using Resumi.Infra.Auth.Interfaces;
+using Resumi.Infra.Constants;
 using Resumi.Infra.Data.Models;
 
 namespace Resumi.Api.Controllers;
@@ -13,10 +16,12 @@ namespace Resumi.Api.Controllers;
 public class UsersController : ControllerBase
 {
     private readonly UsersModule _module;
+    private readonly IAuthManager _authManager;
 
-    public UsersController(UsersModule module)
+    public UsersController(UsersModule module, IAuthManager authManager)
     {
         _module = module;
+        _authManager = authManager;
     }
 
     [HttpPost]
@@ -39,7 +44,7 @@ public class UsersController : ControllerBase
         return Created($"/api/users/{createdUser.Id}", Result<UserModel>.Success(createdUser));
     }
 
-    [HttpGet("/me")]
+    [HttpGet("me")]
     public IActionResult GetAuthor()
     {
         throw new NotImplementedException("Retrieving the current user is not implemented yet.");
@@ -70,8 +75,27 @@ public class UsersController : ControllerBase
     }
 
     [HttpPost("login")]
-    public IActionResult Login([FromBody] LoginModel model)
+    [AllowAnonymous]
+    public async Task<IActionResult> Login([FromBody] LoginModel model)
     {
-        throw new NotImplementedException("User login is not implemented yet.");
+        var user = await _module.UserManager.FindByEmailAsync(model.Email);
+
+        if (user is null) return NotFound();
+
+        var passwordValid = await _module.UserManager.CheckPasswordAsync(user, model.Password);
+
+        if (!passwordValid) return Unauthorized();
+
+        var authResponse = _authManager.NewAuthResponse(user);
+
+        HttpContext.Response.Cookies.Append(AuthConstants.JwtCookie, authResponse.Token!, new CookieOptions
+        {
+            HttpOnly = true,
+            Secure = true,
+            SameSite = SameSiteMode.Strict,
+            Expires = authResponse.ExpiresAt
+        });
+
+        return Ok(Result<AuthResponse>.Success(authResponse with { Token = null }));
     }
 }
