@@ -1,3 +1,4 @@
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Resumi.Api.Data.Models;
@@ -46,9 +47,21 @@ public class UsersController : ControllerBase
     }
 
     [HttpGet("{id:int}")]
-    public IActionResult Read(int id)
+    public async Task<IActionResult> Read(int id)
     {
-        throw new NotImplementedException("Retrieving a user by ID is not implemented yet.");
+        var userService = (IUserService)_module.Service;
+        var findResult  = await userService.FindAsync(id);
+
+        if (!findResult.Succeeded)
+        {
+            return BadRequest(findResult);
+        }
+
+        var findUser = _module.Mapper.ToDto(findResult.Data);
+
+        if (findUser is null) return UnprocessableEntity();
+
+        return Created($"/api/users/{findUser.Id}", Result<UserModel>.Success(findUser));
     }
 
     [HttpGet]
