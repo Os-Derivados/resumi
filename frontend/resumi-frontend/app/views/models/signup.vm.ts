@@ -49,7 +49,7 @@ export class SignupViewModel {
 				duration: 5000
 			})
 
-			// if (result.succeeded) await useRouter().push('/login')
+			if (result.succeeded) await useRouter().push('/login')
 		}
 		catch (error) {
 			if (isDevelopment()) console.error(error)
@@ -60,8 +60,6 @@ export class SignupViewModel {
 				color: 'error',
 				duration: 5000
 			})
-
-			await useRouter().push('/signup')
 		}
 	}
 }

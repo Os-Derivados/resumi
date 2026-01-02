@@ -1,6 +1,9 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Resumi.App.Data.Models;
+using Resumi.Infra;
+using Resumi.Infra.Auth;
+using Resumi.Infra.Auth.Interfaces;
 using Resumi.Infra.Constants;
 using Resumi.Infra.Database;
 using Resumi.Infra.Database.Context;
@@ -19,7 +22,8 @@ builder.Services.AddCors(options =>
     {
         policy.WithOrigins(allowedOrigin)
             .AllowAnyHeader()
-            .AllowAnyMethod();
+            .AllowAnyMethod()
+            .AllowCredentials();
     });
 });
 
@@ -62,6 +66,9 @@ builder.Services.AddExceptionHandler((options) =>
 
 builder.Services.AddProblemDetails();
 builder.Services.AddDomainModules();
+builder.AddJwtSettings();
+builder.AddJwtAuth();
+builder.Services.AddScoped<IAuthManager, AuthManager>();
 
 var app = builder.Build();
 
@@ -77,6 +84,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI(c => { c.SwaggerEndpoint("/swagger/v1/swagger.json", "Resumi API v1"); });
 }
 
+app.UseHsts();
 app.UseHttpsRedirection();
 app.MapControllers();
 app.Run();

@@ -13,11 +13,16 @@ services:
       - ASPNETCORE_ENVIRONMENT=Development
       - ADMIN_USER=${ADMIN_USER}
       - ALLOWED_ORIGIN=${ALLOWED_ORIGIN}
+      # Tell ASP.NET where the cert is and its password
+      - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/aspnet-dev-cert.pfx
+      - ASPNETCORE_Kestrel__Certificates__Default__Password=${CERT_PASSWORD}
     env_file:
       - .env
     ports:
-      - "8080:8080"
-      - "8081:8081"
+      - "8080:8080" # HTTP
+      - "8081:8081" # HTTPS
+    volumes:
+      - ~/.aspnet/https/aspnet-dev-cert.pfx:/https/aspnet-dev-cert.pfx:ro
     depends_on:
       db:
         condition: service_healthy
