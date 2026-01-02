@@ -1,6 +1,7 @@
 using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
+using Resumi.Infra.Auth;
 using Resumi.Infra.Constants;
 using Resumi.Infra.Exceptions;
 
@@ -65,5 +66,31 @@ public static class Startup
                         }
                     };
                 });
+    }
+
+    /// <summary>
+    /// Injeta as configurações de credenciais para autenticação JWT no contêiner de serviços.
+    /// </summary>
+    /// <param name="builder">
+    /// Instância do construtor da aplicação web.
+    /// </param>
+    /// <exception cref="InfrastructureException" />
+    public static void AddJwtSettings(this WebApplicationBuilder builder)
+
+    {
+        JwtAuthSettings jwtSettings = new()
+        {
+            Issuer = builder.Configuration[EnvironmentVariables.JwtIssuer]
+                     ?? throw new InfrastructureException(
+                         $"Environment variable '{EnvironmentVariables.JwtIssuer}' is not set."),
+            Audience = builder.Configuration[EnvironmentVariables.JwtAudience]
+                       ?? throw new InfrastructureException(
+                           $"Environment variable '{EnvironmentVariables.JwtAudience}' is not set."),
+            Secret = builder.Configuration[EnvironmentVariables.JwtSigningKey]
+                     ?? throw new InfrastructureException(
+                         $"Environment variable '{EnvironmentVariables.JwtSigningKey}' is not set.")
+        };
+
+        builder.Services.AddSingleton(jwtSettings);
     }
 }

@@ -63,7 +63,9 @@ builder.Services.AddExceptionHandler((options) =>
 
 builder.Services.AddProblemDetails();
 builder.Services.AddDomainModules();
+builder.AddJwtSettings();
 builder.AddJwtAuth();
+
 
 var app = builder.Build();
 
