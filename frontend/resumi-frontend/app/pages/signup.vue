@@ -13,7 +13,7 @@
 			<UForm :schema="vm.schema" :state="vm.state"
 				class="rounded-2xl shadow-md p-6 sm:p-8 max-w-md md:max-w-lg md:justify-self-end"
 				@submit="(e) => vm.requestUserCreationAsync(e)">
-				<fieldset class="space-y-4  w-full flex flex-col items-center mb-8 ">
+				<fieldset class="space-y-4  w-full flex flex-col items-center mb-8">
 					<legend class="text-lg mb-8 font-medium">Informações Básicas</legend>
 
 					<UFormField label="Nome Completo" name="fullName" class="w-full">
