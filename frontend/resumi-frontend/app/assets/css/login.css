@@ -1,0 +1,21 @@
+@media screen and (min-device-aspect-ratio: 16/9) {
+	.login-container {
+		position: relative;
+
+
+	}
+
+	.login-container::before {
+		position: absolute;
+		content: "";
+		top: 0;
+		right: 0;
+		height: 100%;
+		width: 50%;
+		background-color: var(--color-cyan-700);
+		background-image: url('/resumi-logo-light.svg');
+		background-position: center;
+		background-repeat: no-repeat;
+		background-size: 15vmax;
+	}
+}
