@@ -15,7 +15,7 @@ export class CreateResumeViewModel {
 
         this.state = reactive<Partial<CreateResumeSchema>>({
             title: "",
-            authtoken: useCookie<string>("auth").value 
+            authtoken: ""
         })
     }
 
@@ -23,10 +23,13 @@ export class CreateResumeViewModel {
     public readonly state 
 
     public requestCreateResume = async (event: FormSubmitEvent<typeof this.state>): Promise<void> => {
+        const toast = useToast()
+        const authCookie = useCookie<string>("auth").value
+        this.state.authtoken = authCookie
+
         event.preventDefault();
 
-        const toast = useToast()
-
+        
         try {
             const createResumeModel = this.schema.parse(this.state) as CreateResumeModel
             const result = await createResumeAsync(createResumeModel)

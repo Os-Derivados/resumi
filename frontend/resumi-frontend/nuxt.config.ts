@@ -14,8 +14,14 @@ export default defineNuxtConfig({
   css: ['~/assets/css/main.css'],
   runtimeConfig: {
     public: {
-      backendUrl: '',
+      backendUrl: 'https://localhost:8081',
       environment: 'development'
     }
+  },
+  icon: {
+    customCollections: [{
+      prefix: "custom",
+      dir: "./app/assets/icons"
+    }]
   }
 })
