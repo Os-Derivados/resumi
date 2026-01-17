@@ -1,0 +1,28 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Docker Compose: Build",
+            "type": "shell",
+            "command": "docker compose -f ${workspaceFolder}/compose.yml build --no-cache"
+        },
+        {
+            "label": "Docker Compose: Up",
+            "type": "shell",
+            "command": "docker compose -f ${workspaceFolder}/compose.yml up -d",
+            "dependsOn": "Docker Compose: Build"
+        },
+        {
+            "label": "Docker Compose: Down",
+            "type": "shell",
+            "command": "docker compose -f ${workspaceFolder}/compose.yml down"
+        },
+        {
+            "label": "Start App in Container",
+            "type": "shell",
+            "command": "docker exec -d resumi-backend dotnet Resumi.dll",
+            "isBackground": true,
+            "problemMatcher": []
+        }
+    ]
+}
