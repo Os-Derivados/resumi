@@ -17,7 +17,7 @@ public class Resume : Entity
     /// </summary>
     [Required]
     [StringLength(128)]
-    public string? Title { get; set; }
+    public required string Title { get; set; }
 
     /// <summary>
     /// Representa o nome do proprietário do currículo, para exibição.
