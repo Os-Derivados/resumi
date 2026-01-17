@@ -6,7 +6,7 @@ namespace Resumi.Infra.Data.Mappers;
 
 public class ResumeMapper : IResumeMapper
 {
-    public Resume? NewDomainModel(CreateResumeModel dtoCreate)
+    public Resume? NewDomainModel(object dtoCreate)
     {
         return null;
     }
