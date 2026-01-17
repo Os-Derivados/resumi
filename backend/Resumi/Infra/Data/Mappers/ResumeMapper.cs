@@ -8,11 +8,7 @@ public class ResumeMapper : IResumeMapper
 {
     public Resume? NewDomainModel(CreateResumeModel dtoCreate)
     {
-        return new Resume
-        {
-            Title = dtoCreate.Title,
-            UserId = dtoCreate.UserId
-        };
+        return null;
     }
 
     public Resume? UpdatedDomainModel(UpdateResumeModel? dtoUpdate, Resume? entity)
