@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Resumi.Api.Data.Models;
 using Resumi.App.Modules;
+using Resumi.Infra.Data.Interfaces;
+using Resumi.Infra.Data.Models;
 
 namespace Resumi.Api.Controllers;
 
@@ -12,16 +14,31 @@ namespace Resumi.Api.Controllers;
 public class ResumesController : ControllerBase
 {
     private readonly ResumesModule _module;
+    private readonly IResumeMapper _mapper;
 
-    public ResumesController(ResumesModule module)
+    public ResumesController(ResumesModule module, IResumeMapper mapper)
     {
         _module = module;
+        _mapper = mapper;
     }
 
     [HttpPost]
-    public IActionResult Create([FromBody] CreateResumeModel model)
+    public async Task<ActionResult<Result<ResumeModel>>> Create([FromBody] CreateResumeModel model)
     {
-        throw new NotImplementedException("Resume creation is not implemented yet.");
+        var newResume = _mapper.NewDomainModel(model);
+        var creationResult = await _module.Service.CreateAsync(newResume);
+
+        if (!creationResult.Succeeded)
+
+        {
+            return BadRequest(creationResult);
+        }
+
+        var dto = _mapper.ToDto(creationResult.Data);
+
+        if (dto is null) return UnprocessableEntity();
+
+        return Created($"api/resumes/{dto.Id}", Result<ResumeModel>.Success(dto));
     }
 
     [HttpGet("{id:int}")]
