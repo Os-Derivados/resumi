@@ -6,9 +6,13 @@ namespace Resumi.Infra.Data.Mappers;
 
 public class ResumeMapper : IResumeMapper
 {
-    public Resume? NewDomainModel(CreateResumeModel? dtoCreate)
+    public Resume? NewDomainModel(CreateResumeModel dtoCreate)
     {
-        throw new NotImplementedException();
+        return new Resume
+        {
+            Title = dtoCreate.Title,
+            UserId = dtoCreate.UserId
+        };
     }
 
     public Resume? UpdatedDomainModel(UpdateResumeModel? dtoUpdate, Resume? entity)
