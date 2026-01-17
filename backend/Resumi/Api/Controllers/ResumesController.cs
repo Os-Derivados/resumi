@@ -1,8 +1,11 @@
 using System.ComponentModel.DataAnnotations;
+using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Resumi.Api.Data.Models;
+using Resumi.App.Data.Models;
 using Resumi.App.Modules;
+using Resumi.Infra.Auth;
 using Resumi.Infra.Data.Interfaces;
 using Resumi.Infra.Data.Models;
 
@@ -12,20 +15,30 @@ namespace Resumi.Api.Controllers;
 [Route("api/resumes")]
 [Authorize]
 public class ResumesController : ControllerBase
+
 {
     private readonly ResumesModule _module;
     private readonly IResumeMapper _mapper;
+    private readonly UserContext _userContext;
 
-    public ResumesController(ResumesModule module, IResumeMapper mapper)
+    public ResumesController(ResumesModule module, IResumeMapper mapper, UserContext userContext)
     {
         _module = module;
         _mapper = mapper;
+        _userContext = userContext;
     }
 
     [HttpPost]
-    public async Task<ActionResult<Result<ResumeModel>>> Create([FromBody] CreateResumeModel model)
+    public async Task<ActionResult<Result<ResumeModel>>> Create([Required] string title)
     {
-        var newResume = _mapper.NewDomainModel(model);
+        var userId = _userContext.GetUserId();
+
+        Resume newResume = new() 
+        {
+            Title = title,
+            UserId = userId
+        };
+
         var creationResult = await _module.Service.CreateAsync(newResume);
 
         if (!creationResult.Succeeded)
