@@ -32,8 +32,8 @@ export class CreateResumeViewModel {
             const result = await createResumeAsync(createResumeModel)
 
             const resultDisplay = result.succeeded 
-                ? "Login realizado com sucesso!"
-                : "Falha ao realizar o login"
+                ? "Curriculo criado com sucesso!"
+                : "Falha ao criar curriculo!"
             
             toast.add({
                 title: 'Criação de curriculo',

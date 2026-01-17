@@ -1,4 +1,4 @@
 export type CreateResumeModel = {
-    token: string;
+    token?: string;
     title: string;
 }
