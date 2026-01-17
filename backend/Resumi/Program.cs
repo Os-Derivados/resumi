@@ -46,6 +46,8 @@ builder.Services.AddIdentityCore<AppUser>()
     .AddRoleManager<RoleManager<IdentityRole<int>>>()
     .AddEntityFrameworkStores<AppDbContext>();
 
+builder.Services.AddScoped<UserContext>();
+
 builder.Services.AddExceptionHandler((options) =>
 {
     options.ExceptionHandler = async context =>
