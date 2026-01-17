@@ -47,6 +47,7 @@ builder.Services.AddIdentityCore<AppUser>()
     .AddEntityFrameworkStores<AppDbContext>();
 
 builder.Services.AddScoped<UserContext>();
+builder.Services.AddHttpContextAccessor();
 
 builder.Services.AddExceptionHandler((options) =>
 {

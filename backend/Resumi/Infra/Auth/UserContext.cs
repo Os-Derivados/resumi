@@ -8,12 +8,15 @@ namespace Resumi.Infra.Auth;
 /// </summary>
 public class UserContext
 {
-    public readonly ClaimsPrincipal User;
+    private readonly IHttpContextAccessor _httpContextAccessor;
 
-    public UserContext(ClaimsPrincipal user)
+    public UserContext(IHttpContextAccessor httpContextAccessor)
     {
-        User = user;
+        _httpContextAccessor = httpContextAccessor;
     }
+
+    public ClaimsPrincipal User => _httpContextAccessor.HttpContext?.User
+        ?? throw new UnauthorizedAccessException("No HTTP context or user found.");
 
     public int GetUserId()
     {
