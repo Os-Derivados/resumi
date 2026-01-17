@@ -29,6 +29,8 @@ public class ResumesController : ControllerBase
     }
 
     [HttpPost]
+    [ProducesResponseType(typeof(Result<ResumeModel>), StatusCodes.Status201Created)]
+    [ProducesResponseType(typeof(Result<ResumeModel>), StatusCodes.Status400BadRequest)]
     public async Task<ActionResult<Result<ResumeModel>>> Create([Required] string title)
     {
         var userId = _userContext.GetUserId();
