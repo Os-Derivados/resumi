@@ -20,7 +20,7 @@ public class UserContext
 
     public int GetUserId()
     {
-        var userId = User.FindFirst(ClaimTypes.NameIdentifier)
+        var userId = User.FindFirst("nameid")
             ?? throw new UnauthorizedAccessException("User ID claim not found.");
         
         return int.Parse(userId.Value);
