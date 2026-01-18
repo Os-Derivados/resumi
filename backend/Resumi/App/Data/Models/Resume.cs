@@ -30,8 +30,6 @@ public class Resume : Entity
 
     [Required] public string? Email { get; set; }
 
-    [Required] public string? NormalizedEmail { get; set; }
-
     [Required] public string? PhoneNumber { get; set; }
 
     /// <summary>
