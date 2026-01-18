@@ -33,7 +33,6 @@ var defaultConnection = builder.Configuration.GetConnectionString("DefaultConnec
 if (!string.IsNullOrEmpty(defaultConnection))
 {
     builder.Services.AddDbContext<AppDbContext>(options => options.UseNpgsql(defaultConnection));
-    builder.Services.AddScoped<DbTracker>();
 }
 
 builder.Services.AddEndpointsApiExplorer();
