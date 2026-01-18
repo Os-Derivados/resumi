@@ -39,7 +39,9 @@ public class ResumesController : ControllerBase
         {
             Title = title,
             UserId = userId,
-            OwnerName = HttpContext.User.FindFirstValue(ClaimTypes.Name)
+            OwnerName = HttpContext.User.FindFirstValue("unique_name"),
+            Email = HttpContext.User.FindFirstValue("email"),
+            PhoneNumber = HttpContext.User.FindFirstValue(ClaimTypes.MobilePhone)
         };
 
         var creationResult = await _module.Service.CreateAsync(newResume);
