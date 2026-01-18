@@ -30,6 +30,7 @@ export class LoginViewModel {
 		try {
 			const loginModel = this.schema.parse(this.state) as LoginModel
 			const result = await loginAsync(loginModel)
+			const token = result.data?.token
 
 			const resultDisplay = result.succeeded
 				? 'Login realizado com sucesso!'
@@ -43,6 +44,9 @@ export class LoginViewModel {
 			})
 
 			if (result.succeeded) {
+				
+				if (token) useCookie<string>("auth", { default: () => token })
+
 				const router = useRouter()
 				await router.push('/home')
 			}
