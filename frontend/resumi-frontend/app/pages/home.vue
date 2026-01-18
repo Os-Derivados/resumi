@@ -8,11 +8,9 @@
 		</UContainer>	
 		
 		<UContainer class="flex justify-center h-12 w-full bg-[url(/assets/images/backgroundhome.png)]">
-			<div class="border-[#D8D4D3] border h-full w-auto px-0 block">
-				<UContainer class="bg-gray-50 h-full w-45 flex justify-center items-center">
-					<p class="font-medium text-sm">meus curriculos</p>
-				</UContainer>
-			</div>
+			<UTabs :items="items">
+
+			</UTabs>
 		</UContainer>
 
 		
@@ -41,11 +39,21 @@
 </template>
 
 <script setup lang="ts">
+import { tabs } from '#build/ui';
 import { CreateResumeViewModel } from '~/views/models/create-resume.vm';
 
 	definePageMeta({
 		colorMode: "light"
-
 	})
 	const vm = new CreateResumeViewModel()
+	const items = [
+		{
+			label: "Meus curriculos",
+			slot: "resumes"
+		},
+		{
+			label: "Marketplace",
+			slot: "marketplace"
+		}
+	]
 </script>
