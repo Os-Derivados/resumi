@@ -1,6 +1,7 @@
 using Resumi.App.Data.Models;
 using Resumi.App.Services.Interfaces;
 using Resumi.Infra.Data.Models;
+using Resumi.Infra.Database.Context;
 using Resumi.Infra.Database.Interfaces;
 
 namespace Resumi.App.Services;
@@ -9,11 +10,16 @@ public class ResumeService : IResumeService
 {
     private readonly IDomainValidator<Resume> _validator;
     private readonly IRepository<Resume> _repository;
+    private readonly AppDbContext _dbContext;
 
-    public ResumeService(IDomainValidator<Resume> validator, IRepository<Resume> repository)
+    public ResumeService(
+        IDomainValidator<Resume> validator, 
+        IRepository<Resume> repository, 
+        AppDbContext dbContext)
     {
         _validator = validator;
         _repository = repository;
+        _dbContext = dbContext;
     }
 
     public async Task<Result<Resume>> CreateAsync(Resume? newResume)
@@ -31,6 +37,8 @@ public class ResumeService : IResumeService
         {
             return Result<Resume>.Failure(nameof(Resume), "Não foi possível criar o currículo.");
         }
+
+        await _dbContext.SaveChangesAsync();
 
         return Result<Resume>.Success(createdResume);
     }
