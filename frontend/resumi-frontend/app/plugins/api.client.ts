@@ -7,6 +7,7 @@ export default defineNuxtPlugin(() => {
         if (isRedirecting) return
 
         isRedirecting = true
+
         try {
             await router.isReady()
             await router.replace(to)

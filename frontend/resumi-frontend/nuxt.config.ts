@@ -26,6 +26,6 @@ export default defineNuxtConfig({
         }]
     },
     plugins: [
-        '~/app/plugins/api.client.ts'
-    ]
+        { src: '~/app/plugins/api.client.ts', mode: 'client' }
+    ],
 })
