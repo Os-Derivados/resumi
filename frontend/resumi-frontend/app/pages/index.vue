@@ -1,9 +1,9 @@
 <template>
-	<UContainer 
+	<UContainer v-if="sessionUser"
 		class="w-dvw flex flex-col px-32 py-12 gap-12 bg-gray-50 top-5 left-5">
 		
 		<UContainer as="header" class="w-full h-24 flex justify-between items-center">
-			<p class="text-2xl font-medium font-mono inline-flex">Bom te ver de novo, NomeAleatorio123</p>
+			<p class="text-2xl font-medium font-mono inline-flex">Bom te ver de novo, {{ sessionUser.fullName.split(' ')[0] }}</p>
 			<UserComponent></UserComponent>
 		</UContainer>	
 		
@@ -41,18 +41,20 @@
 <script setup lang="ts">
 import { CreateResumeViewModel } from '~/views/models/create-resume.vm';
 
-	definePageMeta({
-		colorMode: "light"
-	})
-	const vm = new CreateResumeViewModel()
-	const items = [
-		{
-			label: "Meus curriculos",
-			slot: "resumes"
-		},
-		{
-			label: "Marketplace",
-			slot: "marketplace"
-		}
-	]
+definePageMeta({
+    colorMode: "light"
+})
+
+const { sessionUser} = useSessionUserStore()
+const vm = new CreateResumeViewModel()
+const items = [
+    {
+        label: "Meus curriculos",
+        slot: "resumes"
+    },
+    {
+        label: "Marketplace",
+        slot: "marketplace"
+    }
+]
 </script>
