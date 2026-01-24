@@ -7,16 +7,10 @@
         {
             "name": "Debug Container",
             "type": "coreclr",
-            "request": "launch",
+            "request": "attach",
             "preLaunchTask": "Docker Compose: Up",
             "postDebugTask": "Docker Compose: Down",
-            "program": "/app/Resumi.dll",
-            "args": [],
-            "cwd": "/app",
-            "stopAtEntry": false,
-            "console": "internalConsole",
             "pipeTransport": {
-                "pipeCwd": "${workspaceFolder}",
                 "pipeProgram": "docker",
                 "pipeArgs": [
                     "exec",
@@ -26,13 +20,13 @@
                 "debuggerPath": "/vsdbg/vsdbg",
                 "quoteArgs": false
             },
-            "justMyCode": true,
             "sourceFileMap": {
-                "/source/Resumi": "${workspaceFolder}/backend/Resumi"
+                "/src/backend/Resumi": "${workspaceFolder}/backend/Resumi",
+                "/app": "${workspaceFolder}/backend/Resumi"
             },
-            "logging": {
-                "moduleLoad": false
-            }
+            "targetArchitecture": "x86_64",
+            "requireExactSource": false,
+            "justMyCode": true
         }
     ]
 }
