@@ -39,7 +39,6 @@
 </template>
 
 <script setup lang="ts">
-import { tabs } from '#build/ui';
 import { CreateResumeViewModel } from '~/views/models/create-resume.vm';
 
 	definePageMeta({
