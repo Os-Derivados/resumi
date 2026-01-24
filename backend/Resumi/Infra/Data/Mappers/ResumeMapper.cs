@@ -6,9 +6,9 @@ namespace Resumi.Infra.Data.Mappers;
 
 public class ResumeMapper : IResumeMapper
 {
-    public Resume? NewDomainModel(CreateResumeModel? dtoCreate)
+    public Resume? NewDomainModel(object dtoCreate)
     {
-        throw new NotImplementedException();
+        return null;
     }
 
     public Resume? UpdatedDomainModel(UpdateResumeModel? dtoUpdate, Resume? entity)
@@ -18,6 +18,17 @@ public class ResumeMapper : IResumeMapper
 
     public ResumeModel? ToDto(Resume? entity)
     {
-        throw new NotImplementedException();
+        if (entity is null) return null;
+
+        return new()
+        {
+            Id = entity.Id,
+            Title = entity.Title,
+            OwnerName = entity.OwnerName,
+            Location = entity.Location,
+            Email = entity.Email,
+            PhoneNumber = entity.PhoneNumber,
+            Keyword = entity.Keywords
+        };
     }
 }

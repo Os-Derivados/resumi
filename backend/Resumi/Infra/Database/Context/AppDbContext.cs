@@ -1,12 +1,8 @@
-using System.Text.Json;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using Resumi.Api.Data.Models;
 using Resumi.App.Data.Models;
-using Resumi.Infra.Constants;
 using Resumi.Infra.Database.Interfaces;
-using Resumi.Infra.Exceptions;
 
 namespace Resumi.Infra.Database.Context;
 

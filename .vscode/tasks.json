@@ -1,0 +1,24 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Docker Compose: Build",
+            "type": "shell",
+            "command": "docker compose -f ${workspaceFolder}/compose.yml build --no-cache"
+        },
+        {
+            "label": "Docker Compose: Up",
+            "type": "shell",
+            "dependsOn": "Docker Compose: Build",
+            "command": "docker compose -f ${workspaceFolder}/compose.yml up -d"
+        },
+        {
+            "label": "Docker Compose: Down",
+            "type": "shell",
+            "command": "docker compose -f ${workspaceFolder}/compose.yml down",
+            "presentation": {
+                "reveal": "never",
+            }
+        }
+    ]
+}
