@@ -6,6 +6,7 @@ using Resumi.Api.Data.Models;
 using Resumi.App.Data.Models;
 using Resumi.App.Modules;
 using Resumi.Infra.Auth;
+using Resumi.Infra.Auth.Constants;
 using Resumi.Infra.Data.Interfaces;
 using Resumi.Infra.Data.Models;
 
@@ -39,8 +40,8 @@ public class ResumesController : ControllerBase
         {
             Title = title,
             UserId = userId,
-            OwnerName = HttpContext.User.FindFirstValue("unique_name"),
-            Email = HttpContext.User.FindFirstValue("email"),
+            OwnerName = HttpContext.User.FindFirstValue(SessionConstants.UserNameClaim),
+            Email = HttpContext.User.FindFirstValue(SessionConstants.EmailClaim),
             PhoneNumber = HttpContext.User.FindFirstValue(ClaimTypes.MobilePhone)
         };
 

@@ -1,4 +1,5 @@
 using System.Security.Claims;
+using Resumi.Infra.Auth.Constants;
 
 namespace Resumi.Infra.Auth;
 
@@ -20,7 +21,7 @@ public class UserContext
 
     public int GetUserId()
     {
-        var userId = User.FindFirst("nameid")
+        var userId = User.FindFirst(SessionConstants.UserIdClaim)
             ?? throw new UnauthorizedAccessException("User ID claim not found.");
         
         return int.Parse(userId.Value);
