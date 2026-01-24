@@ -5,61 +5,61 @@ import { loginAsync } from "~/infra/api/user-service"
 import { isDevelopment } from "~/infra/utils/environment-utils"
 
 export class LoginViewModel {
-	constructor() {
-		this.schema = z.object({
-			email: z.email(),
-			password: z.string().min(8).max(128)
-		})
+    constructor() {
+        this.schema = z.object({
+            email: z.email(),
+            password: z.string().min(8).max(128)
+        })
 
-		type LoginSchema = z.infer<typeof this.schema>
+        type LoginSchema = z.infer<typeof this.schema>
 
-		this.state = reactive<Partial<LoginSchema>>({
-			email: "",
-			password: ""
-		})
-	}
+        this.state = reactive<Partial<LoginSchema>>({
+            email: "",
+            password: ""
+        })
+    }
 
-	public readonly schema
-	public readonly state
+    public readonly schema
+    public readonly state
 
-	public requestLoginAsync = async (event: FormSubmitEvent<typeof this.state>): Promise<void> => {
-		event.preventDefault()
+    public requestLoginAsync = async (event: FormSubmitEvent<typeof this.state>): Promise<void> => {
+        event.preventDefault()
 
-		const toast = useToast()
+        const toast = useToast()
 
-		try {
-			const loginModel = this.schema.parse(this.state) as LoginModel
-			const result = await loginAsync(loginModel)
-			const token = result.data?.token
+        try {
+            const loginModel = this.schema.parse(this.state) as LoginModel
+            const result = await loginAsync(loginModel)
+            const token = result.data?.token
 
-			const resultDisplay = result.succeeded
-				? 'Login realizado com sucesso!'
-				: 'Falha ao realizar login'
+            const resultDisplay = result.succeeded
+                ? 'Login realizado com sucesso!'
+                : 'Falha ao realizar login'
 
-			toast.add({
-				title: 'Login',
-				description: resultDisplay,
-				color: result.succeeded ? 'success' : 'error',
-				duration: 5000
-			})
+            toast.add({
+                title: 'Login',
+                description: resultDisplay,
+                color: result.succeeded ? 'success' : 'error',
+                duration: 5000
+            })
 
-			if (result.succeeded) {
-				
-				if (token) useCookie<string>("auth", { default: () => token })
+            if (result.succeeded) {
 
-				const router = useRouter()
-				await router.push('/home')
-			}
-		}
-		catch (error) {
-			if (isDevelopment()) console.error(error)
+                if (token) useCookie<string>("auth", { default: () => token })
 
-			toast.add({
-				title: 'Login',
-				description: 'Ocorreu um erro ao processar sua solicitação.',
-				color: 'error',
-				duration: 5000
-			})
-		}
-	}
+                const router = useRouter()
+                await router.push('/')
+            }
+        }
+        catch (error) {
+            if (isDevelopment()) console.error(error)
+
+            toast.add({
+                title: 'Login',
+                description: 'Ocorreu um erro ao processar sua solicitação.',
+                color: 'error',
+                duration: 5000
+            })
+        }
+    }
 }
