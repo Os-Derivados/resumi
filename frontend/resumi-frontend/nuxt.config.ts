@@ -15,7 +15,7 @@ export default defineNuxtConfig({
     css: ['~/assets/css/main.css'],
     runtimeConfig: {
         public: {
-            backendUrl: 'https://localhost:8081',
+            backendUrl: 'https://localhost:8081/api',
             environment: 'development'
         }
     },
