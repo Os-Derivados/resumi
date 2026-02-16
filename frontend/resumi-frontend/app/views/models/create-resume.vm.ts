@@ -1,6 +1,5 @@
 import type { FormSubmitEvent } from "@nuxt/ui";
 import z from "zod";
-import type { CreateResumeModel } from "~/data/api/create-resume-model";
 import { createResumeAsync } from "~/infra/api/resume-service";
 import { isDevelopment } from "~/infra/utils/environment-utils";
 
@@ -27,17 +26,17 @@ export class CreateResumeViewModel {
 
 
 		try {
-			const createResumeModel = this.schema.parse(this.state) as CreateResumeModel
-			const result = await createResumeAsync(createResumeModel)
+			const title = this.state.title || ""
+			const creationResult = await createResumeAsync(title)
 
-			const resultDisplay = result.succeeded
+			const resultDisplay = creationResult.succeeded
 				? "Curriculo criado com sucesso!"
 				: "Falha ao criar curriculo!"
 
 			toast.add({
 				title: 'Criação de curriculo',
 				description: resultDisplay,
-				color: result.succeeded ? "success" : "error",
+				color: creationResult.succeeded ? "success" : "error",
 				duration: 5000
 			})
 		}
