@@ -21,7 +21,7 @@
 
 					<template #body>
 						<UContainer class="pd-12 ">
-							<UForm :state="vm.state" :schema="vm.schema" @submit="(e) => vm.requestCreateResume(e)"
+							<UForm :state="vm.state" :schema="vm.schema" @submit="(e) => vm.handleCreateResumeAsync(e)"
 								class="flex flex-col gap-8">
 								<UFormField label="Titulo do curriculo" name="title" class="text-lg font-medium">
 									<UInput v-model="vm.state.title" type="text" class="w-full h-4"/>

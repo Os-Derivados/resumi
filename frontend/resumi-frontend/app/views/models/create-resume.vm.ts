@@ -19,7 +19,7 @@ export class CreateResumeViewModel {
 	public readonly schema
 	public readonly state
 
-	public requestCreateResume = async (event: FormSubmitEvent<typeof this.state>): Promise<void> => {
+	public handleCreateResumeAsync = async (event: FormSubmitEvent<typeof this.state>): Promise<void> => {
 		const toast = useToast()
 
 		event.preventDefault();
