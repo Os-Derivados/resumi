@@ -3,14 +3,15 @@
 		class="w-dvw flex flex-col px-32 py-12 gap-12 bg-gray-50 top-5 left-5">
 		
 		<UContainer as="header" class="w-full h-24 flex justify-between items-center">
-			<p class="text-2xl font-medium font-mono inline-flex">Bom te ver de novo, {{ sessionUser.fullName.split(' ')[0] }}</p>
-			<UserComponent></UserComponent>
+			<p class="text-2xl font-medium font-mono inline-flex">
+				Bom te ver de novo, {{ sessionUser.fullName.split(' ')[0] }}
+			</p>
+
+			<UserComponent />
 		</UContainer>	
 		
 		<UContainer class="flex justify-center h-12 w-full bg-[url(/assets/images/backgroundhome.png)]">
-			<UTabs :items="items">
-
-			</UTabs>
+			<UTabs :items="items" />
 		</UContainer>
 
 		
@@ -21,14 +22,17 @@
 
 					<template #body>
 						<UContainer class="pd-12 ">
-							<UForm :state="vm.state" :schema="vm.schema" @submit="(e) => vm.handleCreateResumeAsync(e)"
-								class="flex flex-col gap-8">
+							<UForm class="flex flex-col gap-8" 
+							:state="vm.state" 
+							:schema="vm.schema" 
+							@submit="(e) => vm.handleCreateResumeAsync(e)" >
 								<UFormField label="Titulo do curriculo" name="title" class="text-lg font-medium">
 									<UInput v-model="vm.state.title" type="text" class="w-full h-4"/>
 								</UFormField>
 								
-								<UButton type="submit" label="Criar Curriculo" class="self-center flex justify-center items-center
-								w-48 h-10 px-4 text-lg font-medium "/>
+								<UButton type="submit" 
+								label="Criar Curriculo" 
+								class="self-center flex justify-center items-center w-48 h-10 px-4 text-lg font-medium "/>
 							</UForm>
 						</UContainer>
 					</template>
