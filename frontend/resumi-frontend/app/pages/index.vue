@@ -43,6 +43,7 @@
 </template>
 
 <script setup lang="ts">
+import UserComponent from '~/views/components/user-component.vue';
 import { CreateResumeViewModel } from '~/views/models/create-resume.vm';
 
 definePageMeta({
