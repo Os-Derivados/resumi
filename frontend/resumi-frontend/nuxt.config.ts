@@ -16,7 +16,6 @@ export default defineNuxtConfig({
 	runtimeConfig: {
 		public: {
 			backendUrl: 'https://localhost:8081/api',
-			environment: 'development'
 		}
 	},
 	icon: {
