@@ -19,8 +19,26 @@ export class ResumeFormViewModel {
 			ownerName: "",
 			phoneNumber: ""
 		})
+
+		this.focusState = reactive({
+			title: false,
+			email: false,
+			keyword: false,
+			location: false,
+			ownerName: false,
+			phoneNumber: false
+		})
 	}
 
 	public readonly state
 	public readonly schema
+	public readonly focusState
+
+	public setFocus(field: keyof typeof this.focusState, isFocused: boolean): void {
+		this.focusState[field] = isFocused
+	}
+
+	public getVariant(field: keyof typeof this.focusState): "outline" | "none" {
+		return this.focusState[field] ? "outline" : "none"
+	}
 }
