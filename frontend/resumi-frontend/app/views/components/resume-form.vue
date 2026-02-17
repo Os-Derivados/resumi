@@ -3,11 +3,12 @@
 		@submit="(e) => e.preventDefault()">
 		<UFormField label="Título" name="ownerName" class="w-full">
 			<UInput v-model="vm.state.ownerName" :variant="vm.getVariant('ownerName')"
-				@focus="vm.setFocus('ownerName', true)" @blur="vm.setFocus('ownerName', false)"
-				class="w-full owner-name" />
+				@focus="vm.setFocus('ownerName', true)" @blur="vm.setFocus('ownerName', false)" class="w-full" :ui="{
+					base: 'text-2xl font-bold mb-4',
+				}" />
 		</UFormField>
 
-		<ul class="flex gap-8">
+		<ul class="flex gap-8 my-4">
 			<li>
 				<UFormField label="E-mail" name="email" class="w-full">
 					<UInput v-model="vm.state.email" :variant="vm.getVariant('email')"
@@ -31,7 +32,7 @@
 			</li>
 		</ul>
 
-		<UFormField label="Descrição" name="description" class="w-full">
+		<UFormField label="Sobre Mim" name="description" class="w-full mb-4">
 			<UInput v-model="vm.state.description" :variant="vm.getVariant('description')"
 				@focus="vm.setFocus('description', true)" @blur="vm.setFocus('description', false)" class="w-full" />
 		</UFormField>
@@ -41,24 +42,24 @@
 				@blur="vm.setFocus('keyword', false)" class="w-full" />
 		</UFormField>
 
-		<article class="mb-16">
-			<h2>Experiências</h2>
+		<article class="my-8">
+			<h2 class="text-lg font-semibold">Experiências</h2>
 
 			<p>Nenhuma experiência adicionada.</p>
 
 			<UButton label="Adicionar experiência" icon="i-lucide-plus" class="mt-4" />
 		</article>
 
-		<article class="mb-16">
-			<h2>Formação Acadêmica</h2>
+		<article class="my-8">
+			<h2 class="text-lg font-semibold">Formação Acadêmica</h2>
 
 			<p>Nenhuma formação acadêmica adicionada.</p>
 
 			<UButton label="Adicionar formação acadêmica" icon="i-lucide-plus" class="mt-4" />
 		</article>
 
-		<article class="mb-16">
-			<h2>Atividades Extracurriculares</h2>
+		<article class="my-8">
+			<h2 class="text-lg font-semibold">Atividades Extracurriculares</h2>
 
 			<p>Nenhuma atividade extracurricular adicionada.</p>
 
@@ -75,9 +76,3 @@ const resumeId = Number(route.params.id)
 
 const vm = new ResumeFormViewModel(resumeId)
 </script>
-
-<style scoped>
-.owner-name input {
-	font-size: 4rem !important;
-}
-</style>
