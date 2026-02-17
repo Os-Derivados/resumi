@@ -14,19 +14,21 @@ export class ResumeFormViewModel {
 		this.state = reactive<Partial<ResumeSchemaType>>({
 			title: "",
 			email: "",
-			keyword: "",
 			location: "",
 			ownerName: "",
-			phoneNumber: ""
+			phoneNumber: "",
+			description: "",
+			keyword: "",
 		})
 
-		this.focusState = reactive({
+		this.focusState = reactive<Record<keyof ResumeSchemaType, boolean>>({
 			title: false,
 			email: false,
-			keyword: false,
 			location: false,
 			ownerName: false,
-			phoneNumber: false
+			phoneNumber: false,
+			description: false,
+			keyword: false,
 		})
 	}
 

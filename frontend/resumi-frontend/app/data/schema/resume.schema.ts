@@ -12,6 +12,7 @@ export function resumeSchema(): ZodObject {
 		location: z.string().max(255).optional(),
 		email: z.email().max(255),
 		phoneNumber: z.string().max(20),
+		description: z.string().max(1024).optional(),
 		keyword: z.string().max(255).optional()
 	})
 }
