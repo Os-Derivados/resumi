@@ -37,7 +37,18 @@ export class CreateResumeViewModel {
 				title: 'Criação de curriculo',
 				description: resultDisplay,
 				color: creationResult.succeeded ? "success" : "error",
-				duration: 5000
+				duration: 5000,
+				actions: creationResult.succeeded ? [
+					{
+						label: "Ver curriculo",
+						onClick: () => {
+							const resumeId = creationResult.data?.id
+							if (resumeId) {
+								window.location.href = `/editor?id=${resumeId}`
+							}
+						}
+					}
+				] : []
 			})
 		}
 		catch (error) {

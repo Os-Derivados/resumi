@@ -72,7 +72,7 @@
 import { ResumeFormViewModel } from '../models/resume-form.vm';
 
 const route = useRoute()
-const resumeId = Number(route.params.id)
+const resumeId = Number(route.query.id)
 
 const vm = new ResumeFormViewModel(resumeId)
 </script>
