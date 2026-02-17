@@ -83,4 +83,5 @@ Para facilitar a leitura, variáveis de ambiente são definidas em `nuxt.config.
 
 ```sh
 NUXT_PUBLIC_BACKEND_URL=http://localhost:8080/api
+NODE_ENV=development
 ```
