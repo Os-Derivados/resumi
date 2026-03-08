@@ -1,8 +1,14 @@
 using System.ComponentModel.DataAnnotations;
+using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Resumi.Api.Data.Models;
+using Resumi.App.Data.Models;
 using Resumi.App.Modules;
+using Resumi.Infra.Auth;
+using Resumi.Infra.Auth.Constants;
+using Resumi.Infra.Data.Interfaces;
+using Resumi.Infra.Data.Models;
 
 namespace Resumi.Api.Controllers;
 
@@ -10,18 +16,48 @@ namespace Resumi.Api.Controllers;
 [Route("api/resumes")]
 [Authorize]
 public class ResumesController : ControllerBase
+
 {
     private readonly ResumesModule _module;
+    private readonly IResumeMapper _mapper;
+    private readonly UserContext _userContext;
 
-    public ResumesController(ResumesModule module)
+    public ResumesController(ResumesModule module, IResumeMapper mapper, UserContext userContext)
     {
         _module = module;
+        _mapper = mapper;
+        _userContext = userContext;
     }
 
     [HttpPost]
-    public IActionResult Create([FromBody] CreateResumeModel model)
+    [ProducesResponseType(typeof(Result<ResumeModel>), StatusCodes.Status201Created)]
+    [ProducesResponseType(typeof(Result<ResumeModel>), StatusCodes.Status400BadRequest)]
+    public async Task<ActionResult<Result<ResumeModel>>> Create([Required] string title)
     {
-        throw new NotImplementedException("Resume creation is not implemented yet.");
+        var userId = _userContext.GetUserId();
+
+        Resume newResume = new() 
+        {
+            Title = title,
+            UserId = userId,
+            OwnerName = HttpContext.User.FindFirstValue(SessionConstants.UserNameClaim),
+            Email = HttpContext.User.FindFirstValue(SessionConstants.EmailClaim),
+            PhoneNumber = HttpContext.User.FindFirstValue(ClaimTypes.MobilePhone)
+        };
+
+        var creationResult = await _module.Service.CreateAsync(newResume);
+
+        if (!creationResult.Succeeded)
+
+        {
+            return BadRequest(creationResult);
+        }
+
+        var dto = _mapper.ToDto(creationResult.Data);
+
+        if (dto is null) return UnprocessableEntity();
+
+        return Created($"api/resumes/{dto.Id}", Result<ResumeModel>.Success(dto));
     }
 
     [HttpGet("{id:int}")]

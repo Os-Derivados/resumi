@@ -26,6 +26,7 @@ public class AuthManager : IAuthManager
             new Claim(ClaimTypes.Email, user.Email!),
             new Claim(ClaimTypes.Name, user.FullName),
             new Claim(ClaimTypes.Expiration, DateTime.UtcNow.AddMinutes(ExpiryDurationMinutes).ToString("o")),
+            new Claim(ClaimTypes.MobilePhone, user.PhoneNumber!)
         ];
 
         SymmetricSecurityKey symetricKey = new(Encoding.UTF8.GetBytes(_jwtAuthSettings.Secret));

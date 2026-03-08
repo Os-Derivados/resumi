@@ -13,6 +13,8 @@ namespace Resumi.Api.Controllers;
 [ApiController]
 [Route("api/users")]
 [Authorize]
+[ProducesResponseType(StatusCodes.Status401Unauthorized)]
+[ProducesResponseType(StatusCodes.Status422UnprocessableEntity)]
 public class UsersController : ControllerBase
 {
     private readonly UsersModule _module;
@@ -45,9 +47,14 @@ public class UsersController : ControllerBase
     }
 
     [HttpGet("me")]
-    public IActionResult GetAuthor()
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Result<UserModel>))]
+    public ActionResult<UserModel> GetAuthor()
     {
-        throw new NotImplementedException("Retrieving the current user is not implemented yet.");
+        var sessionUser = UserModel.FromClaimsPrincipal(HttpContext.User);
+
+        if (sessionUser is null) return UnprocessableEntity();
+
+        return Ok(Result<UserModel>.Success(sessionUser));
     }
 
     [HttpGet("{id:int}")]

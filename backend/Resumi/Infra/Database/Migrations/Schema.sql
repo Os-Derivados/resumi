@@ -244,6 +244,11 @@ CREATE INDEX "IX_Volunteerships_ResumeId" ON "Volunteerships" ("ResumeId");
 INSERT INTO "__EFMigrationsHistory" ("MigrationId", "ProductVersion")
 VALUES ('20251217025203_Add-AppUser-FullName', '9.0.11');
 
+ALTER TABLE "Resumes" DROP COLUMN "NormalizedEmail";
+
+INSERT INTO "__EFMigrationsHistory" ("MigrationId", "ProductVersion")
+VALUES ('20260118201138_Remove-ResumeNormalizedName', '9.0.11');
+
 COMMIT;
 
 

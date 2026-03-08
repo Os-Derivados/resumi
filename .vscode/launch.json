@@ -1,0 +1,32 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Debug Container",
+            "type": "coreclr",
+            "request": "attach",
+            "preLaunchTask": "Docker Compose: Up",
+            "postDebugTask": "Docker Compose: Down",
+            "pipeTransport": {
+                "pipeProgram": "docker",
+                "pipeArgs": [
+                    "exec",
+                    "-i",
+                    "resumi-backend"
+                ],
+                "debuggerPath": "/vsdbg/vsdbg",
+                "quoteArgs": false
+            },
+            "sourceFileMap": {
+                "/src/backend/Resumi": "${workspaceFolder}/backend/Resumi",
+                "/app": "${workspaceFolder}/backend/Resumi"
+            },
+            "targetArchitecture": "x86_64",
+            "requireExactSource": false,
+            "justMyCode": true
+        }
+    ]
+}

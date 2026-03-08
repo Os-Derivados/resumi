@@ -6,28 +6,28 @@ services:
       dockerfile: Dockerfile
       labels:
         - org.osderivados=resumi
+      args:
+        - configuration=Debug
     environment:
-      - JWT_SIGNING_KEY=${JWT_SIGNING_KEY}
-      - JWT_ISSUER=${JWT_ISSUER}
-      - JWT_AUDIENCE=${JWT_AUDIENCE}
       - ASPNETCORE_ENVIRONMENT=Development
-      - ADMIN_USER=${ADMIN_USER}
-      - ALLOWED_ORIGIN=${ALLOWED_ORIGIN}
       # Tell ASP.NET where the cert is and its password
       - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/aspnet-dev-cert.pfx
       - ASPNETCORE_Kestrel__Certificates__Default__Password=${CERT_PASSWORD}
-    env_file:
-      - .env
+      - JWT_SIGNING_KEY=${JWT_SIGNING_KEY}
+      - JWT_ISSUER=${JWT_ISSUER}
+      - JWT_AUDIENCE=${JWT_AUDIENCE}
+      - ADMIN_USER=${ADMIN_USER}
+      - ALLOWED_ORIGIN=${ALLOWED_ORIGIN}
     ports:
-      - "8080:8080" # HTTP
       - "8081:8081" # HTTPS
     volumes:
       - ~/.aspnet/https/aspnet-dev-cert.pfx:/https/aspnet-dev-cert.pfx:ro
+      - ~/vsdbg:/vsdbg:ro
     depends_on:
       db:
         condition: service_healthy
     healthcheck:
-      test: [ "CMD", "curl", "-f", "http://localhost:8080/health" ]
+      test: [ "CMD", "curl", "-f", "http://localhost:8081/health" ]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -47,7 +47,7 @@ services:
       - postgres_data:/var/lib/postgresql/data
       - ./backend/Resumi/Infra/Database/Migrations/Schema.sql:/docker-entrypoint-initdb.d/schema.sql:ro
     healthcheck:
-      test: [ "CMD-SHELL", "pg_isready -U resumi" ]
+      test: [ "CMD-SHELL", "pg_isready -U resumi -d resumi" ]
       interval: 10s
       timeout: 5s
       retries: 5

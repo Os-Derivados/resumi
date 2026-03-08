@@ -1,7 +1,5 @@
 export function isDevelopment(): boolean {
-	const runtimeConfig = useRuntimeConfig()
-
-	return runtimeConfig.public.environment === 'development'
+	return import.meta.env.NODE_ENV === 'development'
 }
 
 export function getEnvironmentVariable(key: string): string | undefined {
