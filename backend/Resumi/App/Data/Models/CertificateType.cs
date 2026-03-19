@@ -21,7 +21,12 @@ public enum CertificateType
     Badge = 2,
 
     /// <summary>
+    /// Certificado relacionado a atividades extracurriculares, eventos, ou projetos voluntários.
+    /// </summary>
+    Extracurricular = 3,
+
+    /// <summary>
     /// Indicação ou nomeação por um prêmio ou reconhecimento.
     /// </summary>
-    Nomination = 3,
+    Nomination = 4,
 }
