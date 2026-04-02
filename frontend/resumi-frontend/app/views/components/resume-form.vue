@@ -53,9 +53,32 @@
 		<article class="my-8">
 			<h2 class="text-lg font-semibold">Formação Acadêmica</h2>
 
-			<p>Nenhuma formação acadêmica adicionada.</p>
+			<div v-if="!showDegreeForm" class="space-y-4">
+				<UCard v-if="degrees.length === 0" class="bg-gray-50">
+					<template #header>
+						<p class="text-center text-gray-500">Nenhuma formação acadêmica adicionada ainda.</p>
+					</template>
+					<UButton label="Adicionar formação acadêmica" icon="i-lucide-plus" @click="handleAddDegree" block />
+				</UCard>
 
-			<UButton label="Adicionar formação acadêmica" icon="i-lucide-plus" class="mt-4" />
+				<template v-else>
+					<DegreeList
+						:degrees="degrees"
+						:is-loading="isDegreesLoading"
+						@add="handleAddDegree"
+						@edit="handleEditDegree"
+						@delete="handleDeleteDegree" />
+				</template>
+			</div>
+
+			<div v-else class="bg-gray-50 p-6 rounded-lg border">
+				<h3 class="text-md font-semibold mb-4">{{ editingDegree ? 'Editar Formação' : 'Nova Formação Acadêmica' }}</h3>
+				<DegreeForm
+					:resume-id="resumeId"
+					:degree="editingDegree"
+					@save="handleSaveDegree"
+					@cancel="handleCancelDegreeForm" />
+			</div>
 		</article>
 
 		<article class="my-8">
@@ -70,9 +93,105 @@
 
 <script setup lang="ts">
 import { ResumeFormViewModel } from '../models/resume-form.vm';
+import DegreeForm from './degree-form.vue';
+import DegreeList from './degree-list.vue';
+import type { ReadDegreeModel, CreateDegreeModel, UpdateDegreeModel } from '~/data/api/degree-models';
+import { getDegreesAsync, createDegreeAsync, updateDegreeAsync, deleteDegreeAsync } from '~/infra/api/degree-service';
 
-const route = useRoute()
-const resumeId = Number(route.query.id)
+const route = useRoute();
+const resumeId = Number(route.query.id);
+const vm = new ResumeFormViewModel(resumeId);
 
-const vm = new ResumeFormViewModel(resumeId)
+// Degree management
+const degrees = ref<ReadDegreeModel[]>([]);
+const editingDegree = ref<ReadDegreeModel | undefined>(undefined);
+const showDegreeForm = ref(false);
+const isDegreesLoading = ref(false);
+
+// Load degrees on mount
+const loadDegrees = async () => {
+	isDegreesLoading.value = true;
+	try {
+		const result = await getDegreesAsync(resumeId);
+		if (result.succeeded && result.data) {
+			degrees.value = result.data;
+		} else {
+			console.error('Erro ao carregar formações:', result.errors);
+		}
+	} catch (error) {
+		console.error('Erro ao carregar formações:', error);
+	} finally {
+		isDegreesLoading.value = false;
+	}
+};
+
+// Handlers
+const handleAddDegree = () => {
+	editingDegree.value = undefined;
+	showDegreeForm.value = true;
+};
+
+const handleEditDegree = (degree: ReadDegreeModel) => {
+	editingDegree.value = degree;
+	showDegreeForm.value = true;
+};
+
+const handleSaveDegree = async (formData: any) => {
+	isDegreesLoading.value = true;
+	try {
+		if (editingDegree.value) {
+			// Update existing degree
+			const updateData: UpdateDegreeModel = {
+				id: editingDegree.value.id,
+				...formData
+			};
+			delete updateData.resumeId;
+
+			const result = await updateDegreeAsync(resumeId, editingDegree.value.id, updateData);
+			if (result.succeeded && result.data) {
+				const index = degrees.value.findIndex(d => d.id === editingDegree.value!.id);
+				if (index >= 0) {
+					degrees.value[index] = result.data;
+				}
+			}
+		} else {
+			// Create new degree
+			const createData: CreateDegreeModel = formData;
+			const result = await createDegreeAsync(resumeId, createData);
+			if (result.succeeded && result.data) {
+				degrees.value.push(result.data);
+			}
+		}
+		showDegreeForm.value = false;
+		editingDegree.value = undefined;
+	} catch (error) {
+		console.error('Erro ao salvar formação:', error);
+	} finally {
+		isDegreesLoading.value = false;
+	}
+};
+
+const handleCancelDegreeForm = () => {
+	showDegreeForm.value = false;
+	editingDegree.value = undefined;
+};
+
+const handleDeleteDegree = async (degreeId: number) => {
+	isDegreesLoading.value = true;
+	try {
+		const result = await deleteDegreeAsync(resumeId, degreeId);
+		if (result.succeeded) {
+			degrees.value = degrees.value.filter(d => d.id !== degreeId);
+		}
+	} catch (error) {
+		console.error('Erro ao deletar formação:', error);
+	} finally {
+		isDegreesLoading.value = false;
+	}
+};
+
+// Load degrees when component mounts
+onMounted(() => {
+	loadDegrees();
+});
 </script>
