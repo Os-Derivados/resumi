@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Resumi.Api.Controllers;
@@ -7,6 +8,7 @@ namespace Resumi.Api.Controllers;
 public class HelloController : ControllerBase
 {
     [HttpGet]
+    [AllowAnonymous]
     public string HelloWorld()
     {
         return "Hello, world!";
