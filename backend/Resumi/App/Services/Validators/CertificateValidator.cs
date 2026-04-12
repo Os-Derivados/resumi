@@ -6,69 +6,75 @@ namespace Resumi.App.Services.Validators;
 
 public class CertificateValidator : IDomainValidator<Certificate>
 {
-    public Result<Certificate> ValidateCreation(Certificate? newCertificate)
+    public static readonly string InvalidCreationModel = "O modelo de certificado fornecido é inválido.";
+    public static readonly string InvalidPeriodRange = "A data de término deve ser posterior à data de início.";
+
+    public static readonly string RequiredNotEngagedState =
+        "Se o usuário não está mais durante o processo de certificação, a data de término é obrigatória.";
+
+    public static readonly string NotFound = "Certificado não encontrado.";
+    public static readonly string InvalidUpdateModel = "O modelo de certificado para atualização é inválido.";
+
+    public Result<Certificate> ValidateCreation(Certificate? newEntity)
     {
-        if (newCertificate is null)
-            return Result<Certificate>.Failure("certificate", "Certificate is required.");
+        if (newEntity is null)
+        {
+            return Result<Certificate>.Failure(nameof(Certificate), InvalidCreationModel);
+        }
 
-        var errors = new ResultDictionary();
+        ResultDictionary errors = [];
 
-        if (newCertificate.ResumeId <= 0)
-            errors.AddError("resumeId", "Resume ID must be a positive integer.");
+        if (newEntity is { StillEngaged: false, EndDate: null })
+        {
+            errors.AddError(nameof(Certificate), RequiredNotEngagedState);
+        }
 
-        if (string.IsNullOrWhiteSpace(newCertificate.Name))
-            errors.AddError("name", "Name is required.");
+        if (newEntity.EndDate.HasValue && newEntity.EndDate < newEntity.StartDate)
+        {
+            errors.AddError(nameof(Certificate), InvalidPeriodRange);
+        }
 
-        if (string.IsNullOrWhiteSpace(newCertificate.Description))
-            errors.AddError("description", "Description is required.");
-
-        if (string.IsNullOrWhiteSpace(newCertificate.InstitutionName))
-            errors.AddError("institutionName", "Institution name is required.");
-
-        if (newCertificate.StartDate == default)
-            errors.AddError("startDate", "Start date is required.");
-
-        if (newCertificate.EndDate.HasValue && newCertificate.EndDate < newCertificate.StartDate)
-            errors.AddError("endDate", "End date cannot be before start date.");
-
-        if (errors.Any())
-            return Result<Certificate>.Failure(errors);
-
-        return Result<Certificate>.Success(newCertificate);
+        return errors.Any() ? Result<Certificate>.Failure(errors) : Result<Certificate>.Success(newEntity);
     }
 
-    public Result<Certificate> ValidateSearch(Certificate? targetCertificate)
+    public Result<Certificate> ValidateSearch(Certificate? targetEntity)
     {
-        if (targetCertificate is null || targetCertificate.Id <= 0)
-            return Result<Certificate>.Failure("id", "Certificate ID is required for search.");
-
-        return Result<Certificate>.Success(targetCertificate);
+        return targetEntity is null
+            ? Result<Certificate>.Failure(nameof(Certificate), NotFound)
+            : Result<Certificate>.Success(targetEntity);
     }
 
     public Result<Certificate> ValidateUpdate(Certificate? current, Certificate? updated)
     {
-        if (current is null || updated is null)
-            return Result<Certificate>.Failure("certificate", "Certificate update requires current and updated entities.");
+        if (current is null)
+        {
+            return Result<Certificate>.Failure(nameof(Certificate), NotFound);
+        }
 
-        var errors = new ResultDictionary();
+        if (updated is null)
+        {
+            return Result<Certificate>.Failure(nameof(Certificate), InvalidUpdateModel);
+        }
 
-        if (updated.StartDate == default)
-            errors.AddError("startDate", "Start date is required.");
+        ResultDictionary errors = [];
+
+        if (updated is { StillEngaged: false, EndDate: null })
+        {
+            errors.AddError(nameof(Certificate), RequiredNotEngagedState);
+        }
 
         if (updated.EndDate.HasValue && updated.EndDate < updated.StartDate)
-            errors.AddError("endDate", "End date cannot be before start date.");
+        {
+            errors.AddError(nameof(Certificate), InvalidPeriodRange);
+        }
 
-        if (errors.Any())
-            return Result<Certificate>.Failure(errors);
-
-        return Result<Certificate>.Success(updated);
+        return errors.Any() ? Result<Certificate>.Failure(errors) : Result<Certificate>.Success(updated);
     }
 
-    public Result<Certificate> ValidateDeletion(Certificate? targetCertificate)
+    public Result<Certificate> ValidateDeletion(Certificate? targetEntity)
     {
-        if (targetCertificate is null || targetCertificate.Id <= 0)
-            return Result<Certificate>.Failure("id", "Certificate id is required for deletion.");
-
-        return Result<Certificate>.Success(targetCertificate);
+        return targetEntity is null
+            ? Result<Certificate>.Failure(nameof(Certificate), NotFound)
+            : Result<Certificate>.Success(targetEntity);
     }
 }
