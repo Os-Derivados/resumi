@@ -1,8 +1,10 @@
+using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Resumi.Api.Data.Models;
 using Resumi.App.Data.Models;
 using Resumi.App.Modules;
+using Resumi.App.Services.Validators;
 using Resumi.Infra.Auth;
 using Resumi.Infra.Database.Context;
 using Resumi.Infra.Data.Models;
@@ -10,82 +12,60 @@ using Resumi.Infra.Data.Models;
 namespace Resumi.Api.Controllers;
 
 [ApiController]
-[Route("api/resumes/{resumeId:int}/certificates")]
+[Route("api/certificates")]
 [Authorize]
-public class CertificatesController : ControllerBase
+public class CertificatesController(CertificatesModule module, AppDbContext dbContext, UserContext userContext)
+    : ControllerBase
 {
-    private readonly CertificatesModule _module;
-    private readonly AppDbContext _dbContext;
-    private readonly UserContext _userContext;
-
-    public CertificatesController(CertificatesModule module, AppDbContext dbContext, UserContext userContext)
-    {
-        _module = module;
-        _dbContext = dbContext;
-        _userContext = userContext;
-    }
-
     [HttpPost]
     [ProducesResponseType(typeof(Result<CertificateModel>), StatusCodes.Status201Created)]
+    [ProducesResponseType(typeof(Result<CertificateModel>), StatusCodes.Status404NotFound)]
     [ProducesResponseType(typeof(Result<CertificateModel>), StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> Create(int resumeId, [FromBody] AddCertificateModel model)
+    public async Task<IActionResult> Create([Required] int resumeId, [Required] [FromBody] AddCertificateModel model)
     {
-        if (model is null)
-            return BadRequest(Result<CertificateModel>.Failure("model", "Request body is required."));
-
         if (model.ResumeId != resumeId)
-            return BadRequest(Result<CertificateModel>.Failure("resumeId", "Resume ID in URL and body must match."));
-
-        var resume = await _dbContext.Resumes.FindAsync(resumeId);
-        if (resume is null)
-            return NotFound(Result<CertificateModel>.Failure("resumeId", "Resume not found."));
-
-        if (resume.UserId != _userContext.GetUserId())
-            return Forbid();
-
-        if (!Enum.TryParse<CertificateType>(model.Type, true, out var parsedType))
         {
-            return BadRequest(Result<CertificateModel>.Failure("type", "Tipo de certificado inválido."));
+            return BadRequest(Result<CertificateModel>.Failure(nameof(Resume),
+                $"Os campos {nameof(model.ResumeId)} e {nameof(resumeId)} devem ser iguais."));
         }
 
-        var certificate = new Certificate
-        {
-            ResumeId = model.ResumeId,
-            Name = model.Name,
-            Description = model.Description,
-            InstitutionName = model.InstitutionName,
-            Location = model.Location,
-            IsRemote = model.IsRemote,
-            StartDate = model.StartDate,
-            EndDate = model.EndDate,
-            StillEngaged = model.StillEngaged,
-            CredentialId = model.CredentialId,
-            CredentialUrl = model.CredentialUrl,
-            Type = parsedType,
-        };
+        var resume = await dbContext.Resumes.FindAsync(resumeId);
 
-        var creationResult = await _module.Service.CreateAsync(certificate);
+        if (resume is null)
+        {
+            return NotFound(Result<CertificateModel>.Failure(nameof(Resume), ResumeValidator.NotFound));
+        }
+
+        if (resume.UserId != userContext.GetUserId()) return Forbid();
+
+        var certificate = module.Mapper.NewDomainModel(model);
+
+        var creationResult = await module.Service.CreateAsync(certificate);
 
         if (!creationResult.Succeeded)
+        {
             return BadRequest(Result<CertificateModel>.Failure(creationResult.Errors));
+        }
 
-        var dto = ToDto(creationResult.Data!);
+        var certificateModel = module.Mapper.ToDto(creationResult.Data);
 
-        return CreatedAtAction(nameof(Read), new { resumeId, id = dto.Id }, Result<CertificateModel>.Success(dto));
+        if (certificateModel is null) return UnprocessableEntity();
+
+        return Created($"api/certificates/{certificateModel.Id}", Result<CertificateModel>.Success(certificateModel));
     }
 
     [HttpGet]
     [ProducesResponseType(typeof(Result<IEnumerable<CertificateModel>>), StatusCodes.Status200OK)]
     public async Task<IActionResult> ReadAll(int resumeId)
     {
-        var resume = await _dbContext.Resumes.FindAsync(resumeId);
+        var resume = await dbContext.Resumes.FindAsync(resumeId);
         if (resume is null)
             return NotFound(Result<IEnumerable<CertificateModel>>.Failure("resumeId", "Resume not found."));
 
-        if (resume.UserId != _userContext.GetUserId())
+        if (resume.UserId != userContext.GetUserId())
             return Forbid();
 
-        var certificates = _dbContext.Certificates.Where(c => c.ResumeId == resumeId).ToList();
+        var certificates = dbContext.Certificates.Where(c => c.ResumeId == resumeId).ToList();
         var list = certificates.Select(ToDto);
 
         return Ok(Result<IEnumerable<CertificateModel>>.Success(list));
@@ -95,14 +75,14 @@ public class CertificatesController : ControllerBase
     [ProducesResponseType(typeof(Result<CertificateModel>), StatusCodes.Status200OK)]
     public async Task<IActionResult> Read(int resumeId, int id)
     {
-        var resume = await _dbContext.Resumes.FindAsync(resumeId);
+        var resume = await dbContext.Resumes.FindAsync(resumeId);
         if (resume is null)
             return NotFound(Result<CertificateModel>.Failure("resumeId", "Resume not found."));
 
-        if (resume.UserId != _userContext.GetUserId())
+        if (resume.UserId != userContext.GetUserId())
             return Forbid();
 
-        var fetched = await _module.Service.FindAsync(id);
+        var fetched = await module.Service.FindAsync(id);
         if (!fetched.Succeeded || fetched.Data is null)
             return NotFound(Result<CertificateModel>.Failure("id", "Certificate not found."));
 
@@ -122,14 +102,14 @@ public class CertificatesController : ControllerBase
         if (id != model.Id)
             return BadRequest(Result<CertificateModel>.Failure("id", "ID in URL and body must match."));
 
-        var resume = await _dbContext.Resumes.FindAsync(resumeId);
+        var resume = await dbContext.Resumes.FindAsync(resumeId);
         if (resume is null)
             return NotFound(Result<CertificateModel>.Failure("resumeId", "Resume not found."));
 
-        if (resume.UserId != _userContext.GetUserId())
+        if (resume.UserId != userContext.GetUserId())
             return Forbid();
 
-        var currentResult = await _module.Service.FindAsync(id);
+        var currentResult = await module.Service.FindAsync(id);
         if (!currentResult.Succeeded || currentResult.Data is null)
             return NotFound(Result<CertificateModel>.Failure("id", "Certificate not found."));
 
@@ -156,7 +136,7 @@ public class CertificatesController : ControllerBase
             current.Type = parsedType;
         }
 
-        var updateResult = await _module.Service.UpdateAsync(current, current);
+        var updateResult = await module.Service.UpdateAsync(current, current);
         if (!updateResult.Succeeded || updateResult.Data is null)
             return BadRequest(Result<CertificateModel>.Failure(updateResult.Errors));
 
@@ -166,21 +146,21 @@ public class CertificatesController : ControllerBase
     [HttpDelete("{id:int}")]
     public async Task<IActionResult> Delete(int resumeId, int id)
     {
-        var resume = await _dbContext.Resumes.FindAsync(resumeId);
+        var resume = await dbContext.Resumes.FindAsync(resumeId);
         if (resume is null)
             return NotFound(Result<bool>.Failure("resumeId", "Resume not found."));
 
-        if (resume.UserId != _userContext.GetUserId())
+        if (resume.UserId != userContext.GetUserId())
             return Forbid();
 
-        var currentResult = await _module.Service.FindAsync(id);
+        var currentResult = await module.Service.FindAsync(id);
         if (!currentResult.Succeeded || currentResult.Data is null)
             return NotFound(Result<bool>.Failure("id", "Certificate not found."));
 
         if (currentResult.Data.ResumeId != resumeId)
             return NotFound(Result<bool>.Failure("id", "Certificate does not belong to this resume."));
 
-        var deleteResult = await _module.Service.DeleteAsync(id);
+        var deleteResult = await module.Service.DeleteAsync(id);
 
         if (!deleteResult.Succeeded)
             return BadRequest(Result<bool>.Failure("id", "Could not delete certificate."));

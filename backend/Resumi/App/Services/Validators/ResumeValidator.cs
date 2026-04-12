@@ -8,6 +8,8 @@ public class ResumeValidator : IDomainValidator<Resume>
 {
     private const int MaxTitleLength = 128;
 
+    public static readonly string NotFound = "Currículo não encontrado.";
+
     public Result<Resume> ValidateCreation(Resume? newResume)
     {
         ResultDictionary errors = [];
@@ -19,7 +21,8 @@ public class ResumeValidator : IDomainValidator<Resume>
 
         if (newResume is not null && newResume.Title.Length > MaxTitleLength)
         {
-            errors.AddError(nameof(Resume.Title), $"O título do currículo não pode exceder {MaxTitleLength} caracteres.");
+            errors.AddError(nameof(Resume.Title),
+                $"O título do currículo não pode exceder {MaxTitleLength} caracteres.");
         }
 
         return errors.Count > 0
