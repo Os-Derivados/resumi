@@ -77,6 +77,7 @@ public static class StartupExtensions
     {
         services.AddScoped<IResumeMapper, ResumeMapper>();
         services.AddScoped<IUserMapper, UserMapper>();
+        services.AddScoped<ICertificateMapper, CertificateMapper>();
     }
 
 
