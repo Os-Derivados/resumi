@@ -81,7 +81,54 @@ public class CertificateMapper(ILogger<CertificateMapper> logger) : ICertificate
 
 	public Certificate? UpdatedDomainModel(UpdateCertificateModel? dtoUpdate, Certificate? entity)
 	{
-		throw new NotImplementedException();
+		if (dtoUpdate is null || entity is null) return null;
+
+		try
+		{
+			if (dtoUpdate.Id != entity.Id)
+				throw new DomainException(
+					$"The ID of the update model ({dtoUpdate.Id}) does not match the ID of the entity ({entity.Id})."
+				);
+
+			var hasParsedType = CertificateTypeExtensions.FromDisplayString(dtoUpdate.Type, out var parsedType);
+
+			return new Certificate
+			{
+				#region Non-exposed properties
+
+				ResumeId = entity.ResumeId,
+				CreatedAt = entity.CreatedAt,
+				UpdatedAt = entity.UpdatedAt,
+
+				#endregion
+
+				Name = dtoUpdate.Name,
+				Description = dtoUpdate.Description,
+				InstitutionName = dtoUpdate.InstitutionName,
+				Location = dtoUpdate.Location,
+				IsRemote = dtoUpdate.IsRemote ?? entity.IsRemote,
+				StartDate = dtoUpdate.StartDate ?? entity.StartDate,
+				StillEngaged = dtoUpdate.StillEngaged ?? entity.StillEngaged,
+				EndDate = dtoUpdate.EndDate ?? entity.EndDate,
+				CredentialId = dtoUpdate.CredentialId ?? entity.CredentialId,
+				CredentialUrl = dtoUpdate.CredentialUrl ?? entity.CredentialUrl,
+				Type = dtoUpdate.Type is not null
+					? hasParsedType
+						? parsedType!.Value
+						: throw new DomainException($"Invalid certificate type: {dtoUpdate.Type}")
+					: entity.Type
+			};
+		}
+		catch (DomainException dex)
+		{
+			logger.LogError(
+				dex,
+				"Domain exception occurred while creating a new Certificate domain model: {Message}",
+				dex.Message
+			);
+
+			return null;
+		}
 	}
 }
 
@@ -102,9 +149,9 @@ static class CertificateTypeExtensions
 		return displayString != null;
 	}
 
-	public static bool FromDisplayString(string displayString, out CertificateType? type)
+	public static bool FromDisplayString(string? displayString, out CertificateType? type)
 	{
-		type = displayString.ToLower() switch
+		type = displayString?.ToLower() switch
 		{
 			"course" => CertificateType.Course,
 			"license" => CertificateType.License,
