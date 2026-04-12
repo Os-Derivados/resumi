@@ -2,6 +2,7 @@ using Resumi.Api.Data.Models;
 using Resumi.App.Data.Models;
 using Resumi.App.Exceptions;
 using Resumi.Infra.Data.Interfaces;
+using Resumi.Infra.Exceptions;
 
 namespace Resumi.Infra.Data.Mappers;
 
@@ -43,7 +44,39 @@ public class CertificateMapper(ILogger<CertificateMapper> logger) : ICertificate
 
 	public CertificateModel? ToDto(Certificate? entity)
 	{
-		throw new NotImplementedException();
+		try
+		{
+			if (entity is null) return null;
+
+			return new CertificateModel
+			{
+				Id = entity.Id,
+				ResumeId = entity.ResumeId,
+				Name = entity.Name,
+				Description = entity.Description,
+				InstitutionName = entity.InstitutionName,
+				Location = entity.Location,
+				IsRemote = entity.IsRemote,
+				StartDate = entity.StartDate,
+				EndDate = entity.EndDate,
+				StillEngaged = entity.StillEngaged,
+				CredentialId = entity.CredentialId,
+				CredentialUrl = entity.CredentialUrl,
+				Type = entity.Type.ToDisplayString(out var displayString)
+					? displayString!
+					: throw new InfrastructureException($"Certificate type not mapped: {entity.Type}"),
+			};
+		}
+		catch (InfrastructureException iex)
+		{
+			logger.LogError(
+				iex,
+				"Infrastructure exception occurred while mapping Certificate domain model to DTO: {Message}",
+				iex.Message
+			);
+
+			return null;
+		}
 	}
 
 	public Certificate? UpdatedDomainModel(UpdateCertificateModel? dtoUpdate, Certificate? entity)
