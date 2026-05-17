@@ -54,6 +54,21 @@ public record Result
     /// <param name="errors">Uma instância de <see cref="ResultDictionary"/>, contendo a relação de erros da operação.</param>
     /// <returns>Uma instância de <see cref="Result"/>, indicando o fracasso da operação.</returns>
     public static Result Failure(ResultDictionary errors) => new(false, errors);
+
+    /// <summary>
+    /// Indica o fracasso da operação.
+    /// </summary>
+    /// <param name="errorKey">A chave de erro da operação falha.</param>
+    /// <param name="errorMessage">A mensagem de erro da operação falha.</param>
+    /// <returns>Uma instância de <see cref="Result"/>, indicando o fracasso da operação.</returns>
+    public static Result Failure(string errorKey, string errorMessage)
+    {
+        ResultDictionary errors = [];
+
+        errors.AddError(errorKey, errorMessage);
+
+        return new Result(succeeded: false, errors);
+    }
 }
 
 /// <summary>
@@ -97,4 +112,19 @@ public record Result<T> : Result
     /// <param name="errors">Uma instância de <see cref="ResultDictionary"/>, contendo a relação de erros da operação.</param>
     /// <returns>Uma instância de <see cref="Result"/>, indicando o fracasso da operação.</returns>
     public new static Result<T> Failure(ResultDictionary errors) => new(false, errors, data: default);
+
+    /// <summary>
+    /// Indica o fracasso da operação.
+    /// </summary>
+    /// <param name="errorKey">A chave de erro da operação falha.</param>
+    /// <param name="errorMessage">A mensagem de erro da operação falha.</param>
+    /// <returns>Uma instância de <see cref="Result"/>, indicando o fracasso da operação.</returns>
+    public new static Result Failure(string errorKey, string errorMessage)
+    {
+        ResultDictionary errors = [];
+
+        errors.AddError(errorKey, errorMessage);
+
+        return new Result<T>(succeeded: false, errors, data: default);
+    }
 }
