@@ -1,52 +1,38 @@
 <template>
-	<UForm class="w-full shadow py-8 px-16 my-16" :schema="vm.schema" :state="vm.state"
-		@submit="(e) => e.preventDefault()">
+	<UForm class="w-full shadow py-8 px-16 my-16" :schema="vm.schema" :state="vm.state" @submit="(e) => e.preventDefault()">
 		<UFormField label="Título" name="ownerName" class="w-full">
-			<UInput v-model="vm.state.ownerName" :variant="vm.getVariant('ownerName')"
-				@focus="vm.setFocus('ownerName', true)" @blur="vm.setFocus('ownerName', false)" class="w-full" :ui="{
-					base: 'text-2xl font-bold mb-4',
-				}" />
+			<UInput v-model="vm.state.ownerName" :variant="vm.getVariant('ownerName')" @focus="vm.setFocus('ownerName', true)" @blur="vm.setFocus('ownerName', false)" class="w-full" :ui="{ base: 'text-2xl font-bold mb-4' }" />
 		</UFormField>
 
 		<ul class="flex gap-8 my-4">
 			<li>
 				<UFormField label="E-mail" name="email" class="w-full">
-					<UInput v-model="vm.state.email" :variant="vm.getVariant('email')"
-						@focus="vm.setFocus('email', true)" @blur="vm.setFocus('email', false)" class="w-full" />
+					<UInput v-model="vm.state.email" :variant="vm.getVariant('email')" @focus="vm.setFocus('email', true)" @blur="vm.setFocus('email', false)" class="w-full" />
 				</UFormField>
 			</li>
-
 			<li>
 				<UFormField label="Cidade" name="location" class="w-full">
-					<UInput v-model="vm.state.location" :variant="vm.getVariant('location')"
-						@focus="vm.setFocus('location', true)" @blur="vm.setFocus('location', false)" class="w-full" />
+					<UInput v-model="vm.state.location" :variant="vm.getVariant('location')" @focus="vm.setFocus('location', true)" @blur="vm.setFocus('location', false)" class="w-full" />
 				</UFormField>
 			</li>
-
 			<li>
 				<UFormField label="Telefone" name="phoneNumber" class="w-full">
-					<UInput v-model="vm.state.phoneNumber" :variant="vm.getVariant('phoneNumber')"
-						@focus="vm.setFocus('phoneNumber', true)" @blur="vm.setFocus('phoneNumber', false)"
-						class="w-full" />
+					<UInput v-model="vm.state.phoneNumber" :variant="vm.getVariant('phoneNumber')" @focus="vm.setFocus('phoneNumber', true)" @blur="vm.setFocus('phoneNumber', false)" class="w-full" />
 				</UFormField>
 			</li>
 		</ul>
 
 		<UFormField label="Sobre Mim" name="description" class="w-full mb-4">
-			<UInput v-model="vm.state.description" :variant="vm.getVariant('description')"
-				@focus="vm.setFocus('description', true)" @blur="vm.setFocus('description', false)" class="w-full" />
+			<UInput v-model="vm.state.description" :variant="vm.getVariant('description')" @focus="vm.setFocus('description', true)" @blur="vm.setFocus('description', false)" class="w-full" />
 		</UFormField>
 
 		<UFormField label="Palavras-chave" name="keyword" class="w-full">
-			<UInput v-model="vm.state.keyword" :variant="vm.getVariant('keyword')" @focus="vm.setFocus('keyword', true)"
-				@blur="vm.setFocus('keyword', false)" class="w-full" />
+			<UInput v-model="vm.state.keyword" :variant="vm.getVariant('keyword')" @focus="vm.setFocus('keyword', true)" @blur="vm.setFocus('keyword', false)" class="w-full" />
 		</UFormField>
 
 		<article class="my-8">
 			<h2 class="text-lg font-semibold">Experiências</h2>
-
 			<p>Nenhuma experiência adicionada.</p>
-
 			<UButton label="Adicionar experiência" icon="i-lucide-plus" class="mt-4" />
 		</article>
 
@@ -81,17 +67,60 @@
 			</div>
 		</article>
 
-		<article class="my-8">
-			<h2 class="text-lg font-semibold">Atividades Extracurriculares</h2>
+	<article class="my-8">
+		<h2 class="text-lg font-semibold">Certificados</h2>
+		<div class="flex flex-wrap items-center gap-2 mt-2">
+			<UInput v-model="certificateFilter" placeholder="Filtrar por tipo, nome ou instituição" class="w-full md:w-96" />
+			<UButton label="Novo certificado" icon="i-lucide-plus" color="primary" size="sm" @click="openCreation = !openCreation" />
+		</div>
 
-			<p>Nenhuma atividade extracurricular adicionada.</p>
+		<div v-if="loadingCertificates" class="text-sm text-slate-500 mt-2">Carregando certificados...</div>
+		<ul v-else class="mt-2 space-y-2">
+			<li v-if="!filteredCertificates.length" class="text-sm text-slate-500">Nenhum certificado encontrado.</li>
+			<li v-for="certificate in filteredCertificates" :key="certificate.id" class="border p-3 rounded-lg">
+				<div class="flex justify-between gap-2 items-start">
+					<div>
+						<p class="font-semibold">{{ certificate.name }}</p>
+						<p class="text-xs text-slate-500">{{ certificate.type }} • {{ certificate.institutionName }}</p>
+						<p class="text-xs text-slate-500">{{ certificate.startDate }} - {{ certificate.endDate ?? 'Presente' }}</p>
+						<p class="text-xs text-slate-500" v-if="certificate.credentialUrl">Link: <a class="text-blue-600" :href="certificate.credentialUrl" target="_blank">Ver credencial</a></p>
+					</div>
+					<div class="flex gap-2">
+						<UButton label="Editar" size="sm" color="secondary" @click="startEdit(certificate)" />
+						<UButton label="Excluir" size="sm" color="danger" @click="removeCertificate(certificate.id)" />
+					</div>
+				</div>
+			</li>
+		</ul>
 
-			<UButton label="Adicionar atividade extracurricular" icon="i-lucide-plus" class="mt-4" />
-		</article>
+		<div v-if="openCreation" class="mt-3 border rounded-lg p-3 bg-slate-50">
+			<h3 class="font-semibold mb-2">{{ editingCertificate ? 'Editar certificado' : 'Novo certificado' }}</h3>
+			<div class="grid grid-cols-1 md:grid-cols-2 gap-2">
+				<UInput v-model="formCertificate.name" placeholder="Nome" />
+				<UInput v-model="formCertificate.institutionName" placeholder="Instituição" />
+				<UInput v-model="formCertificate.description" placeholder="Descrição" />
+				<UInput v-model="formCertificate.location" placeholder="Localização (opcional)" />
+				<UInput v-model="formCertificate.startDate" type="date" placeholder="Data início" />
+				<UInput v-model="formCertificate.endDate" type="date" placeholder="Data término" />
+				<USelect v-model="formCertificate.type" :options="certificateTypeOptions" />
+				<UInput v-model="formCertificate.credentialUrl" placeholder="URL do certificado (opcional)" />
+			</div>
+			<div class="flex gap-2 mt-3">
+				<UButton label="Salvar" color="primary" @click="submitCertificate" />
+				<UButton label="Cancelar" color="secondary" @click="closeForm" />
+			</div>
+			<div v-if="formErrors.length" class="mt-2 text-small text-red-600">
+				<ul>
+					<li v-for="error in formErrors" :key="error">{{ error }}</li>
+				</ul>
+			</div>
+		</div>
+	</article>
 	</UForm>
 </template>
 
 <script setup lang="ts">
+import { ref, reactive, computed, onMounted } from 'vue';
 import { ResumeFormViewModel } from '../models/resume-form.vm';
 import DegreeForm from './degree-form.vue';
 import DegreeList from './degree-list.vue';
@@ -190,7 +219,6 @@ const handleDeleteDegree = async (degreeId: number) => {
 	}
 };
 
-// Load degrees when component mounts
 onMounted(() => {
 	loadDegrees();
 });
