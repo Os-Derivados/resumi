@@ -4,7 +4,7 @@
 		{
 			"label": "Docker Compose: Build",
 			"type": "shell",
-			"command": "docker compose -f ${workspaceFolder}/compose.yml -f ${workspaceFolder}/compose.debug.yml build --no-cache"
+			"command": "docker compose -f ${workspaceFolder}/compose.yml -f ${workspaceFolder}/compose.debug.yml build"
 		},
 		{
 			"label": "Docker Compose: Up",
