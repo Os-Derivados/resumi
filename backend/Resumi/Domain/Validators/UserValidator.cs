@@ -11,11 +11,6 @@ public class UserValidator : IDomainValidator<AppUser>
 		throw new NotImplementedException();
 	}
 
-	public Result<AppUser> ValidateSearch(AppUser? targetEntity)
-	{
-		throw new NotImplementedException();
-	}
-
 	public Result<AppUser> ValidateUpdate(AppUser? current, AppUser? updated)
 	{
 		throw new NotImplementedException();

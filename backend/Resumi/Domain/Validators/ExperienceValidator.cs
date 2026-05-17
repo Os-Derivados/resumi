@@ -11,11 +11,6 @@ public class ExperienceValidator : IDomainValidator<Experience>
         throw new NotImplementedException();
     }
 
-    public Result<Experience> ValidateSearch(Experience? targetExperience)
-    {
-        throw new NotImplementedException();
-    }
-
     public Result<Experience> ValidateUpdate(Experience? current, Experience? updated)
     {
         throw new NotImplementedException();

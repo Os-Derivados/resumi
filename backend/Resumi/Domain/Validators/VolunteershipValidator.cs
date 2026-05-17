@@ -11,11 +11,6 @@ public class VolunteershipValidator : IDomainValidator<Volunteership>
 		throw new NotImplementedException();
 	}
 
-	public Result<Volunteership> ValidateSearch(Volunteership? targetVolunteership)
-	{
-		throw new NotImplementedException();
-	}
-
 	public Result<Volunteership> ValidateUpdate(Volunteership? current, Volunteership? updated)
 	{
 		throw new NotImplementedException();

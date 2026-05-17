@@ -37,13 +37,6 @@ public class CertificateValidator : IDomainValidator<Certificate>
         return errors.Any() ? Result<Certificate>.Failure(errors) : Result<Certificate>.Success(newEntity);
     }
 
-    public Result<Certificate> ValidateSearch(Certificate? targetEntity)
-    {
-        return targetEntity is null
-            ? Result<Certificate>.Failure(nameof(Certificate), NotFound)
-            : Result<Certificate>.Success(targetEntity);
-    }
-
     public Result<Certificate> ValidateUpdate(Certificate? current, Certificate? updated)
     {
         if (current is null)

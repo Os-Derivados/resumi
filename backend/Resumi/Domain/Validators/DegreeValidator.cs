@@ -32,16 +32,6 @@ public class DegreeValidator : IDomainValidator<Degree>
             : Result<Degree>.Success(newDegree);
     }
 
-    public Result<Degree> ValidateSearch(Degree? targetDegree)
-    {
-        if (targetDegree is null || targetDegree.Id <= 0)
-        {
-            return Result<Degree>.Failure(nameof(Degree), "Formação acadêmica inválida para busca.");
-        }
-
-        return Result<Degree>.Success(targetDegree);
-    }
-
     public Result<Degree> ValidateUpdate(Degree? current, Degree? updated)
     {
         ResultDictionary errors = [];
@@ -105,16 +95,19 @@ public class DegreeValidator : IDomainValidator<Degree>
             errors.AddError(nameof(Degree.Name), $"O nome não pode exceder {MaxNameLength} caracteres.");
 
         if (degree.InstitutionName?.Length > MaxInstitutionNameLength)
-            errors.AddError(nameof(Degree.InstitutionName), $"O nome da instituição não pode exceder {MaxInstitutionNameLength} caracteres.");
+            errors.AddError(nameof(Degree.InstitutionName),
+                $"O nome da instituição não pode exceder {MaxInstitutionNameLength} caracteres.");
 
         if (degree.Location?.Length > MaxLocationLength)
             errors.AddError(nameof(Degree.Location), $"A localização não pode exceder {MaxLocationLength} caracteres.");
 
         if (degree.Description?.Length > MaxDescriptionLength)
-            errors.AddError(nameof(Degree.Description), $"A descrição não pode exceder {MaxDescriptionLength} caracteres.");
+            errors.AddError(nameof(Degree.Description),
+                $"A descrição não pode exceder {MaxDescriptionLength} caracteres.");
 
         if (degree.Highlights?.Length > MaxHighlightsLength)
-            errors.AddError(nameof(Degree.Highlights), $"Os destaques não podem exceder {MaxHighlightsLength} caracteres.");
+            errors.AddError(nameof(Degree.Highlights),
+                $"Os destaques não podem exceder {MaxHighlightsLength} caracteres.");
     }
 
     private static void ValidateDates(Degree degree, ResultDictionary errors)

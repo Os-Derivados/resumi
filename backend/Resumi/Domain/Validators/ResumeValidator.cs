@@ -30,11 +30,6 @@ public class ResumeValidator : IDomainValidator<Resume>
             : Result<Resume>.Success(newResume!);
     }
 
-    public Result<Resume> ValidateSearch(Resume? targetResume)
-    {
-        throw new NotImplementedException();
-    }
-
     public Result<Resume> ValidateUpdate(Resume? current, Resume? updated)
     {
         throw new NotImplementedException();
