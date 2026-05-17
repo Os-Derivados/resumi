@@ -49,6 +49,7 @@ public static class Startup
                         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSigningKey)),
                         ValidateLifetime = true
                     };
+                    options.RequireHttpsMetadata = false;
                     options.MapInboundClaims = false;
                     options.Events = new JwtBearerEvents
 

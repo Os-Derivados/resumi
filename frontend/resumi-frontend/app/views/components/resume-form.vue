@@ -38,8 +38,33 @@
 
 		<article class="my-8">
 			<h2 class="text-lg font-semibold">Formação Acadêmica</h2>
-			<p>Nenhuma formação acadêmica adicionada.</p>
-			<UButton label="Adicionar formação acadêmica" icon="i-lucide-plus" class="mt-4" />
+
+			<div v-if="!showDegreeForm" class="space-y-4">
+				<UCard v-if="degrees.length === 0" class="bg-gray-50">
+					<template #header>
+						<p class="text-center text-gray-500">Nenhuma formação acadêmica adicionada ainda.</p>
+					</template>
+					<UButton label="Adicionar formação acadêmica" icon="i-lucide-plus" @click="handleAddDegree" block />
+				</UCard>
+
+				<template v-else>
+					<DegreeList
+						:degrees="degrees"
+						:is-loading="isDegreesLoading"
+						@add="handleAddDegree"
+						@edit="handleEditDegree"
+						@delete="handleDeleteDegree" />
+				</template>
+			</div>
+
+			<div v-else class="bg-gray-50 p-6 rounded-lg border">
+				<h3 class="text-md font-semibold mb-4">{{ editingDegree ? 'Editar Formação' : 'Nova Formação Acadêmica' }}</h3>
+				<DegreeForm
+					:resume-id="resumeId"
+					:degree="editingDegree"
+					@save="handleSaveDegree"
+					@cancel="handleCancelDegreeForm" />
+			</div>
 		</article>
 
 	<article class="my-8">
@@ -97,167 +122,104 @@
 <script setup lang="ts">
 import { ref, reactive, computed, onMounted } from 'vue';
 import { ResumeFormViewModel } from '../models/resume-form.vm';
-import { getCertificatesAsync, createCertificateAsync, updateCertificateAsync, deleteCertificateAsync } from '~/infra/api/certificate-service';
-import type { ReadCertificateModel } from '~/data/api/read-certificate-model';
-import type { AddCertificateModel } from '~/data/api/add-certificate-model';
-import type { UpdateCertificateModel } from '~/data/api/update-certificate-model';
+import DegreeForm from './degree-form.vue';
+import DegreeList from './degree-list.vue';
+import type { ReadDegreeModel, CreateDegreeModel, UpdateDegreeModel } from '~/data/api/degree-models';
+import { getDegreesAsync, createDegreeAsync, updateDegreeAsync, deleteDegreeAsync } from '~/infra/api/degree-service';
 
 const route = useRoute();
-const resumeId = Number(route.query.id) || 0;
+const resumeId = Number(route.query.id);
 const vm = new ResumeFormViewModel(resumeId);
 
-const certificates = ref<ReadCertificateModel[]>([]);
-const loadingCertificates = ref(false);
-const openCreation = ref(false);
-const editingCertificate = ref<ReadCertificateModel | null>(null);
-const certificateFilter = ref('');
-const formErrors = ref<string[]>([]);
+// Degree management
+const degrees = ref<ReadDegreeModel[]>([]);
+const editingDegree = ref<ReadDegreeModel | undefined>(undefined);
+const showDegreeForm = ref(false);
+const isDegreesLoading = ref(false);
 
-const certificateTypeOptions = [
-	{ label: 'Extracurricular', value: 'Extracurricular' },
-	{ label: 'Curso', value: 'Course' },
-	{ label: 'Licença', value: 'License' },
-	{ label: 'Badge', value: 'Badge' },
-	{ label: 'Nomeação', value: 'Nomination' },
-];
-
-const formCertificate = reactive<Partial<AddCertificateModel & UpdateCertificateModel>>({
-	name: '',
-	description: '',
-	institutionName: '',
-	location: '',
-	isRemote: false,
-	startDate: new Date().toISOString().slice(0, 10),
-	endDate: undefined,
-	stillEngaged: false,
-	type: 'Extracurricular',
-	credentialId: undefined,
-	credentialUrl: undefined,
-});
-
-const filteredCertificates = computed(() => {
-	const filter = certificateFilter.value.trim().toLowerCase();
-	if (!filter) return certificates.value;
-	return certificates.value.filter(c =>
-		c.name.toLowerCase().includes(filter) ||
-		c.type.toLowerCase().includes(filter) ||
-		c.institutionName.toLowerCase().includes(filter)
-	);
-});
-
-async function loadCertificates() {
-	if (!resumeId) return;
-	loadingCertificates.value = true;
-	const result = await getCertificatesAsync(resumeId);
-	loadingCertificates.value = false;
-	if (result.succeeded && result.data) certificates.value = result.data;
-}
-
-function validateForm(): boolean {
-	const errors: string[] = [];
-	if (!formCertificate.name?.trim()) errors.push('Nome obrigatório.');
-	if (!formCertificate.description?.trim()) errors.push('Descrição obrigatória.');
-	if (!formCertificate.institutionName?.trim()) errors.push('Instituição obrigatória.');
-	if (!formCertificate.startDate) errors.push('Data de início obrigatória.');
-	if (formCertificate.startDate && formCertificate.endDate && formCertificate.endDate < formCertificate.startDate) errors.push('Data de término não pode ser anterior à data de início.');
-	if (!formCertificate.type?.trim()) errors.push('Tipo obrigatório.');
-	formErrors.value = errors;
-	return !errors.length;
-}
-
-function resetForm() {
-	formCertificate.name = '';
-	formCertificate.description = '';
-	formCertificate.institutionName = '';
-	formCertificate.location = '';
-	formCertificate.startDate = new Date().toISOString().slice(0, 10);
-	formCertificate.endDate = undefined;
-	formCertificate.stillEngaged = false;
-	formCertificate.type = 'Extracurricular';
-	formCertificate.credentialId = undefined;
-	formCertificate.credentialUrl = undefined;
-	editingCertificate.value = null;
-	formErrors.value = [];
-}
-
-function startEdit(certificate: ReadCertificateModel) {
-	editingCertificate.value = certificate;
-	openCreation.value = true;
-	formCertificate.name = certificate.name;
-	formCertificate.description = certificate.description;
-	formCertificate.institutionName = certificate.institutionName;
-	formCertificate.location = certificate.location ?? '';
-	formCertificate.startDate = certificate.startDate;
-	formCertificate.endDate = certificate.endDate ?? undefined;
-	formCertificate.stillEngaged = certificate.stillEngaged;
-	formCertificate.type = certificate.type;
-	formCertificate.credentialId = certificate.credentialId;
-	formCertificate.credentialUrl = certificate.credentialUrl;
-}
-
-async function submitCertificate() {
-	if (!validateForm() || !resumeId) return;
-
-	if (editingCertificate.value) {
-		const payload: UpdateCertificateModel = {
-			id: editingCertificate.value.id,
-			name: formCertificate.name,
-			description: formCertificate.description,
-			institutionName: formCertificate.institutionName,
-			location: formCertificate.location,
-			isRemote: formCertificate.isRemote,
-			startDate: formCertificate.startDate,
-			endDate: formCertificate.endDate,
-			stillEngaged: formCertificate.stillEngaged,
-			type: formCertificate.type,
-			credentialId: formCertificate.credentialId,
-			credentialUrl: formCertificate.credentialUrl,
-		};
-		const result = await updateCertificateAsync(resumeId, editingCertificate.value.id, payload);
+// Load degrees on mount
+const loadDegrees = async () => {
+	isDegreesLoading.value = true;
+	try {
+		const result = await getDegreesAsync(resumeId);
 		if (result.succeeded && result.data) {
-			const idx = certificates.value.findIndex(c => c.id === result.data.id);
-			if (idx >= 0) certificates.value[idx] = result.data;
-			resetForm();
-			openCreation.value = false;
+			degrees.value = result.data;
+		} else {
+			console.error('Erro ao carregar formações:', result.errors);
 		}
-		return;
+	} catch (error) {
+		console.error('Erro ao carregar formações:', error);
+	} finally {
+		isDegreesLoading.value = false;
 	}
+};
 
-	const payload: AddCertificateModel = {
-		resumeId,
-		name: formCertificate.name ?? '',
-		description: formCertificate.description ?? '',
-		institutionName: formCertificate.institutionName ?? '',
-		location: formCertificate.location,
-		isRemote: formCertificate.isRemote ?? false,
-		startDate: formCertificate.startDate ?? new Date().toISOString().slice(0, 10),
-		endDate: formCertificate.endDate,
-		stillEngaged: formCertificate.stillEngaged ?? false,
-		type: formCertificate.type ?? 'Extracurricular',
-		credentialId: formCertificate.credentialId,
-		credentialUrl: formCertificate.credentialUrl,
-	};
+// Handlers
+const handleAddDegree = () => {
+	editingDegree.value = undefined;
+	showDegreeForm.value = true;
+};
 
-	const result = await createCertificateAsync(resumeId, payload);
-	if (result.succeeded && result.data) {
-		certificates.value.push(result.data);
-		resetForm();
-		openCreation.value = false;
+const handleEditDegree = (degree: ReadDegreeModel) => {
+	editingDegree.value = degree;
+	showDegreeForm.value = true;
+};
+
+const handleSaveDegree = async (formData: any) => {
+	isDegreesLoading.value = true;
+	try {
+		if (editingDegree.value) {
+			// Update existing degree
+			const updateData: UpdateDegreeModel = {
+				id: editingDegree.value.id,
+				...formData
+			};
+			delete updateData.resumeId;
+
+			const result = await updateDegreeAsync(resumeId, editingDegree.value.id, updateData);
+			if (result.succeeded && result.data) {
+				const index = degrees.value.findIndex(d => d.id === editingDegree.value!.id);
+				if (index >= 0) {
+					degrees.value[index] = result.data;
+				}
+			}
+		} else {
+			// Create new degree
+			const createData: CreateDegreeModel = formData;
+			const result = await createDegreeAsync(resumeId, createData);
+			if (result.succeeded && result.data) {
+				degrees.value.push(result.data);
+			}
+		}
+		showDegreeForm.value = false;
+		editingDegree.value = undefined;
+	} catch (error) {
+		console.error('Erro ao salvar formação:', error);
+	} finally {
+		isDegreesLoading.value = false;
 	}
-}
+};
 
-async function removeCertificate(id: number) {
-	if (!resumeId) return;
-	const result = await deleteCertificateAsync(resumeId, id);
-	if (result.succeeded) {
-		certificates.value = certificates.value.filter(c => c.id !== id);
+const handleCancelDegreeForm = () => {
+	showDegreeForm.value = false;
+	editingDegree.value = undefined;
+};
+
+const handleDeleteDegree = async (degreeId: number) => {
+	isDegreesLoading.value = true;
+	try {
+		const result = await deleteDegreeAsync(resumeId, degreeId);
+		if (result.succeeded) {
+			degrees.value = degrees.value.filter(d => d.id !== degreeId);
+		}
+	} catch (error) {
+		console.error('Erro ao deletar formação:', error);
+	} finally {
+		isDegreesLoading.value = false;
 	}
-}
+};
 
-function closeForm() {
-	openCreation.value = false;
-	resetForm();
-}
-
-onMounted(loadCertificates);
+onMounted(() => {
+	loadDegrees();
+});
 </script>
