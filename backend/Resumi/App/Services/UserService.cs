@@ -1,6 +1,5 @@
 using Microsoft.AspNetCore.Identity;
 using Resumi.App.Exceptions;
-using Resumi.App.Services.Interfaces;
 using Resumi.Infra.Data.Models;
 
 namespace Resumi.App.Services;

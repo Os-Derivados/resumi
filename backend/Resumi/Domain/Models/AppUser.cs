@@ -5,7 +5,7 @@ namespace Resumi.Domain.Models;
 
 public class AppUser : IdentityUser<int>, ITrackable
 {
-    [Required] [StringLength(128)] public string FullName { get; set; }
+    [Required] [StringLength(128)] public required string FullName { get; set; }
 
     public DateTime CreatedAt { get; set; }
     public DateTime? UpdatedAt { get; set; }

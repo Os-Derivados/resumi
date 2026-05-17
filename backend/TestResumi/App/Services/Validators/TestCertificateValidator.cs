@@ -1,5 +1,3 @@
-using Resumi.App.Services.Validators;
-
 namespace TestResumi.App.Services.Validators;
 
 public class TestCertificateValidator

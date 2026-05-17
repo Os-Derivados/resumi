@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Resumi.Domain.Models;
 using Resumi.Infra;
 using Resumi.Infra.Auth;
 using Resumi.Infra.Auth.Interfaces;
@@ -36,7 +37,6 @@ if (!string.IsNullOrEmpty(defaultConnection))
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddApiDocumentation();
-builder.Services.AddRepositories();
 builder.Services.AddEntityMappers();
 builder.Services.AddDomainValidators();
 builder.Services.AddDomainServices();
@@ -91,5 +91,4 @@ app.UseHttpsRedirection();
 app.MapControllers();
 app.Run();
 
-public partial class Program { }
 

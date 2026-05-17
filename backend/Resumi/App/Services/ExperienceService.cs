@@ -1,4 +1,3 @@
-using Resumi.App.Services.Interfaces;
 using Resumi.Infra.Data.Models;
 
 namespace Resumi.App.Services;
