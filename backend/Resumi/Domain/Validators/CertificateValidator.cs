@@ -1,7 +1,7 @@
 using Resumi.Domain.Validators.Interfaces;
 using Resumi.Infra.Data.Models;
 
-namespace Resumi.App.Services.Validators;
+namespace Resumi.Domain.Validators;
 
 public class CertificateValidator : IDomainValidator<Certificate>
 {
