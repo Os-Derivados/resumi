@@ -118,8 +118,8 @@ public record Result<T> : Result
     /// </summary>
     /// <param name="errorKey">A chave de erro da operação falha.</param>
     /// <param name="errorMessage">A mensagem de erro da operação falha.</param>
-    /// <returns>Uma instância de <see cref="Result"/>, indicando o fracasso da operação.</returns>
-    public new static Result Failure(string errorKey, string errorMessage)
+    /// <returns>Uma instância de <see cref="Result{T}"/>, indicando o fracasso da operação.</returns>
+    public new static Result<T> Failure(string errorKey, string errorMessage)
     {
         ResultDictionary errors = [];
 
