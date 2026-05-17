@@ -1,0 +1,16 @@
+services:
+  backend:
+    build:
+      labels:
+        - environment=development
+      args:
+        - configuration=Debug
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - WAIT_FOR_DEBUGGER=1
+    entrypoint:
+      - "/vsdbg/vsdbg"
+      - "--interpreter=vscode"
+      - "--pauseEngineForDebugger"
+    volumes:
+      - ${HOME}/vsdbg:/vsdbg:ro

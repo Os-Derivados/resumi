@@ -6,10 +6,11 @@ services:
       dockerfile: Dockerfile
       labels:
         - org.osderivados=resumi
+        - environment=production
       args:
-        - configuration=Debug
+        - configuration=Release
     environment:
-      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_ENVIRONMENT=Production
       # Tell ASP.NET where the cert is and its password
       - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/aspnet-dev-cert.pfx
       - ASPNETCORE_Kestrel__Certificates__Default__Password=${CERT_PASSWORD}
@@ -22,7 +23,6 @@ services:
       - "8081:8081" # HTTPS
     volumes:
       - ~/.aspnet/https/aspnet-dev-cert.pfx:/https/aspnet-dev-cert.pfx:ro
-      - ~/vsdbg:/vsdbg:ro
     depends_on:
       db:
         condition: service_healthy
