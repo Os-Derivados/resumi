@@ -1,3 +1,4 @@
+using Resumi.Domain.Models;
 using Resumi.Domain.Validators.Interfaces;
 using Resumi.Infra.Data.Models;
 
