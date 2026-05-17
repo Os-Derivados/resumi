@@ -1,10 +1,9 @@
 using Resumi.App.Data.Models;
 using Resumi.App.Services.Validators;
-using Resumi.Infra.Data.Models;
 
 namespace TestResumi.App.Services.Validators;
 
-public class DegreeValidatorTests
+public class TestDegreeValidator
 {
     private readonly DegreeValidator _validator = new();
 
@@ -148,8 +147,16 @@ public class DegreeValidatorTests
     public void ValidateUpdate_WithMismatchedIds_ReturnsFail()
     {
         // Arrange
-        var currentDegree = new Degree { Id = 1, Name = "Eng", Description = "Desc", InstitutionName = "UFRJ", IsRemote = false, StartDate = DateTime.Now, Level = DegreeLevel.Bachelor };
-        var updatedDegree = new Degree { Id = 2, Name = "Eng", Description = "Desc", InstitutionName = "UFRJ", IsRemote = false, StartDate = DateTime.Now, Level = DegreeLevel.Bachelor };
+        var currentDegree = new Degree
+        {
+            Id = 1, Name = "Eng", Description = "Desc", InstitutionName = "UFRJ", IsRemote = false,
+            StartDate = DateTime.Now, Level = DegreeLevel.Bachelor
+        };
+        var updatedDegree = new Degree
+        {
+            Id = 2, Name = "Eng", Description = "Desc", InstitutionName = "UFRJ", IsRemote = false,
+            StartDate = DateTime.Now, Level = DegreeLevel.Bachelor
+        };
 
         // Act
         var result = _validator.ValidateUpdate(currentDegree, updatedDegree);
@@ -162,7 +169,11 @@ public class DegreeValidatorTests
     public void ValidateDeletion_WithValidId_ReturnsSuccess()
     {
         // Arrange
-        var degree = new Degree { Id = 1, Name = "Eng", Description = "Desc", InstitutionName = "UFRJ", IsRemote = false, StartDate = DateTime.Now, Level = DegreeLevel.Bachelor };
+        var degree = new Degree
+        {
+            Id = 1, Name = "Eng", Description = "Desc", InstitutionName = "UFRJ", IsRemote = false,
+            StartDate = DateTime.Now, Level = DegreeLevel.Bachelor
+        };
 
         // Act
         var result = _validator.ValidateDeletion(degree);
@@ -175,7 +186,11 @@ public class DegreeValidatorTests
     public void ValidateDeletion_WithInvalidId_ReturnsFail()
     {
         // Arrange
-        var degree = new Degree { Id = 0, Name = "Eng", Description = "Desc", InstitutionName = "UFRJ", IsRemote = false, StartDate = DateTime.Now, Level = DegreeLevel.Bachelor };
+        var degree = new Degree
+        {
+            Id = 0, Name = "Eng", Description = "Desc", InstitutionName = "UFRJ", IsRemote = false,
+            StartDate = DateTime.Now, Level = DegreeLevel.Bachelor
+        };
 
         // Act
         var result = _validator.ValidateDeletion(degree);
