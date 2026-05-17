@@ -1,10 +1,8 @@
 using Microsoft.OpenApi.Models;
-using Resumi.App.Modules;
 using Resumi.App.Services;
 using Resumi.App.Validators;
 using Resumi.Domain.Validators;
 using Resumi.Infra.Data.Interfaces;
-using Resumi.Infra.Data.Mappers;
 
 namespace Resumi.Infra.Extensions;
 

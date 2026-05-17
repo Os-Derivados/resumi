@@ -3,10 +3,9 @@ using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Resumi.Api.Data.Models;
-using Resumi.App.Modules;
+using Resumi.Domain.Models;
 using Resumi.Infra.Auth;
 using Resumi.Infra.Auth.Constants;
-using Resumi.Infra.Data.Interfaces;
 using Resumi.Infra.Data.Models;
 
 namespace Resumi.Api.Controllers;
@@ -17,23 +16,12 @@ namespace Resumi.Api.Controllers;
 public class ResumesController : ControllerBase
 
 {
-    private readonly ResumesModule _module;
-    private readonly IResumeMapper _mapper;
-    private readonly UserContext _userContext;
-
-    public ResumesController(ResumesModule module, IResumeMapper mapper, UserContext userContext)
-    {
-        _module = module;
-        _mapper = mapper;
-        _userContext = userContext;
-    }
-
     [HttpPost]
     [ProducesResponseType(typeof(Result<ResumeModel>), StatusCodes.Status201Created)]
     [ProducesResponseType(typeof(Result<ResumeModel>), StatusCodes.Status400BadRequest)]
     public async Task<ActionResult<Result<ResumeModel>>> Create([Required] string title)
     {
-        var userId = _userContext.GetUserId();
+        var userId = userContext.GetUserId();
 
         Resume newResume = new()
         {
@@ -52,7 +40,7 @@ public class ResumesController : ControllerBase
             return BadRequest(creationResult);
         }
 
-        var dto = _mapper.ToDto(creationResult.Data);
+        var dto = mapper.ToDto(creationResult.Data);
 
         if (dto is null) return UnprocessableEntity();
 
