@@ -1,6 +1,5 @@
 using System.Linq.Expressions;
 using Resumi.Api.Data.Models;
-using Resumi.App.Data.Models;
 
 namespace Resumi.Infra.Parameters;
 

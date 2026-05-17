@@ -1,5 +1,4 @@
 using Microsoft.EntityFrameworkCore;
-using Resumi.App.Data.Models;
 using Resumi.Infra.Database.Context;
 using Resumi.Infra.Database.Interfaces;
 

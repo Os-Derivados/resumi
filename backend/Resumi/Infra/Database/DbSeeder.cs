@@ -1,7 +1,6 @@
 using System.Text.Json;
 using Microsoft.AspNetCore.Identity;
 using Resumi.Api.Data.Models;
-using Resumi.App.Data.Models;
 using Resumi.Infra.Constants;
 using Resumi.Infra.Data.Interfaces;
 using Resumi.Infra.Exceptions;

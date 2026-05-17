@@ -1,7 +1,6 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using Resumi.App.Data.Models;
 using Resumi.Infra.Database.Interfaces;
 
 namespace Resumi.Infra.Database.Context;

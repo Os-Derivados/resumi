@@ -1,6 +1,5 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.OpenApi.Models;
-using Resumi.App.Data.Models;
 using Resumi.App.Modules;
 using Resumi.App.Services;
 using Resumi.App.Services.Interfaces;

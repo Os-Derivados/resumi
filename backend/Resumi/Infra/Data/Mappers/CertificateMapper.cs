@@ -1,5 +1,4 @@
 using Resumi.Api.Data.Models;
-using Resumi.App.Data.Models;
 using Resumi.App.Exceptions;
 using Resumi.Infra.Data.Interfaces;
 using Resumi.Infra.Exceptions;

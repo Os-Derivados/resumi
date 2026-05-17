@@ -1,7 +1,6 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Resumi.Api.Data.Models;
-using Resumi.App.Data.Models;
 using Resumi.App.Modules;
 using Resumi.Infra.Data.Models;
 

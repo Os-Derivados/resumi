@@ -1,5 +1,3 @@
-using Resumi.App.Data.Models;
-
 namespace Resumi.Infra.Data.Interfaces;
 
 /// <summary>

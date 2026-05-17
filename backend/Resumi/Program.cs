@@ -1,6 +1,5 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Resumi.App.Data.Models;
 using Resumi.Infra;
 using Resumi.Infra.Auth;
 using Resumi.Infra.Auth.Interfaces;

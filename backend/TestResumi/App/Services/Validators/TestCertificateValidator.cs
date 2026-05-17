@@ -1,4 +1,3 @@
-using Resumi.App.Data.Models;
 using Resumi.App.Services.Validators;
 
 namespace TestResumi.App.Services.Validators;

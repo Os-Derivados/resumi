@@ -2,7 +2,6 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using Microsoft.IdentityModel.Tokens;
-using Resumi.App.Data.Models;
 using Resumi.Infra.Auth.Interfaces;
 
 namespace Resumi.Infra.Auth;

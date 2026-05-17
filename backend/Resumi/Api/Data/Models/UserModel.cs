@@ -1,5 +1,4 @@
 using System.Security.Claims;
-using Resumi.App.Data.Models;
 using Resumi.Infra.Auth.Constants;
 
 namespace Resumi.Api.Data.Models;

@@ -1,5 +1,4 @@
 using Microsoft.EntityFrameworkCore;
-using Resumi.App.Data.Models;
 using Resumi.App.Services.Interfaces;
 using Resumi.Domain.Validators.Interfaces;
 using Resumi.Infra.Data.Models;
