@@ -4,7 +4,7 @@ using Resumi.Infra.Data.Models;
 namespace Resumi.Domain.Validators.Interfaces;
 
 /// <summary>
-/// Este contrato fornece APIs para efetuar a validação de operações básicas no domínio da aplicação.
+/// Este contrato fornece APIs para efetuar a validação de operações básicas de escrita no domínio da aplicação.
 /// </summary>
 /// <typeparam name="TEntity">
 /// Uma entidade <see cref="ITrackable"/> que pertença ao domínio da aplicação.
@@ -23,17 +23,6 @@ public interface IDomainValidator<TEntity> where TEntity : ITrackable
     /// </returns>
     Result<TEntity> ValidateCreation(TEntity? newEntity);
 
-    /// <summary>
-    /// Valida o estado da operação de busca da entidade <paramref name="targetEntity"/>.
-    /// </summary>
-    /// <param name="targetEntity">
-    ///	A entidade a ser validada para busca.
-    /// </param>
-    /// <returns>
-    ///	Uma instância de <see cref="Result{T}"/>,
-    /// contendo o resultado da validação.
-    /// </returns>
-    Result<TEntity> ValidateSearch(TEntity? targetEntity);
 
     /// <summary>
     /// Valida o estado da operação de atualização de <paramref name="current"/> com os dados <paramref name="updated"/>.
