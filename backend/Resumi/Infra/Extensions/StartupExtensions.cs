@@ -1,14 +1,10 @@
-using Microsoft.AspNetCore.Identity;
 using Microsoft.OpenApi.Models;
 using Resumi.App.Modules;
 using Resumi.App.Services;
-using Resumi.App.Services.Interfaces;
-using Resumi.App.Services.Validators;
-using Resumi.Domain.Validators.Interfaces;
+using Resumi.App.Validators;
+using Resumi.Domain.Validators;
 using Resumi.Infra.Data.Interfaces;
 using Resumi.Infra.Data.Mappers;
-using Resumi.Infra.Database.Interfaces;
-using Resumi.Infra.Database.Repositories;
 
 namespace Resumi.Infra.Extensions;
 
@@ -40,12 +36,12 @@ public static class StartupExtensions
     /// </param>
     public static void AddDomainServices(this IServiceCollection services)
     {
-        services.AddScoped<IDomainService<Resume>, ResumeService>();
-        services.AddScoped<IDomainService<AppUser>, UserService>();
-        services.AddScoped<IDomainService<Certificate>, CertificateService>();
-        services.AddScoped<IDomainService<Degree>, DegreeService>();
-        services.AddScoped<IDomainService<Experience>, ExperienceService>();
-        services.AddScoped<IDomainService<Volunteership>, VolunteershipService>();
+        services.AddScoped<ResumeService>();
+        services.AddScoped<UserService>();
+        services.AddScoped<CertificateService>();
+        services.AddScoped<DegreeService>();
+        services.AddScoped<ExperienceService>();
+        services.AddScoped<VolunteershipService>();
     }
 
     /// <summary>
@@ -58,12 +54,17 @@ public static class StartupExtensions
     /// </param>
     public static void AddDomainValidators(this IServiceCollection services)
     {
-        services.AddScoped<IDomainValidator<Resume>, ResumeValidator>();
-        services.AddScoped<IDomainValidator<Degree>, DegreeValidator>();
-        services.AddScoped<IDomainValidator<Certificate>, CertificateValidator>();
-        services.AddScoped<IDomainValidator<Experience>, ExperienceValidator>();
-        services.AddScoped<IDomainValidator<AppUser>, UserValidator>();
-        services.AddScoped<IDomainValidator<Volunteership>, VolunteershipValidator>();
+        services.AddScoped<ResumeValidator>();
+        services.AddScoped<DegreeValidator>();
+        services.AddScoped<CertificateValidator>();
+        services.AddScoped<ExperienceValidator>();
+        services.AddScoped<UserValidator>();
+        services.AddScoped<VolunteershipValidator>();
+    }
+
+    public static void AddQueryValidators(this IServiceCollection services)
+    {
+        services.AddScoped<UserQueryValidator>();
     }
 
     /// <summary>
@@ -78,25 +79,6 @@ public static class StartupExtensions
         services.AddScoped<IResumeMapper, ResumeMapper>();
         services.AddScoped<IUserMapper, UserMapper>();
         services.AddScoped<ICertificateMapper, CertificateMapper>();
-    }
-
-
-    /// <summary>
-    /// Registra os repositórios de dados no contêiner de injeção de dependência.
-    /// Esses repositórios são responsáveis por interagir com a camada de persistência de dados.
-    /// <remarks>Para entidades <see cref="AppUser"/> e <see cref="IdentityRole{TKey}"/>,
-    /// devem ser utilizados os componentes do Identity.</remarks>
-    /// </summary>
-    /// <param name="services">
-    /// O contêiner de serviços onde os repositórios serão registrados.
-    /// </param>
-    public static void AddRepositories(this IServiceCollection services)
-    {
-        services.AddScoped<IRepository<Resume>, ResumeRepository>();
-        services.AddScoped<IRepository<Experience>, ExperienceRepository>();
-        services.AddScoped<IRepository<Degree>, DegreeRepository>();
-        services.AddScoped<IRepository<Certificate>, CertificateRepository>();
-        services.AddScoped<IRepository<Volunteership>, VolunteershipRepository>();
     }
 
     /// <summary>
