@@ -19,5 +19,7 @@
 
   <ItemGroup>
     <Folder Include="Api\" />
+    <Folder Include="App\Data\" />
+    <Folder Include="Domain\" />
   </ItemGroup>
 </Project>

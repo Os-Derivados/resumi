@@ -1,7 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Identity;
 
-namespace Resumi.App.Data.Models;
+namespace Resumi.Domain.Models;
 
 public class AppUser : IdentityUser<int>, ITrackable
 {

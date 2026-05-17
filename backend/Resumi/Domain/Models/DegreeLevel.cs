@@ -1,4 +1,4 @@
-namespace Resumi.App.Data.Models;
+namespace Resumi.Domain.Models;
 
 /// <summary>
 /// Representa o nível de um grau acadêmico na educação formal.

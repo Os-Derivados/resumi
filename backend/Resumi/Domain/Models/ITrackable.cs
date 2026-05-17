@@ -1,4 +1,4 @@
-namespace Resumi.App.Data.Models;
+namespace Resumi.Domain.Models;
 
 /// <summary>
 /// Este contrato define propriedades de rastreamento para entidades.

@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Identity;
 using Resumi.App.Data.Models;
 using Resumi.App.Services.Interfaces;
+using Resumi.Domain.Validators.Interfaces;
 using Resumi.Infra.Database.Interfaces;
 
 namespace Resumi.App.Modules;

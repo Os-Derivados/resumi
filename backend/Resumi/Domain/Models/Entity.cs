@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace Resumi.App.Data.Models;
+namespace Resumi.Domain.Models;
 
 public abstract class Entity : ITrackable
 {

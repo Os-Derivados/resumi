@@ -5,6 +5,7 @@ using Resumi.App.Modules;
 using Resumi.App.Services;
 using Resumi.App.Services.Interfaces;
 using Resumi.App.Services.Validators;
+using Resumi.Domain.Validators.Interfaces;
 using Resumi.Infra.Data.Interfaces;
 using Resumi.Infra.Data.Mappers;
 using Resumi.Infra.Database.Interfaces;

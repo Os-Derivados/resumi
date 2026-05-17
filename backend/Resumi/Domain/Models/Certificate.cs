@@ -2,7 +2,7 @@ using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace Resumi.App.Data.Models;
+namespace Resumi.Domain.Models;
 
 /// <summary>
 /// Representa um certificado ou licença dentro de um <see cref="Resume"/>.

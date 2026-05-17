@@ -1,7 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace Resumi.App.Data.Models;
+namespace Resumi.Domain.Models;
 
 /// <summary>
 /// Representa um currículo dentro da aplicação, a nível de banco de dados.

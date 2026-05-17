@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace Resumi.App.Data.Models;
+namespace Resumi.Domain.Models;
 
 /// <summary>
 /// Representa uma experiência profissional dentro de um <see cref="Resume"/>.

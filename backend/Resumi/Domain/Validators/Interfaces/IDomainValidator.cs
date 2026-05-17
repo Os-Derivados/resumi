@@ -1,7 +1,7 @@
-using Resumi.App.Data.Models;
+using Resumi.Domain.Models;
 using Resumi.Infra.Data.Models;
 
-namespace Resumi.App.Services.Interfaces;
+namespace Resumi.Domain.Validators.Interfaces;
 
 /// <summary>
 /// Este contrato fornece APIs para efetuar a validação de operações básicas no domínio da aplicação.
