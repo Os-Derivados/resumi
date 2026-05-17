@@ -2,7 +2,6 @@ using System.Security.Claims;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.InMemory;
 using Moq;
 using Resumi.Api.Controllers;
 using Resumi.Infra.Auth.Constants;
@@ -11,6 +10,7 @@ using Resumi.App.Data.Models;
 using Resumi.App.Modules;
 using Resumi.App.Services.Interfaces;
 using Resumi.Infra.Auth;
+using Resumi.Infra.Data.Interfaces;
 using Resumi.Infra.Database.Context;
 using Resumi.Infra.Database.Interfaces;
 
@@ -26,7 +26,10 @@ public class TestCertificatesController
             .Options;
 
         await using var dbContext = new AppDbContext(options);
-        dbContext.Resumes.Add(new Resume { Id = 1, UserId = 1, Title = "Curriculo teste", Email = "a@b.com", PhoneNumber = "123", OwnerName = "Fulano" });
+        dbContext.Resumes.Add(new Resume
+        {
+            Id = 1, UserId = 1, Title = "Curriculo teste", Email = "a@b.com", PhoneNumber = "123", OwnerName = "Fulano"
+        });
         await dbContext.SaveChangesAsync();
 
         var userManagerMock = new Mock<UserManager<AppUser>>(
@@ -37,8 +40,10 @@ public class TestCertificatesController
         var serviceMock = new Mock<IDomainService<Certificate>>();
         var validatorMock = new Mock<IDomainValidator<Certificate>>();
         var repoMock = new Mock<IRepository<Certificate>>();
+        var mapperMock = new Mock<ICertificateMapper>();
 
-        var module = new CertificatesModule(serviceMock.Object, validatorMock.Object, userManagerMock.Object, roleManagerMock.Object, repoMock.Object);
+        var module = new CertificatesModule(serviceMock.Object, validatorMock.Object, userManagerMock.Object,
+            roleManagerMock.Object, mapperMock.Object, repoMock.Object);
 
         var httpContext = new DefaultHttpContext();
         httpContext.User = new ClaimsPrincipal(new ClaimsIdentity(new[]
@@ -75,7 +80,8 @@ public class TestCertificatesController
             .Options;
 
         await using var dbContext = new AppDbContext(options);
-        dbContext.Resumes.Add(new Resume { Id = 2, UserId = 1, Title = "Curriculo", Email = "a@b.com", PhoneNumber = "123", OwnerName = "Fulano" });
+        dbContext.Resumes.Add(new Resume
+            { Id = 2, UserId = 1, Title = "Curriculo", Email = "a@b.com", PhoneNumber = "123", OwnerName = "Fulano" });
         await dbContext.SaveChangesAsync();
 
         var userManagerMock = new Mock<UserManager<AppUser>>(
@@ -86,8 +92,10 @@ public class TestCertificatesController
         var serviceMock = new Mock<IDomainService<Certificate>>();
         var validatorMock = new Mock<IDomainValidator<Certificate>>();
         var repoMock = new Mock<IRepository<Certificate>>();
+        var mapperMock = new Mock<ICertificateMapper>();
 
-        var module = new CertificatesModule(serviceMock.Object, validatorMock.Object, userManagerMock.Object, roleManagerMock.Object, repoMock.Object);
+        var module = new CertificatesModule(serviceMock.Object, validatorMock.Object, userManagerMock.Object,
+            roleManagerMock.Object, mapperMock.Object, repoMock.Object);
 
         var httpContext = new DefaultHttpContext();
         httpContext.User = new ClaimsPrincipal(new ClaimsIdentity(new[]
