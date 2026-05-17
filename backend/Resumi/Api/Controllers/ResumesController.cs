@@ -36,7 +36,7 @@ public class ResumesController : ControllerBase
     {
         var userId = _userContext.GetUserId();
 
-        Resume newResume = new() 
+        Resume newResume = new()
         {
             Title = title,
             UserId = userId,
@@ -60,10 +60,14 @@ public class ResumesController : ControllerBase
         return Created($"api/resumes/{dto.Id}", Result<ResumeModel>.Success(dto));
     }
 
-    [HttpGet("{id:int}")]
-    public IActionResult Read(int id)
+    [HttpPost("{id:int}")]
+    public async Task<IActionResult> Read(int id)
     {
-        throw new NotImplementedException("Retrieving a resume by ID is not implemented yet.");
+        var result = await _module.Service.FindAsync(id);
+
+        if (!result.Succeeded) return BadRequest(result);
+
+        return Ok(result);
     }
 
     [HttpGet]
