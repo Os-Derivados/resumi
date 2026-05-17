@@ -9,6 +9,9 @@ namespace Resumi.Domain.Validators.Interfaces;
 /// <typeparam name="TEntity">
 /// Uma entidade <see cref="ITrackable"/> que pertença ao domínio da aplicação.
 /// </typeparam>
+/// <remarks>
+/// Validações somente-leitura não devem ser feitas em implementações desta API, pois enquanto validações de escrita validam INVARIANTES de domínio, validações somente-leitura validam ESTADO de domínio.
+/// </remarks>
 public interface IDomainValidator<TEntity> where TEntity : ITrackable
 {
     /// <summary>
