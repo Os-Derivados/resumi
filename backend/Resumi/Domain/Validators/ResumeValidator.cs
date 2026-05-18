@@ -53,6 +53,11 @@ public class ResumeValidator : IDomainValidator<Resume>
             errors.AddError(nameof(Resume), Entity.UpdatePrimaryKeyMismatch);
         }
 
+        if (current is not null && updated is not null && ReferenceEquals(current, updated))
+        {
+            errors.AddError(nameof(Resume), Entity.CannotUpdateFromSameEntity);
+        }
+
         if (updated is not null && updated.Title.Length > MaxTitleLength)
         {
             errors.AddError(nameof(Resume), _titleExceedsMaxSize);
