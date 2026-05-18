@@ -70,6 +70,15 @@ public class ResumeValidator : IDomainValidator<Resume>
 
     public Result<Resume> ValidateDeletion(Resume? targetResume)
     {
-        throw new NotImplementedException();
+        ResultDictionary errors = [];
+
+        if (targetResume is null)
+        {
+            errors.AddError(nameof(Resume), Resume.NotFound);
+        }
+
+        return errors.Count > 0
+            ? Result<Resume>.Failure(errors)
+            : Result<Resume>.Success(targetResume!);
     }
 }
