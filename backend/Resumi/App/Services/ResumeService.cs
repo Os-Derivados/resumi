@@ -12,6 +12,7 @@ namespace Resumi.App.Services;
 public class ResumeService(
     ResumeValidator domainValidator,
     ResumeQueryValidator queryValidator,
+    UserQueryValidator userQueryValidator,
     ILogger<ResumeService> logger,
     AppDbContext dbContext)
 {
@@ -68,9 +69,36 @@ public class ResumeService(
         }
     }
 
-    public Task<Result<IEnumerable<Resume>>> FindByUserAsync(int userId, int skip = 0, int take = 20)
+    public async Task<Result<List<ResumeModel>>> FindByUserAsync(int userId, ResumeProjectionMode projectionMode,
+        int skip = 0, int take = 20)
     {
-        throw new NotImplementedException();
+        try
+        {
+            var validationResult = await userQueryValidator.ValidateSearch(userId);
+
+            if (!validationResult.Succeeded) return Result<List<ResumeModel>>.Failure(validationResult);
+
+            var result = await dbContext.Resumes
+                .AsNoTracking()
+                .Select(projectionMode.ToProjection())
+                .Where(r => r.UserId == userId)
+                .OrderBy(r => r.UserId)
+                .ThenBy(r => r.Id)
+                .Skip(skip)
+                .Take(take)
+                .ToListAsync();
+
+            return result.Count is 0
+                ? Result<List<ResumeModel>>.Failure(nameof(Resume), Resume.NotFound)
+                : Result<List<ResumeModel>>.Success(result);
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Failed to find '{Type}' collections for user '{User}': {Message}", nameof(Resume),
+                userId, ex.Message);
+
+            return Result<List<ResumeModel>>.Failure(nameof(Resume), Resume.FailedToQuery);
+        }
     }
 
     public Task<Result<Resume>> UpdateAsync(Resume? current, Resume? updated)
