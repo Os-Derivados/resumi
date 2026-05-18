@@ -9,6 +9,7 @@ namespace Resumi.Api.Data.Models;
 public record ResumeModel
 {
     public required int Id { get; init; }
+    public required int UserId { get; init; }
     public required string Title { get; init; }
     public string? OwnerName { get; init; }
     public string? Location { get; init; }
