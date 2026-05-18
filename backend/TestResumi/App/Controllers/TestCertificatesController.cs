@@ -8,7 +8,6 @@ using Resumi.Infra.Auth.Constants;
 using Resumi.Api.Data.Models;
 using Resumi.Domain.Validators.Interfaces;
 using Resumi.Infra.Auth;
-using Resumi.Infra.Data.Interfaces;
 using Resumi.Infra.Database.Context;
 using Resumi.Infra.Database.Interfaces;
 

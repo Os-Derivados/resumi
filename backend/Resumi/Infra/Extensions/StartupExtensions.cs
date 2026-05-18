@@ -2,7 +2,6 @@ using Microsoft.OpenApi.Models;
 using Resumi.App.Services;
 using Resumi.App.Validators;
 using Resumi.Domain.Validators;
-using Resumi.Infra.Data.Interfaces;
 
 namespace Resumi.Infra.Extensions;
 
