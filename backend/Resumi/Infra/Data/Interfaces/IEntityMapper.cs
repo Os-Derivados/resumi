@@ -4,7 +4,7 @@ namespace Resumi.Infra.Data.Interfaces;
 /// Este contrato oferece APIs para mapear entidades de domínio para DTOs e vice-versa.
 /// </summary>
 /// <typeparam name="TEntity">
-/// Uma entidade de domínio que implementa <see cref="ITrackable"/>.
+/// Uma entidade de domínio.
 /// </typeparam>
 /// <typeparam name="TDto">
 /// Um DTO (Data Transfer Object).
@@ -15,7 +15,7 @@ namespace Resumi.Infra.Data.Interfaces;
 /// <typeparam name="TUpdate">
 /// Um modelo de atualização.
 /// </typeparam>
-public interface IEntityMapper<TEntity, out TDto, in TCreate, in TUpdate> where TEntity : ITrackable
+public interface IEntityMapper<TEntity, out TDto, in TCreate, in TUpdate>
 {
   /// <summary>
   /// Cria uma nova entidade de domínio a partir de um modelo de criação.

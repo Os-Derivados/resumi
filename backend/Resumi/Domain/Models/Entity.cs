@@ -13,5 +13,5 @@ public abstract class Entity : ITrackable, ICloneableEntity<Entity>
     public DateTime CreatedAt { get; set; }
     public DateTime? UpdatedAt { get; set; }
 
-    public abstract Entity? ShallowCopy(Entity baseEntity);
+    public abstract Entity? ShallowCopy();
 }
