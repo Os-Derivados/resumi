@@ -131,9 +131,32 @@ public class ResumeService(
         }
     }
 
-    public Task<Result<bool>> DeleteAsync(int id)
+    public async Task<Result> DeleteAsync(int id)
     {
-        throw new NotImplementedException();
+        try
+        {
+            var target = await dbContext.Resumes.AsNoTracking().FirstOrDefaultAsync(r => r.Id == id);
+            var validationResult = domainValidator.ValidateDeletion(target);
+
+            if (!validationResult.Succeeded) return Result.Failure(validationResult);
+
+            var deleteResult = dbContext.Resumes.Remove(target!);
+            var deletedEntries = await dbContext.SaveChangesAsync();
+
+            if (deleteResult.State is not EntityState.Deleted || deletedEntries > 0)
+            {
+                return Result.Failure(nameof(Resume), Resume.FailedToDelete);
+            }
+
+            return Result.Success;
+        }
+        catch (Exception ex)
+
+        {
+            logger.LogError(ex, "Failed to delete '{Type}': {Message}", nameof(Resume), ex.Message);
+
+            return Result.Failure(nameof(Resume), Resume.InvalidState);
+        }
     }
 
     public Task<Result<IEnumerable<Resume>>> FindAllAsync(int skip = 0, int take = 20)
