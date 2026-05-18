@@ -1,9 +1,11 @@
 using Microsoft.EntityFrameworkCore;
+using Resumi.Api.Data.Models;
 using Resumi.App.Validators;
 using Resumi.Domain.Models;
 using Resumi.Domain.Validators;
 using Resumi.Infra.Data.Models;
 using Resumi.Infra.Database.Context;
+using Resumi.Infra.Parameters;
 
 namespace Resumi.App.Services;
 
@@ -43,9 +45,27 @@ public class ResumeService(
         }
     }
 
-    public Task<Result<Resume>> FindAsync(int id)
+    public async Task<Result<ResumeModel>> FindAsync(int id, ResumeProjectionMode projectionMode)
     {
-        throw new NotImplementedException();
+        try
+        {
+            var validationResult = await queryValidator.ValidateSearch(id);
+
+            if (!validationResult.Succeeded) return Result<ResumeModel>.Failure(validationResult);
+
+            var result = await dbContext.Resumes.AsNoTracking().Select(projectionMode.ToProjection())
+                .FirstOrDefaultAsync(r => r.Id == id);
+
+            return result is null
+                ? Result<ResumeModel>.Failure(nameof(Resume), Resume.InvalidState)
+                : Result<ResumeModel>.Success(result);
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Failed to search '{Type}' entity: {Message}", nameof(Resume), ex.Message);
+
+            return Result<ResumeModel>.Failure(nameof(Resume), Resume.FailedToQuery);
+        }
     }
 
     public Task<Result<IEnumerable<Resume>>> FindByUserAsync(int userId, int skip = 0, int take = 20)
