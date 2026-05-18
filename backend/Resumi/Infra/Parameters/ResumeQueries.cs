@@ -1,12 +1,13 @@
 using System.Linq.Expressions;
 using Resumi.Api.Data.Models;
+using Resumi.Domain.Models;
 
 namespace Resumi.Infra.Parameters;
 
 /// <summary>
 /// Objeto de parâmetros para alterar consultas somente-leitura para entidades <see cref="Resume"/>  
 /// </summary>
-public struct ResumeIncludes
+public struct ResumeQueries
 {
 	/// <summary>
 	/// Entidade sem relações.
