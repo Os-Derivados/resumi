@@ -1,45 +1,46 @@
-using Resumi.Domain.Validators.Interfaces;
+using Microsoft.EntityFrameworkCore;
+using Resumi.App.Validators;
+using Resumi.Domain.Models;
+using Resumi.Domain.Validators;
 using Resumi.Infra.Data.Models;
 using Resumi.Infra.Database.Context;
-using Resumi.Infra.Database.Interfaces;
 
 namespace Resumi.App.Services;
 
-public class ResumeService : IResumeService
+public class ResumeService(
+    ResumeValidator domainValidator,
+    ResumeQueryValidator queryValidator,
+    ILogger<ResumeService> logger,
+    AppDbContext dbContext)
 {
-    private readonly IDomainValidator<Resume> _validator;
-    private readonly IRepository<Resume> _repository;
-    private readonly AppDbContext _dbContext;
-
-    public ResumeService(
-        IDomainValidator<Resume> validator, 
-        IRepository<Resume> repository, 
-        AppDbContext dbContext)
-    {
-        _validator = validator;
-        _repository = repository;
-        _dbContext = dbContext;
-    }
-
     public async Task<Result<Resume>> CreateAsync(Resume? newResume)
     {
-        var validationResult = _validator.ValidateCreation(newResume);
-
-        if (!validationResult.Succeeded)
+        try
         {
-            return Result<Resume>.Failure(validationResult.Errors);
-        }
+            var validationResult = domainValidator.ValidateCreation(newResume);
 
-        var createdResume = await _repository.AddAsync(newResume!);
-        
-        if (createdResume is null)
+            if (!validationResult.Succeeded)
+            {
+                return Result<Resume>.Failure(validationResult.Errors);
+            }
+
+            var createdResume = await dbContext.Resumes.AddAsync(newResume!);
+
+            if (createdResume.State is not EntityState.Added)
+            {
+                return Result<Resume>.Failure(nameof(Resume), Resume.FailedToCreate);
+            }
+
+            await dbContext.SaveChangesAsync();
+
+            return Result<Resume>.Success(newResume!);
+        }
+        catch (Exception ex)
         {
-            return Result<Resume>.Failure(nameof(Resume), "Não foi possível criar o currículo.");
+            logger.LogError(ex, "Failed to create '{Type}' entity: {Message}", nameof(Resume), ex.Message);
+
+            return Result<Resume>.Failure(nameof(Resume), Resume.FailedToCreate);
         }
-
-        await _dbContext.SaveChangesAsync();
-
-        return Result<Resume>.Success(createdResume);
     }
 
     public Task<Result<Resume>> FindAsync(int id)
