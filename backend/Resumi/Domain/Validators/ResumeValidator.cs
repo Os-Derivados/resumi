@@ -6,9 +6,14 @@ namespace Resumi.Domain.Validators;
 
 public class ResumeValidator : IDomainValidator<Resume>
 {
-    private const int MaxTitleLength = 128;
+    private readonly string _titleExceedsMaxSize =
+        $"O título do currículo não pode exceder {MaxTitleLength} caracteres.";
 
-    public static readonly string NotFound = "Currículo não encontrado.";
+    private readonly string _ownerNameExceedsMaxSize =
+        $"O nome do proprietário do currículo não pode exceder {MaxOwnerNameLength} caracteres.";
+
+    private const int MaxTitleLength = 128;
+    private const int MaxOwnerNameLength = 128;
 
     public Result<Resume> ValidateCreation(Resume? newResume)
     {
@@ -16,13 +21,12 @@ public class ResumeValidator : IDomainValidator<Resume>
 
         if (newResume is null)
         {
-            errors.AddError(nameof(Resume), "O Currículo se encontra num estado inválido para cadastro.");
+            errors.AddError(nameof(Resume), Resume.InvalidState);
         }
 
         if (newResume is not null && newResume.Title.Length > MaxTitleLength)
         {
-            errors.AddError(nameof(Resume.Title),
-                $"O título do currículo não pode exceder {MaxTitleLength} caracteres.");
+            errors.AddError(nameof(Resume.Title), _titleExceedsMaxSize);
         }
 
         return errors.Count > 0
@@ -32,7 +36,36 @@ public class ResumeValidator : IDomainValidator<Resume>
 
     public Result<Resume> ValidateUpdate(Resume? current, Resume? updated)
     {
-        throw new NotImplementedException();
+        ResultDictionary errors = [];
+
+        if (current is null)
+        {
+            errors.AddError(nameof(Resume), Resume.NotFound);
+        }
+
+        if (updated is null)
+        {
+            errors.AddError(nameof(Resume), Resume.InvalidState);
+        }
+
+        if (current is not null && updated is not null && current.Id != updated.Id)
+        {
+            errors.AddError(nameof(Resume), Entity.UpdatePrimaryKeyMismatch);
+        }
+
+        if (updated is not null && updated.Title.Length > MaxTitleLength)
+        {
+            errors.AddError(nameof(Resume), _titleExceedsMaxSize);
+        }
+
+        if (updated?.OwnerName?.Length > MaxOwnerNameLength)
+        {
+            errors.AddError(nameof(Resume), _ownerNameExceedsMaxSize);
+        }
+
+        return errors.Count > 0
+            ? Result<Resume>.Failure(errors)
+            : Result<Resume>.Success(updated!);
     }
 
     public Result<Resume> ValidateDeletion(Resume? targetResume)
