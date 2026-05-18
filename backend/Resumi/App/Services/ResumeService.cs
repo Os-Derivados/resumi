@@ -16,7 +16,7 @@ public class ResumeService(
     ILogger<ResumeService> logger,
     AppDbContext dbContext)
 {
-    public async Task<Result<Resume>> CreateAsync(Resume? newResume)
+    public async Task<Result<ResumeModel>> CreateAsync(Resume? newResume)
     {
         try
         {
@@ -24,25 +24,27 @@ public class ResumeService(
 
             if (!validationResult.Succeeded)
             {
-                return Result<Resume>.Failure(validationResult.Errors);
+                return Result<ResumeModel>.Failure(validationResult.Errors);
             }
 
             var createdResume = await dbContext.Resumes.AddAsync(newResume!);
+            var createdEntries = await dbContext.SaveChangesAsync();
 
-            if (createdResume.State is not EntityState.Added)
+            if (createdResume.State is not EntityState.Added || createdEntries < 1)
             {
-                return Result<Resume>.Failure(nameof(Resume), Resume.FailedToCreate);
+                return Result<ResumeModel>.Failure(nameof(Resume), Resume.FailedToCreate);
             }
 
-            await dbContext.SaveChangesAsync();
+            var createdModel = await dbContext.Resumes.AsNoTracking().Select(ResumeQueries.Basic)
+                .FirstOrDefaultAsync(r => r.Id == newResume!.Id);
 
-            return Result<Resume>.Success(newResume!);
+            return Result<ResumeModel>.Success(createdModel!);
         }
         catch (Exception ex)
         {
             logger.LogError(ex, "Failed to create '{Type}' entity: {Message}", nameof(Resume), ex.Message);
 
-            return Result<Resume>.Failure(nameof(Resume), Resume.FailedToCreate);
+            return Result<ResumeModel>.Failure(nameof(Resume), Resume.InvalidState);
         }
     }
 
@@ -143,7 +145,7 @@ public class ResumeService(
             var deleteResult = dbContext.Resumes.Remove(target!);
             var deletedEntries = await dbContext.SaveChangesAsync();
 
-            if (deleteResult.State is not EntityState.Deleted || deletedEntries > 0)
+            if (deleteResult.State is not EntityState.Deleted || deletedEntries < 1)
             {
                 return Result.Failure(nameof(Resume), Resume.FailedToDelete);
             }
@@ -151,16 +153,10 @@ public class ResumeService(
             return Result.Success;
         }
         catch (Exception ex)
-
         {
             logger.LogError(ex, "Failed to delete '{Type}': {Message}", nameof(Resume), ex.Message);
 
             return Result.Failure(nameof(Resume), Resume.InvalidState);
         }
-    }
-
-    public Task<Result<IEnumerable<Resume>>> FindAllAsync(int skip = 0, int take = 20)
-    {
-        throw new NotImplementedException();
     }
 }
