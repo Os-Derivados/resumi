@@ -9,6 +9,11 @@ namespace Resumi.Domain.Models;
 [Table(("Resumes"))]
 public class Resume : Entity
 {
+    public static readonly string FailedToQuery = "Não foi possível buscar o Currículo.";
+    public static readonly string NotFound = "Currículo não encontrado.";
+    public static readonly string InvalidState = "O Currículo se encontra num estado inválido.";
+
+
     [Required] [ForeignKey(nameof(User))] public int UserId { get; set; }
     public AppUser? User { get; set; }
 
@@ -30,7 +35,7 @@ public class Resume : Entity
 
     [Required] public string? Email { get; set; }
 
-    [Required] public string? PhoneNumber { get; set; }
+    [Phone] [Required] public string? PhoneNumber { get; set; }
 
     /// <summary>
     /// Representa palavras-chave associadas ao currículo, para facilitar buscas.
