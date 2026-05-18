@@ -13,7 +13,7 @@ public class Resume : Entity
     public static readonly string NotFound = "Currículo não encontrado.";
     public static readonly string InvalidState = "O Currículo se encontra num estado inválido.";
     public static readonly string FailedToCreate = "Não foi pssível cadastrar o Currículo.";
-    
+
 
     [Required] [ForeignKey(nameof(User))] public int UserId { get; set; }
     public AppUser? User { get; set; }
@@ -47,4 +47,30 @@ public class Resume : Entity
     public ICollection<Degree>? AcademicDegrees { get; set; }
     public ICollection<Volunteership>? VolunteerExperiences { get; set; }
     public ICollection<Certificate>? Certificates { get; set; }
+
+    public override Resume? ShallowCopy(Entity baseEntity)
+    {
+        try
+        {
+            var resume = (Resume)baseEntity;
+
+            return new Resume
+            {
+                Id = resume.Id,
+                CreatedAt = resume.CreatedAt,
+                UpdatedAt = resume.UpdatedAt,
+                UserId = resume.UserId,
+                Title = resume.Title,
+                OwnerName = resume.OwnerName,
+                Location = resume.Location,
+                Email = resume.Email,
+                PhoneNumber = resume.PhoneNumber,
+                Keywords = resume.Keywords
+            };
+        }
+        catch (InvalidCastException)
+        {
+            return null;
+        }
+    }
 }
