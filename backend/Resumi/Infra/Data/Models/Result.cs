@@ -85,7 +85,11 @@ public record Result<T> : Result
         }
 
         Data = data;
+        Succeeded = succeeded;
     }
+
+    [MemberNotNullWhen(true, nameof(Data))]
+    public new bool Succeeded { get; private init; }
 
     /// <summary>
     /// Representa a informação resultante da operação.
