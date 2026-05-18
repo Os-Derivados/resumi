@@ -1,19 +1,28 @@
 using System.ComponentModel.DataAnnotations;
 using System.Security.Claims;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Resumi.Api.Data.Models;
+using Resumi.App.Services;
 using Resumi.Domain.Models;
+using Resumi.Infra.Auth;
 using Resumi.Infra.Auth.Constants;
 using Resumi.Infra.Data.Models;
+using Resumi.Infra.Database.Context;
+using Resumi.Infra.Parameters;
 
 namespace Resumi.Api.Controllers;
 
 [ApiController]
 [Route("api/resumes")]
 [Authorize]
-public class ResumesController : ControllerBase
-
+public class ResumesController(
+    UserContext userContext,
+    ResumeService service,
+    AppDbContext dbContext,
+    ILogger<ResumesController> logger) : ControllerBase
 {
     [HttpPost]
     [ProducesResponseType(typeof(Result<ResumeModel>), StatusCodes.Status201Created)]
@@ -31,25 +40,21 @@ public class ResumesController : ControllerBase
             PhoneNumber = HttpContext.User.FindFirstValue(ClaimTypes.MobilePhone)
         };
 
-        var creationResult = await _module.Service.CreateAsync(newResume);
+        var result = await service.CreateAsync(newResume);
 
-        if (!creationResult.Succeeded)
+        if (!result.Succeeded)
 
         {
-            return BadRequest(creationResult);
+            return BadRequest(result);
         }
 
-        var dto = mapper.ToDto(creationResult.Data);
-
-        if (dto is null) return UnprocessableEntity();
-
-        return Created($"api/resumes/{dto.Id}", Result<ResumeModel>.Success(dto));
+        return Created($"api/resumes/{result.Data.Id}", result);
     }
 
     [HttpPost("{id:int}")]
     public async Task<IActionResult> Read(int id)
     {
-        var result = await _module.Service.FindAsync(id);
+        var result = await service.FindAsync(id, ResumeProjectionMode.Full);
 
         if (!result.Succeeded) return BadRequest(result);
 
@@ -57,20 +62,53 @@ public class ResumesController : ControllerBase
     }
 
     [HttpGet]
-    public IActionResult ReadAll([Required] int userId, int skip = 0, int take = 20)
+    public async Task<IActionResult> ReadAll([Required] int userId, int skip = 0, int take = 20)
     {
-        throw new NotImplementedException("Retrieving all resumes with pagination is not implemented yet.");
+        var result = await service.FindByUserAsync(userId, ResumeProjectionMode.Full, skip, take);
+
+        if (!result.Succeeded) return BadRequest(result);
+
+        return Ok(result);
     }
 
     [HttpPut("{id:int}")]
-    public IActionResult Update(int id, [FromBody] UpdateResumeModel model)
+    public async Task<IActionResult> Update(int id, [FromBody] UpdateResumeModel model)
     {
-        throw new NotImplementedException("Updating a resume is not implemented yet.");
+        try
+        {
+            var current = await dbContext.Resumes.AsNoTracking().FirstOrDefaultAsync(r => r.Id == id);
+            var updated = current?.ShallowCopy();
+
+            if (current is not null && updated is not null)
+            {
+                updated.Title = model.Title ?? current.Title;
+                updated.OwnerName = model.OwnerName ?? current.OwnerName;
+                updated.Location = model.Location ?? current.Location;
+                updated.Email = model.Email ?? current.Email;
+                updated.PhoneNumber = model.PhoneNumber ?? current.PhoneNumber;
+            }
+
+            var result = await service.UpdateAsync(current, updated);
+
+            if (!result.Succeeded) return BadRequest(result);
+
+            return Ok(result);
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Failed to update Resume: {Message}", ex.Message);
+
+            return UnprocessableEntity();
+        }
     }
 
     [HttpDelete("{id:int}")]
-    public IActionResult Delete(int id)
+    public async Task<IActionResult> Delete(int id)
     {
-        throw new NotImplementedException("Deleting a resume is not implemented yet.");
+        var result = await service.DeleteAsync(id);
+
+        if (!result.Succeeded) return BadRequest(result);
+
+        return NoContent();
     }
 }
