@@ -1,18 +1,37 @@
 using System.Linq.Expressions;
 using Resumi.Api.Data.Models;
 using Resumi.Domain.Models;
+using Resumi.Infra.Exceptions;
 
 namespace Resumi.Infra.Parameters;
 
+using ResumeProjection = Expression<Func<Resume, ResumeModel>>;
+
 /// <summary>
-/// Objeto de parâmetros para alterar consultas somente-leitura para entidades <see cref="Resume"/>  
+/// Objeto de parâmetros para gerar projeções em consultas somente-leitura de entidades <see cref="Resume"/>  
 /// </summary>
-public struct ResumeQueries
+public static class ResumeQueries
 {
+	/// <summary>
+	/// Seleciona o tipo de projeção a partir do tipo de consulta fornecido. 
+	/// </summary>
+	/// <param name="mode">O tipo de consulta fornecido.</param>
+	/// <returns>Uma projeção para entidades <see cref="Resume"/>.</returns>
+	/// <exception cref="InfrastructureException">Se o tipo fornecido não foi devidamente mapeado para projeção.</exception>
+	public static ResumeProjection ToProjection(this ResumeProjectionMode mode)
+	{
+		return mode switch
+		{
+			ResumeProjectionMode.Basic => Basic,
+			ResumeProjectionMode.Full => Full,
+			_ => throw new InfrastructureException($"{nameof(ResumeProjectionMode)} not mapped for projection.")
+		};
+	}
+
 	/// <summary>
 	/// Entidade sem relações.
 	/// </summary>
-	public static Expression<Func<Resume, ResumeModel>> Basic = r => new ResumeModel
+	public static readonly ResumeProjection Basic = r => new ResumeModel
 	{
 		Id = r.Id,
 		Title = r.Title,
@@ -25,7 +44,7 @@ public struct ResumeQueries
 	/// <summary>
 	/// Entidade com todas as relações incluídas.
 	/// </summary>
-	public static Expression<Func<Resume, ResumeModel>> Full = r => new ResumeModel
+	public static readonly ResumeProjection Full = r => new ResumeModel
 	{
 		Id = r.Id,
 		Title = r.Title,
@@ -76,4 +95,20 @@ public struct ResumeQueries
 			StillEngaged = v.StillEngaged
 		}).ToArray()
 	};
+}
+
+/// <summary>
+/// O tipo de projeção a se fazer para entidades <see cref="Resume"/>.
+/// </summary>
+public enum ResumeProjectionMode
+{
+	/// <summary>
+	/// Contém os campos básicos da entidade, sem relacionamentos incluídos.
+	/// </summary>
+	Basic = 0,
+
+	/// <summary>
+	/// Contém os campos básicos da entidade, juntamente de todos os relacionamentos.
+	/// </summary>
+	Full = 1
 }
