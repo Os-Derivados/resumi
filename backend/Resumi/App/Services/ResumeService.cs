@@ -101,9 +101,34 @@ public class ResumeService(
         }
     }
 
-    public Task<Result<Resume>> UpdateAsync(Resume? current, Resume? updated)
+    public async Task<Result<ResumeModel>> UpdateAsync(Resume? current, Resume? updated)
     {
-        throw new NotImplementedException();
+        try
+        {
+            var validationResult = domainValidator.ValidateUpdate(current, updated);
+
+            if (!validationResult.Succeeded) return Result<ResumeModel>.Failure(validationResult);
+
+            var updateResult = dbContext.Resumes.Update(updated!);
+
+            await dbContext.SaveChangesAsync();
+
+            if (updateResult.State is not EntityState.Modified)
+                return Result<ResumeModel>.Failure(nameof(Resume), Resume.FailedToUpdate);
+
+            var updatedModel = await dbContext.Resumes
+                .AsNoTracking()
+                .Select(ResumeQueries.Basic)
+                .FirstOrDefaultAsync(r => r.Id == updated!.Id);
+
+            return Result<ResumeModel>.Success(updatedModel!);
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Failed to update '{Type}': {Message}", nameof(Resume), ex.Message);
+
+            return Result<ResumeModel>.Failure(nameof(Resume), Resume.InvalidState);
+        }
     }
 
     public Task<Result<bool>> DeleteAsync(int id)

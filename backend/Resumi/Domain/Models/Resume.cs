@@ -13,7 +13,7 @@ public class Resume : Entity
     public static readonly string NotFound = "Currículo não encontrado.";
     public static readonly string InvalidState = "O Currículo se encontra num estado inválido.";
     public static readonly string FailedToCreate = "Não foi pssível cadastrar o Currículo.";
-
+    public static readonly string FailedToUpdate = "Não foi possível atualizar o Currículo.";
 
     [Required] [ForeignKey(nameof(User))] public int UserId { get; set; }
     public AppUser? User { get; set; }
