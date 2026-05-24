@@ -34,6 +34,7 @@ public static class ResumeQueries
 	public static readonly ResumeProjection Basic = r => new ResumeModel
 	{
 		Id = r.Id,
+        UserId = r.UserId,
 		Title = r.Title,
 		OwnerName = r.OwnerName,
 		Location = r.Location,
@@ -47,6 +48,7 @@ public static class ResumeQueries
 	public static readonly ResumeProjection Full = r => new ResumeModel
 	{
 		Id = r.Id,
+        UserId = r.UserId,
 		Title = r.Title,
 		OwnerName = r.OwnerName,
 		Location = r.Location,
