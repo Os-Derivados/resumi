@@ -74,42 +74,6 @@ public class TestDegreeService
 	}
 
 	[Fact]
-	public async Task FindAsync_WithValidId_ReturnsSuccess()
-	{
-		// Arrange
-		const int degreeId = 1;
-
-		// Act
-		var result = await _degreeService.FindAsync(degreeId);
-
-		// Assert
-		Assert.True(result.Succeeded);
-		Assert.Equal(degreeId, result.Data?.Id);
-	}
-
-	[Fact]
-	public async Task FindAsync_WithInvalidId_ReturnsFail()
-	{
-		// Act
-		var result = await _degreeService.FindAsync(0);
-
-		// Assert
-		Assert.False(result.Succeeded);
-	}
-
-	[Fact]
-	public async Task FindAllAsync_WithValidParameters_ReturnsSuccess()
-	{
-		// Act
-		var result = await _degreeService.FindByResumeAsync(0, 20);
-
-		// Assert
-		Assert.True(result.Succeeded);
-		Assert.NotNull(result.Data);
-		Assert.Equal(2, result.Data.Count);
-	}
-
-	[Fact]
 	public async Task UpdateAsync_WithValidData_ReturnsSuccess()
 	{
 		// Arrange

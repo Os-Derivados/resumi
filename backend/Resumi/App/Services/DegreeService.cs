@@ -46,52 +46,6 @@ public class DegreeService(
 		}
 	}
 
-	public async Task<Result<DegreeModel>> FindAsync(int id)
-	{
-		try
-		{
-			return await dbContext.AcademicDegrees.AsNoTracking()
-				.Select(DegreeProjections.Basic)
-				.FirstOrDefaultAsync(d => d.Id == id) is { } model
-				? Result<DegreeModel>.Success(model)
-				: Result<DegreeModel>.Failure(nameof(Degree), Degree.NotFound);
-		}
-		catch (Exception ex)
-		{
-			logger.LogError(ex, "Failed to find degree with ID {Id}: {Message}", id, ex.Message);
-
-			return Result<DegreeModel>.Failure(nameof(Degree), Degree.InternalError);
-		}
-	}
-
-	public async Task<Result<List<DegreeModel>>> FindByResumeAsync(int resumeId, int skip = 0, int take = 20)
-	{
-		try
-		{
-			if (skip < 0 || take <= 0 || take > 100)
-			{
-				return Result<List<DegreeModel>>.Failure(
-					nameof(Degree),
-					"Parâmetros de paginação inválidos. Skip deve ser >= 0 e Take deve estar entre 1 e 100.");
-			}
-
-			var degrees = await dbContext.AcademicDegrees.AsNoTracking()
-				.Select(DegreeProjections.Basic)
-				.Where(d => d.ResumeId == resumeId)
-				.Skip(skip)
-				.Take(take)
-				.ToListAsync();
-
-			return Result<List<DegreeModel>>.Success(degrees);
-		}
-		catch (Exception ex)
-		{
-			logger.LogError(ex, "Failed to find degrees for resume ID {ResumeId}: {Message}", resumeId, ex.Message);
-
-			return Result<List<DegreeModel>>.Failure(nameof(Degree), Degree.InternalError);
-		}
-	}
-
 	public async Task<Result<DegreeModel>> UpdateAsync(Degree? current, Degree? updated)
 	{
 		try
