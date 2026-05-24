@@ -43,7 +43,7 @@ public class Experience : ResumeNode
 
 			#endregion
 
-			#region Campos de Degree
+			#region Campos de Experience
 
 			Highlights = Highlights,
 
