@@ -9,7 +9,7 @@ using DegreeProjection = Expression<Func<Degree, DegreeModel>>;
 /// <summary>
 /// Objeto de parâmetros para gerar projeções em consultas somente-leitura de entidades <see cref="Degree"/>  
 /// </summary>
-public static class DegreeQueries
+public static class DegreeProjections
 {
 	public static readonly DegreeProjection Basic = d => new DegreeModel
 	{
@@ -22,6 +22,7 @@ public static class DegreeQueries
 		IsRemote = d.IsRemote,
 		StartDate = d.StartDate,
 		EndDate = d.EndDate,
-		StillEngaged = d.StillEngaged
+		StillEngaged = d.StillEngaged,
+		Level = d.Level.ToDisplayString()
 	};
 }

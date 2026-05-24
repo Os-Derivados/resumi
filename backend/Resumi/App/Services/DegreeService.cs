@@ -33,7 +33,7 @@ public class DegreeService(
 			}
 
 			var createdModel = await dbContext.AcademicDegrees.AsNoTracking()
-				.Select(DegreeQueries.Basic)
+				.Select(DegreeProjections.Basic)
 				.FirstOrDefaultAsync(d => d.Id == newEntity!.Id);
 
 			return Result<DegreeModel>.Success(createdModel!);
@@ -51,7 +51,7 @@ public class DegreeService(
 		try
 		{
 			return await dbContext.AcademicDegrees.AsNoTracking()
-				.Select(DegreeQueries.Basic)
+				.Select(DegreeProjections.Basic)
 				.FirstOrDefaultAsync(d => d.Id == id) is { } model
 				? Result<DegreeModel>.Success(model)
 				: Result<DegreeModel>.Failure(nameof(Degree), Degree.NotFound);
@@ -76,7 +76,7 @@ public class DegreeService(
 			}
 
 			var degrees = await dbContext.AcademicDegrees.AsNoTracking()
-				.Select(DegreeQueries.Basic)
+				.Select(DegreeProjections.Basic)
 				.Where(d => d.ResumeId == resumeId)
 				.Skip(skip)
 				.Take(take)
@@ -114,7 +114,7 @@ public class DegreeService(
 			}
 
 			var updatedModel = await dbContext.AcademicDegrees.AsNoTracking()
-				.Select(DegreeQueries.Basic)
+				.Select(DegreeProjections.Basic)
 				.FirstOrDefaultAsync(d => d.Id == updated!.Id);
 
 			return Result<DegreeModel>.Success(updatedModel!);

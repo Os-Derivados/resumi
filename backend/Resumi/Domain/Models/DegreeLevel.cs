@@ -36,3 +36,21 @@ public enum DegreeLevel
     Doctorate,
     Other,
 }
+
+public static class DegreeLevelExtensions
+{
+    public static string ToDisplayString(this DegreeLevel level)
+    {
+        return level switch
+        {
+            DegreeLevel.HighSchool => "high_school",
+            DegreeLevel.Technical => "technical",
+            DegreeLevel.Associate => "associate",
+            DegreeLevel.Bachelor => "bachelor",
+            DegreeLevel.Master => "master",
+            DegreeLevel.Doctorate => "doctorate",
+            DegreeLevel.Other => "other",
+            _ => level.ToString()
+        };
+    }
+}
