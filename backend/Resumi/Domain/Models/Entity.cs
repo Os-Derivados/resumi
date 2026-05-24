@@ -9,6 +9,8 @@ public abstract class Entity : ITrackable, ICloneableEntity<Entity>
 
     public static readonly string CannotUpdateFromSameEntity = "A entidade atualizada deve ser uma cópia da original";
 
+    public static readonly string InvalidPrimaryKey = "A chave primária da entidade é inválida.";
+
     [Key] public int Id { get; set; }
     public DateTime CreatedAt { get; set; }
     public DateTime? UpdatedAt { get; set; }

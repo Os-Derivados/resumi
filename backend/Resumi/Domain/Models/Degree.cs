@@ -10,6 +10,11 @@ namespace Resumi.Domain.Models;
 public class Degree : ResumeNode
 {
 	public static readonly string FailedToCreate = "Não foi possível cadastrar formação acadêmica.";
+	public static readonly string FailedToUpdate = "Não foi possível atualizar a formação acadêmica.";
+	public static readonly string FailedToDelete = "Não foi possível deletar a formação acadêmica.";
+	public static readonly string NotFound = "Formação acadêmica não encontrada.";
+	public static readonly string InternalError = "Ocorreu um erro interno ao processar formação acadêmica.";
+	public static readonly string InvalidState = "O estado da formação acadêmica é inválido para esta operação.";
 
 	public string? Highlights { get; set; }
 

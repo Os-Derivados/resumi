@@ -1,126 +1,165 @@
+using Microsoft.EntityFrameworkCore;
+using Resumi.Api.Data.Models;
+using Resumi.Domain.Models;
 using Resumi.Domain.Validators.Interfaces;
 using Resumi.Infra.Data.Models;
 using Resumi.Infra.Database.Context;
-using Resumi.Infra.Database.Interfaces;
+using Resumi.Infra.Parameters;
 
 namespace Resumi.App.Services;
 
-public class DegreeService : IDegreeService
+public class DegreeService(
+    IDomainValidator<Degree> validator,
+    ILogger<DegreeService> logger,
+    AppDbContext dbContext)
 {
-    private readonly IDomainValidator<Degree> _validator;
-    private readonly IRepository<Degree> _repository;
-    private readonly AppDbContext _dbContext;
-
-    public DegreeService(
-        IDomainValidator<Degree> validator,
-        IRepository<Degree> repository,
-        AppDbContext dbContext)
+    public async Task<Result<DegreeModel>> CreateAsync(Degree? newEntity)
     {
-        _validator = validator;
-        _repository = repository;
-        _dbContext = dbContext;
+        try
+        {
+            var validationResult = validator.ValidateCreation(newEntity);
+
+            if (!validationResult.Succeeded)
+            {
+                return Result<DegreeModel>.Failure(validationResult.Errors!);
+            }
+
+            var creationResult = await dbContext.AcademicDegrees.AddAsync(newEntity!);
+            var createdEntries = await dbContext.SaveChangesAsync();
+
+            if (creationResult.State is not EntityState.Added || createdEntries < 1)
+            {
+                return Result<DegreeModel>.Failure(nameof(Degree), Degree.FailedToCreate);
+            }
+
+            var createdModel = await dbContext.AcademicDegrees.AsNoTracking()
+                .Select(DegreeQueries.Basic)
+                .FirstOrDefaultAsync(d => d.Id == newEntity!.Id);
+
+            return Result<DegreeModel>.Success(createdModel!);
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Failed to create degree: {Message}", ex.Message);
+
+            return Result<DegreeModel>.Failure(nameof(Degree), Degree.InternalError);
+        }
     }
 
-    public async Task<Result<Degree>> CreateAsync(Degree? newEntity)
+    public async Task<Result<DegreeModel>> FindAsync(int id)
     {
-        var validationResult = _validator.ValidateCreation(newEntity);
-
-        if (!validationResult.Succeeded)
+        try
         {
-            return Result<Degree>.Failure(validationResult.Errors);
+            return await dbContext.AcademicDegrees.AsNoTracking()
+                .Select(DegreeQueries.Basic)
+                .FirstOrDefaultAsync(d => d.Id == id) is { } model
+                ? Result<DegreeModel>.Success(model)
+                : Result<DegreeModel>.Failure(nameof(Degree), Degree.NotFound);
         }
-
-        var createdDegree = await _repository.AddAsync(newEntity!);
-
-        if (createdDegree is null)
+        catch (Exception ex)
         {
-            return Result<Degree>.Failure(nameof(Degree), "Não foi possível criar a formação acadêmica.");
+            logger.LogError(ex, "Failed to find degree with ID {Id}: {Message}", id, ex.Message);
+
+            return Result<DegreeModel>.Failure(nameof(Degree), Degree.InternalError);
         }
-
-        await _dbContext.SaveChangesAsync();
-
-        return Result<Degree>.Success(createdDegree);
     }
 
-    public async Task<Result<Degree>> FindAsync(int id)
+    public async Task<Result<List<DegreeModel>>> FindByResumeAsync(int resumeId, int skip = 0, int take = 20)
     {
-        if (id <= 0)
+        try
         {
-            return Result<Degree>.Failure(nameof(Degree), "ID inválido para busca de formação acadêmica.");
+            if (skip < 0 || take <= 0 || take > 100)
+            {
+                return Result<List<DegreeModel>>.Failure(
+                    nameof(Degree),
+                    "Parâmetros de paginação inválidos. Skip deve ser >= 0 e Take deve estar entre 1 e 100.");
+            }
+
+            var degrees = await dbContext.AcademicDegrees.AsNoTracking()
+                .Select(DegreeQueries.Basic)
+                .Where(d => d.ResumeId == resumeId)
+                .Skip(skip)
+                .Take(take)
+                .ToListAsync();
+
+            return Result<List<DegreeModel>>.Success(degrees);
         }
-
-        var degree = await _repository.GetByIdAsync(id);
-
-        if (degree is null)
+        catch (Exception ex)
         {
-            return Result<Degree>.Failure(nameof(Degree), "Formação acadêmica não encontrada.");
-        }
+            logger.LogError(ex, "Failed to find degrees for resume ID {ResumeId}: {Message}", resumeId, ex.Message);
 
-        return Result<Degree>.Success(degree);
+            return Result<List<DegreeModel>>.Failure(nameof(Degree), Degree.InternalError);
+        }
     }
 
-    public async Task<Result<IEnumerable<Degree>>> FindAllAsync(int skip = 0, int take = 20)
+    public async Task<Result<DegreeModel>> UpdateAsync(Degree? current, Degree? updated)
     {
-        if (skip < 0 || take <= 0 || take > 100)
+        try
         {
-            return Result<IEnumerable<Degree>>.Failure(
-                nameof(Degree),
-                "Parâmetros de paginação inválidos. Skip deve ser >= 0 e Take deve estar entre 1 e 100.");
+            var validationResult = validator.ValidateUpdate(current, updated);
+
+            if (!validationResult.Succeeded)
+            {
+                return Result<DegreeModel>.Failure(validationResult.Errors!);
+            }
+
+            var updateResult = dbContext.AcademicDegrees.Update(updated!);
+            var updatedEntities = await dbContext.SaveChangesAsync();
+
+            if (updateResult.State is not EntityState.Modified || updatedEntities < 1)
+            {
+                return Result<DegreeModel>.Failure(
+                    nameof(Degree),
+                    Degree.FailedToUpdate);
+            }
+
+            var updatedModel = await dbContext.AcademicDegrees.AsNoTracking()
+                .Select(DegreeQueries.Basic)
+                .FirstOrDefaultAsync(d => d.Id == updated!.Id);
+
+            return Result<DegreeModel>.Success(updatedModel!);
         }
-
-        var degrees = await _repository.GetAllAsync(skip, take);
-
-        if (degrees is null)
+        catch (Exception ex)
         {
-            return Result<IEnumerable<Degree>>.Failure(
-                nameof(Degree),
-                "Não foi possível recuperar as formações acadêmicas.");
-        }
+            logger.LogError(ex, "Failed to update degree with ID {Id}: {Message}", current?.Id, ex.Message);
 
-        return Result<IEnumerable<Degree>>.Success(degrees);
+            return Result<DegreeModel>.Failure(nameof(Degree), Degree.InternalError);
+        }
     }
 
-    public async Task<Result<Degree>> UpdateAsync(Degree? current, Degree? updated)
+    public async Task<Result> DeleteAsync(int id)
     {
-        var validationResult = _validator.ValidateUpdate(current, updated);
-
-        if (!validationResult.Succeeded)
+        try
         {
-            return Result<Degree>.Failure(validationResult.Errors);
+            if (id <= 0)
+            {
+                return Result.Failure(nameof(Degree), Entity.InvalidPrimaryKey);
+            }
+
+            var existingEntity = await dbContext.AcademicDegrees.FindAsync(id);
+
+            if (existingEntity is null)
+            {
+                return Result.Failure(nameof(Degree), Degree.NotFound);
+            }
+
+            var removalResult = dbContext.AcademicDegrees.Remove(existingEntity);
+            var deletedEntries = await dbContext.SaveChangesAsync();
+
+            if (removalResult.State is not EntityState.Deleted || deletedEntries < 1)
+            {
+                return Result.Failure(
+                    nameof(Degree),
+                    Degree.FailedToDelete);
+            }
+
+            return Result.Success;
         }
-
-        var updatedDegree = await _repository.UpdateAsync(updated!);
-
-        if (updatedDegree is null)
+        catch (Exception ex)
         {
-            return Result<Degree>.Failure(
-                nameof(Degree),
-                "Não foi possível atualizar a formação acadêmica.");
+            logger.LogError(ex, "Failed to delete degree with ID {Id}: {Message}", id, ex.Message);
+
+            return Result.Failure(nameof(Degree), Degree.InternalError);
         }
-
-        await _dbContext.SaveChangesAsync();
-
-        return Result<Degree>.Success(updatedDegree);
-    }
-
-    public async Task<Result<bool>> DeleteAsync(int id)
-    {
-        if (id <= 0)
-        {
-            return Result<bool>.Failure(nameof(Degree), "ID inválido para exclusão de formação acadêmica.");
-        }
-
-        var deleted = await _repository.DeleteAsync(id);
-
-        if (!deleted)
-        {
-            return Result<bool>.Failure(
-                nameof(Degree),
-                "Não foi possível deletar a formação acadêmica.");
-        }
-
-        await _dbContext.SaveChangesAsync();
-
-        return Result<bool>.Success(true);
     }
 }
