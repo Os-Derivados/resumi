@@ -2,7 +2,7 @@ using System.Linq.Expressions;
 using Resumi.Api.Data.Models;
 using Resumi.Domain.Models;
 
-namespace Resumi.Infra.Parameters;
+namespace Resumi.Infra.Projections;
 
 using DegreeProjection = Expression<Func<Degree, DegreeModel>>;
 

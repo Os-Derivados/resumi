@@ -5,7 +5,7 @@ using Resumi.Domain.Models;
 using Resumi.Domain.Validators;
 using Resumi.Infra.Data.Models;
 using Resumi.Infra.Database.Context;
-using Resumi.Infra.Parameters;
+using Resumi.Infra.Projections;
 
 namespace Resumi.App.Services;
 
@@ -24,7 +24,7 @@ public class ResumeService(
 
             if (!validationResult.Succeeded)
             {
-                return Result<ResumeModel>.Failure(validationResult.Errors);
+                return Result<ResumeModel>.Failure(validationResult.Errors!);
             }
 
             var createdResume = await dbContext.Resumes.AddAsync(newResume!);

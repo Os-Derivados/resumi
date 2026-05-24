@@ -3,7 +3,7 @@ using Resumi.Api.Data.Models;
 using Resumi.Domain.Models;
 using Resumi.Infra.Exceptions;
 
-namespace Resumi.Infra.Parameters;
+namespace Resumi.Infra.Projections;
 
 using ResumeProjection = Expression<Func<Resume, ResumeModel>>;
 
@@ -34,7 +34,7 @@ public static class ResumeQueries
 	public static readonly ResumeProjection Basic = r => new ResumeModel
 	{
 		Id = r.Id,
-        UserId = r.UserId,
+		UserId = r.UserId,
 		Title = r.Title,
 		OwnerName = r.OwnerName,
 		Location = r.Location,
@@ -48,7 +48,7 @@ public static class ResumeQueries
 	public static readonly ResumeProjection Full = r => new ResumeModel
 	{
 		Id = r.Id,
-        UserId = r.UserId,
+		UserId = r.UserId,
 		Title = r.Title,
 		OwnerName = r.OwnerName,
 		Location = r.Location,
