@@ -8,23 +8,6 @@ namespace Resumi.Infra.Extensions;
 public static class StartupExtensions
 {
     /// <summary>
-    /// Inclui os módulos de domínio no contêiner de injeção de dependência.
-    /// Esses módulos são responsáveis por agrupar funcionalidades relacionadas a um determinado domínio da aplicação.
-    /// </summary>
-    /// <param name="services">
-    /// O contêiner de serviços onde os módulos de domínio serão registrados.
-    /// </param>
-    public static void AddDomainModules(this IServiceCollection services)
-    {
-        services.AddScoped<ResumesModule>();
-        services.AddScoped<UsersModule>();
-        services.AddScoped<DegreesModule>();
-        services.AddScoped<CertificatesModule>();
-        services.AddScoped<ExperiencesModule>();
-        services.AddScoped<VolunteershipsModule>();
-    }
-
-    /// <summary>
     /// Inclui os serviços de domínio no contêiner de injeção de dependência.
     /// Esses serviços são responsáveis pela lógica de negócios da aplicação.
     /// </summary>
@@ -62,20 +45,6 @@ public static class StartupExtensions
     public static void AddQueryValidators(this IServiceCollection services)
     {
         services.AddScoped<UserQueryValidator>();
-    }
-
-    /// <summary>
-    /// Registra os mapeadores de entidades no contêiner de injeção de dependência.
-    /// Esses mapeadores são responsáveis por converter entre modelos de domínio e modelos de dados.
-    /// </summary>
-    /// <param name="services">
-    /// O contêiner de serviços onde os mapeadores serão registrados.
-    /// </param>
-    public static void AddEntityMappers(this IServiceCollection services)
-    {
-        services.AddScoped<IResumeMapper, ResumeMapper>();
-        services.AddScoped<IUserMapper, UserMapper>();
-        services.AddScoped<ICertificateMapper, CertificateMapper>();
     }
 
     /// <summary>

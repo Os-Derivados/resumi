@@ -37,8 +37,8 @@ if (!string.IsNullOrEmpty(defaultConnection))
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddApiDocumentation();
-builder.Services.AddEntityMappers();
 builder.Services.AddDomainValidators();
+builder.Services.AddQueryValidators();
 builder.Services.AddDomainServices();
 builder.Services.AddIdentityCore<AppUser>()
     .AddRoles<IdentityRole<int>>()
@@ -67,7 +67,6 @@ builder.Services.AddExceptionHandler((options) =>
 });
 
 builder.Services.AddProblemDetails();
-builder.Services.AddDomainModules();
 builder.AddJwtSettings();
 builder.AddJwtAuth();
 builder.Services.AddScoped<IAuthManager, AuthManager>();
