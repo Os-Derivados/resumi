@@ -1,10 +1,16 @@
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Resumi.Api.Data.Models;
+using Resumi.App.Services;
+using Resumi.Domain.Models;
 using Resumi.Infra.Auth;
 using Resumi.Infra.Auth.Interfaces;
 using Resumi.Infra.Constants;
+using Resumi.Infra.Data.Mappers;
 using Resumi.Infra.Data.Models;
+using Resumi.Infra.Exceptions;
 
 namespace Resumi.Api.Controllers;
 
@@ -12,41 +18,34 @@ namespace Resumi.Api.Controllers;
 [Route("api/users")]
 [Authorize]
 [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-[ProducesResponseType(StatusCodes.Status422UnprocessableEntity)]
-public class UsersController : ControllerBase
+[ProducesResponseType(StatusCodes.Status403Forbidden)]
+[ProducesResponseType<Result<UserModel>>(StatusCodes.Status400BadRequest)]
+[ProducesResponseType<Result<UserModel>>(StatusCodes.Status422UnprocessableEntity)]
+public class UsersController(
+    IAuthManager authManager,
+    UserMapper mapper,
+    UserService service,
+    UserManager<AppUser> userManager) : ControllerBase
 {
-    private readonly UsersModule _module;
-    private readonly IAuthManager _authManager;
-
-    public UsersController(UsersModule module, IAuthManager authManager)
-    {
-        _module = module;
-        _authManager = authManager;
-    }
-
     [HttpPost]
     [AllowAnonymous]
+    [ProducesResponseType<Result<UserModel>>(StatusCodes.Status201Created)]
     public async Task<IActionResult> Create([FromBody] CreateUserModel model)
     {
-        var newUser = _module.Mapper.NewDomainModel(model);
-        var userService = (IUserService)_module.Service;
-        var creationResult = await userService.CreateAsync(newUser, model.Password);
+        var newUser = mapper.NewDomainModel(model);
+        var creationResult = await service.CreateAsync(newUser, model.Password);
 
         if (!creationResult.Succeeded)
         {
             return BadRequest(creationResult);
         }
 
-        var createdUser = _module.Mapper.ToDto(creationResult.Data);
-
-        if (createdUser is null) return UnprocessableEntity();
-
-        return Created($"/api/users/{createdUser.Id}", Result<UserModel>.Success(createdUser));
+        return Created($"/api/users/{creationResult.Data.Id}", Result<UserModel>.Success(creationResult.Data));
     }
 
     [HttpGet("me")]
-    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Result<UserModel>))]
-    public ActionResult<UserModel> GetAuthor()
+    [ProducesResponseType<Result<UserModel>>(StatusCodes.Status200OK)]
+    public IActionResult GetAuthor()
     {
         var sessionUser = UserModel.FromClaimsPrincipal(HttpContext.User);
 
@@ -56,42 +55,76 @@ public class UsersController : ControllerBase
     }
 
     [HttpGet("{id:int}")]
-    public IActionResult Read(int id)
+    [Authorize(Roles = "Admin")]
+    [ProducesResponseType<Result<UserModel>>(StatusCodes.Status200OK)]
+    [ProducesResponseType<Result<UserModel>>(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> Read(int id)
     {
-        throw new NotImplementedException("Retrieving a user by ID is not implemented yet.");
+        var result = await service.FindAsync(id);
+
+        if (!result.Succeeded) return BadRequest(result);
+
+        return Ok(result);
     }
 
     [HttpGet]
-    public IActionResult ReadAll(int skip = 0, int take = 20)
+    [Authorize(Roles = "Admin")]
+    [ProducesResponseType<Result<List<UserModel>>>(StatusCodes.Status200OK)]
+    public async Task<IActionResult> ReadAll(int skip = 0, int take = 20)
     {
-        throw new NotImplementedException("Retrieving all users is not implemented yet.");
+        var result = await service.FindAllAsync(skip, take);
+
+        if (!result.Succeeded) return BadRequest(result);
+
+        return Ok(result);
     }
 
     [HttpPut("{id:int}")]
-    public IActionResult Update(int id, [FromBody] UpdateUserModel model)
+    [ProducesResponseType<Result<List<UserModel>>>(StatusCodes.Status200OK)]
+    public async Task<IActionResult> Update(int id, [FromBody] UpdateUserModel model)
     {
-        throw new NotImplementedException("Updating a user is not implemented yet.");
+        var sessionUser = UserModel.FromClaimsPrincipal(HttpContext.User)
+                          ?? throw new InfrastructureException("An user should be authenticated at this point.");
+
+        if (sessionUser.Id != id && !User.IsInRole("Admin"))
+        {
+            return Forbid();
+        }
+
+        var current = await userManager.FindByEmailAsync(id.ToString());
+        var updated = mapper.UpdatedDomainModel(model, current);
+        var result = await service.UpdateAsync(current, updated);
+
+        if (!result.Succeeded) return BadRequest(result);
+
+        return Ok(result);
     }
 
     [HttpDelete("{id:int}")]
-    public IActionResult Delete(int id)
+    [Authorize(Roles = "Admin")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    public async Task<IActionResult> Delete(int id)
     {
-        throw new NotImplementedException("Deleting a user is not implemented yet.");
+        var result = await service.DeleteAsync(id);
+
+        if (!result.Succeeded) return BadRequest(result);
+
+        return NoContent();
     }
 
     [HttpPost("login")]
     [AllowAnonymous]
     public async Task<IActionResult> Login([FromBody] LoginModel model)
     {
-        var user = await _module.UserManager.FindByEmailAsync(model.Email);
+        var user = await userManager.FindByEmailAsync(model.Email);
 
         if (user is null) return NotFound();
 
-        var passwordValid = await _module.UserManager.CheckPasswordAsync(user, model.Password);
+        var passwordValid = await userManager.CheckPasswordAsync(user, model.Password);
 
         if (!passwordValid) return Unauthorized();
 
-        var authResponse = _authManager.NewAuthResponse(user);
+        var authResponse = authManager.NewAuthResponse(user);
 
         HttpContext.Response.Cookies.Append(AuthConstants.JwtCookie, authResponse.Token!, new CookieOptions
         {
