@@ -35,7 +35,7 @@ public class ResumeService(
 				return Result<ResumeModel>.Failure(nameof(Resume), Resume.FailedToCreate);
 			}
 
-			var createdModel = await dbContext.Resumes.AsNoTracking().Select(ResumeQueries.Basic)
+			var createdModel = await dbContext.Resumes.AsNoTracking().Select(ResumeProjections.Basic)
 				.FirstOrDefaultAsync(r => r.Id == newResume!.Id);
 
 			return Result<ResumeModel>.Success(createdModel!);
@@ -120,7 +120,7 @@ public class ResumeService(
 
 			var updatedModel = await dbContext.Resumes
 				.AsNoTracking()
-				.Select(ResumeQueries.Basic)
+				.Select(ResumeProjections.Basic)
 				.FirstOrDefaultAsync(r => r.Id == updated!.Id);
 
 			return Result<ResumeModel>.Success(updatedModel!);

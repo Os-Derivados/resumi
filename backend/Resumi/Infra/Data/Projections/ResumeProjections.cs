@@ -10,7 +10,7 @@ using ResumeProjection = Expression<Func<Resume, ResumeModel>>;
 /// <summary>
 /// Objeto de parâmetros para gerar projeções em consultas somente-leitura de entidades <see cref="Resume"/>  
 /// </summary>
-public static class ResumeQueries
+public static class ResumeProjections
 {
 	/// <summary>
 	/// Seleciona o tipo de projeção a partir do tipo de consulta fornecido. 
@@ -24,6 +24,7 @@ public static class ResumeQueries
 		{
 			ResumeProjectionMode.Basic => Basic,
 			ResumeProjectionMode.Full => Full,
+			ResumeProjectionMode.Experiences => Experiences,
 			_ => throw new InfrastructureException($"{nameof(ResumeProjectionMode)} not mapped for projection.")
 		};
 	}
@@ -54,48 +55,21 @@ public static class ResumeQueries
 		Location = r.Location,
 		Email = r.Email,
 		PhoneNumber = r.PhoneNumber,
-		Degrees = r.AcademicDegrees!.Select(d => new DegreeModel
-		{
-			Id = d.Id,
-			ResumeId = d.ResumeId,
-			Name = d.Name,
-			Description = d.Description,
-			InstitutionName = d.InstitutionName,
-			Location = d.Location,
-			IsRemote = d.IsRemote,
-			StartDate = d.StartDate,
-			EndDate = d.EndDate,
-			StillEngaged = d.StillEngaged,
-			Highlights = d.Highlights,
-			Level = d.Level.ToString()
-		}).ToArray(),
-		Experiences = r.Experiences!.Select(e => new ExperienceModel
-		{
-			Id = e.Id,
-			ResumeId = e.ResumeId,
-			Name = e.Name,
-			Description = e.Description,
-			InstitutionName = e.InstitutionName,
-			Location = e.Location,
-			IsRemote = e.IsRemote,
-			StartDate = e.StartDate,
-			EndDate = e.EndDate,
-			StillEngaged = e.StillEngaged,
-			Highlights = e.Highlights
-		}).ToArray(),
-		Volunteerships = r.VolunteerExperiences!.Select(v => new VolunteershipModel
-		{
-			Id = v.Id,
-			ResumeId = v.ResumeId,
-			Name = v.Name,
-			Description = v.Description,
-			InstitutionName = v.InstitutionName,
-			Location = v.Location,
-			IsRemote = v.IsRemote,
-			StartDate = v.StartDate,
-			EndDate = v.EndDate,
-			StillEngaged = v.StillEngaged
-		}).ToArray()
+		Degrees = r.AcademicDegrees!.Select(DegreeProjections.Basic.Compile()).ToArray(),
+		Experiences = r.Experiences!.Select(ExperienceProjections.Basic.Compile()).ToArray(),
+		Volunteerships = r.VolunteerExperiences!.Select(VolunteershipProjections.Basic.Compile()).ToArray()
+	};
+
+	public static readonly ResumeProjection Experiences = r => new ResumeModel
+	{
+		Id = r.Id,
+		UserId = r.UserId,
+		Title = r.Title,
+		OwnerName = r.OwnerName,
+		Location = r.Location,
+		Email = r.Email,
+		PhoneNumber = r.PhoneNumber,
+		Experiences = r.Experiences!.Select(ExperienceProjections.Basic.Compile()).ToArray()
 	};
 }
 
@@ -112,5 +86,10 @@ public enum ResumeProjectionMode
 	/// <summary>
 	/// Contém os campos básicos da entidade, juntamente de todos os relacionamentos.
 	/// </summary>
-	Full = 1
+	Full = 1,
+
+	/// <summary>
+	/// Contém os campos básicos da entidade, juntamente de todas as experiências profissionais relacionadas, mas sem outros relacionamentos.
+	/// </summary>
+	Experiences = 2
 }
