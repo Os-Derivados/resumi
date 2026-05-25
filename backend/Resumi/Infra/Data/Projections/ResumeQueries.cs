@@ -3,7 +3,7 @@ using Resumi.Api.Data.Models;
 using Resumi.Domain.Models;
 using Resumi.Infra.Exceptions;
 
-namespace Resumi.Infra.Projections;
+namespace Resumi.Infra.Data.Projections;
 
 using ResumeProjection = Expression<Func<Resume, ResumeModel>>;
 

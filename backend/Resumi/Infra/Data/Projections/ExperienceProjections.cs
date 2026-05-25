@@ -2,7 +2,7 @@ using System.Linq.Expressions;
 using Resumi.Api.Data.Models;
 using Resumi.Domain.Models;
 
-namespace Resumi.Infra.Projections;
+namespace Resumi.Infra.Data.Projections;
 
 using ExperienceProjection = Expression<Func<Experience, ExperienceModel>>;
 

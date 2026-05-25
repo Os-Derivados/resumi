@@ -4,7 +4,7 @@ using Resumi.Domain.Models;
 using Resumi.Domain.Validators.Interfaces;
 using Resumi.Infra.Data.Models;
 using Resumi.Infra.Database.Context;
-using Resumi.Infra.Projections;
+using Resumi.Infra.Data.Projections;
 
 namespace Resumi.App.Services;
 
