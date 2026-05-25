@@ -16,4 +16,40 @@ public class Certificate : ResumeNode
     [Required]
     [DefaultValue(CertificateType.Course)]
     public CertificateType Type { get; set; }
+
+    public override Certificate ShallowCopy()
+    {
+        return new Certificate
+        {
+            #region Campos de Entity
+
+            Id = Id,
+            CreatedAt = CreatedAt,
+            UpdatedAt = UpdatedAt,
+
+            #endregion
+
+            #region Campos de ResumeNode
+
+            ResumeId = ResumeId,
+            Name = Name,
+            Description = Description,
+            InstitutionName = InstitutionName,
+            Location = Location,
+            IsRemote = IsRemote,
+            StartDate = StartDate,
+            EndDate = EndDate,
+            StillEngaged = StillEngaged,
+
+            #endregion
+
+            #region Campos de Certificate
+
+            Type = Type,
+            CredentialId = CredentialId,
+            CredentialUrl = CredentialUrl
+
+            #endregion
+        };
+    }
 }
