@@ -30,3 +30,19 @@ public enum CertificateType
 	/// </summary>
 	Nomination = 4,
 }
+
+public static class CertificateTypeExtensions
+{
+	public static string ToDisplayString(this CertificateType type)
+	{
+		return type switch
+		{
+			CertificateType.Course => "course",
+			CertificateType.License => "license",
+			CertificateType.Badge => "badge",
+			CertificateType.Extracurricular => "extracurricular",
+			CertificateType.Nomination => "nomination",
+			_ => "unknown"
+		};
+	}
+}
