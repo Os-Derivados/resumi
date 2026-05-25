@@ -135,28 +135,42 @@ public class UserService(
         }
     }
 
-    public async Task<Result<AppUser>> CreateAsync(AppUser? newEntity, string password)
+    public async Task<Result<UserModel>> CreateAsync(AppUser? newEntity, string password)
     {
-        var existingUser = await userManager.FindByEmailAsync(newEntity?.Email ?? string.Empty);
-
-        if (newEntity is not null && existingUser is not null)
+        try
         {
-            return Result<AppUser>.Failure(
-                nameof(AppUser),
-                "User with the same email already exists."
-            );
+            var existingUser = await userManager.FindByEmailAsync(newEntity?.Email ?? string.Empty);
+
+            if (newEntity is not null && existingUser is not null)
+            {
+                return Result<UserModel>.Failure(
+                    nameof(AppUser),
+                    "User with the same email already exists."
+                );
+            }
+
+            var creationResult = await userManager.CreateAsync(newEntity!, password);
+
+            if (!creationResult.Succeeded)
+            {
+                return Result<UserModel>.Failure(
+                    nameof(AppUser),
+                    string.Join("; ", creationResult.Errors.Select(e => e.Description))
+                );
+            }
+
+            var createdEntity = await dbContext.Users
+                .AsNoTracking()
+                .Select(UserProjections.Basic)
+                .FirstOrDefaultAsync(u => u.Id == newEntity!.Id);
+
+            return Result<UserModel>.Success(createdEntity!);
         }
-
-        var creationResult = await userManager.CreateAsync(newEntity!, password);
-
-        if (!creationResult.Succeeded)
+        catch (Exception ex)
         {
-            return Result<AppUser>.Failure(
-                nameof(AppUser),
-                string.Join("; ", creationResult.Errors.Select(e => e.Description))
-            );
-        }
+            logger.LogError(ex, "Error creating user: {Message}", ex.Message);
 
-        return Result<AppUser>.Success(newEntity!);
+            return Result<UserModel>.Failure(nameof(AppUser), AppUser.InternalError);
+        }
     }
 }
