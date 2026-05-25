@@ -10,6 +10,13 @@ namespace Resumi.Domain.Models;
 [Table("Certificates")]
 public class Certificate : ResumeNode
 {
+    public static readonly string FailedToCreate = "Não foi possível cadastrar certificado.";
+    public static readonly string FailedToUpdate = "Não foi possível atualizar o certificado.";
+    public static readonly string FailedToDelete = "Não foi possível deletar o certificado.";
+    public static readonly string NotFound = "certificado não encontrado.";
+    public static readonly string InternalError = "Ocorreu um erro interno ao processar certificado.";
+    public static readonly string InvalidState = "O estado do certificado é inválido para esta operação.";
+
     public string? CredentialId { get; set; }
     public string? CredentialUrl { get; set; }
 

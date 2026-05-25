@@ -1,100 +1,110 @@
 using Microsoft.EntityFrameworkCore;
+using Resumi.Api.Data.Models;
+using Resumi.Domain.Models;
 using Resumi.Domain.Validators.Interfaces;
 using Resumi.Infra.Data.Models;
+using Resumi.Infra.Data.Projections;
 using Resumi.Infra.Database.Context;
-using Resumi.Infra.Database.Interfaces;
 
 namespace Resumi.App.Services;
 
-public class CertificateService : ICertificateService
+public class CertificateService(
+    IDomainValidator<ResumeNode> validator,
+    ILogger<CertificateService> logger,
+    AppDbContext dbContext)
 {
-    private readonly IDomainValidator<Certificate> _validator;
-    private readonly IRepository<Certificate> _repository;
-    private readonly AppDbContext _dbContext;
-
-    public CertificateService(
-        IDomainValidator<Certificate> validator,
-        IRepository<Certificate> repository,
-        AppDbContext dbContext)
+    public async Task<Result<CertificateModel>> CreateAsync(Certificate? newEntity)
     {
-        _validator = validator;
-        _repository = repository;
-        _dbContext = dbContext;
+        try
+        {
+            var validationResult = validator.ValidateCreation(newEntity);
+
+            if (!validationResult.Succeeded)
+            {
+                return Result<CertificateModel>.Failure(validationResult);
+            }
+
+            var creationResult = await dbContext.Certificates.AddAsync(newEntity!);
+            var changedEntries = await dbContext.SaveChangesAsync();
+
+            if (creationResult.State is not EntityState.Added || changedEntries is 0)
+            {
+                return Result<CertificateModel>.Failure(nameof(Certificate), Certificate.FailedToCreate);
+            }
+
+            var createdEntity = await dbContext.Certificates
+                .AsNoTracking()
+                .Select(CertificateProjections.Basic)
+                .FirstOrDefaultAsync(c => c.Id == creationResult.Entity.Id);
+
+            return Result<CertificateModel>.Success(createdEntity!);
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Failed to create certificate: {Message}", ex.Message);
+
+            return Result<CertificateModel>.Failure(nameof(Certificate), Certificate.InternalError);
+        }
     }
 
-    public async Task<Result<Certificate>> CreateAsync(Certificate? newEntity)
+    public async Task<Result<CertificateModel>> UpdateAsync(Certificate? current, Certificate? updated)
     {
-        var validation = _validator.ValidateCreation(newEntity);
-        if (!validation.Succeeded)
-            return Result<Certificate>.Failure(validation.Errors);
+        try
+        {
+            var validationResult = validator.ValidateUpdate(current, updated);
 
-        var added = await _repository.AddAsync(newEntity!);
-        if (added is null)
-            return Result<Certificate>.Failure("Certificate", "Failed to add certificate.");
+            if (!validationResult.Succeeded)
+                return Result<CertificateModel>.Failure(validationResult);
 
-        await _dbContext.CommitAsync();
-        return Result<Certificate>.Success(added);
+            var updateResult = dbContext.Certificates.Update(updated!);
+            var changedEntries = await dbContext.SaveChangesAsync();
+
+            if (updateResult.State is not EntityState.Modified || changedEntries is 0)
+            {
+                return Result<CertificateModel>.Failure(nameof(Certificate), Certificate.FailedToUpdate);
+            }
+
+            var updatedEntity = await dbContext.Certificates
+                .AsNoTracking()
+                .Select(CertificateProjections.Basic)
+                .FirstOrDefaultAsync(c => c.Id == updateResult.Entity.Id);
+
+            return Result<CertificateModel>.Success(updatedEntity!);
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Failed to update certificate: {Message}", ex.Message);
+
+            return Result<CertificateModel>.Failure(nameof(Certificate), Certificate.InternalError);
+        }
     }
 
-    public async Task<Result<Certificate>> FindAsync(int id)
+    public async Task<Result> DeleteAsync(int id)
     {
-        var certificate = await _repository.GetByIdAsync(id);
-        if (certificate is null)
-            return Result<Certificate>.Failure("id", "Certificate not found.");
+        try
+        {
+            var target = await dbContext.Certificates.AsNoTracking().FirstOrDefaultAsync(c => c.Id == id);
 
-        return Result<Certificate>.Success(certificate);
-    }
+            if (target is null)
+            {
+                return Result.Failure(nameof(Certificate), Certificate.NotFound);
+            }
 
-    public async Task<Result<IEnumerable<Certificate>>> FindAllAsync(int skip = 0, int take = 20)
-    {
-        var certificates = await _dbContext.Certificates.AsNoTracking()
-            .Skip(skip)
-            .Take(take)
-            .ToListAsync();
+            var removalResult = dbContext.Certificates.Remove(target);
+            var changedEntries = await dbContext.SaveChangesAsync();
 
-        return Result<IEnumerable<Certificate>>.Success(certificates);
-    }
+            if (removalResult.State is not EntityState.Deleted || changedEntries is 0)
+            {
+                return Result.Failure(nameof(Certificate), Certificate.FailedToDelete);
+            }
 
-    public async Task<Result<Certificate>> UpdateAsync(Certificate? current, Certificate? updated)
-    {
-        if (current is null || updated is null)
-            return Result<Certificate>.Failure("certificate", "Invalid certificate data.");
+            return Result.Success;
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Failed to delete certificate: {Message}", ex.Message);
 
-        var validation = _validator.ValidateUpdate(current, updated);
-        if (!validation.Succeeded)
-            return Result<Certificate>.Failure(validation.Errors);
-
-        current.Name = updated.Name ?? current.Name;
-        current.Description = updated.Description ?? current.Description;
-        current.InstitutionName = updated.InstitutionName ?? current.InstitutionName;
-        current.Location = updated.Location ?? current.Location;
-        current.IsRemote = updated.IsRemote;
-        current.StartDate = updated.StartDate;
-        current.EndDate = updated.EndDate;
-        current.StillEngaged = updated.StillEngaged;
-        current.CredentialId = updated.CredentialId ?? current.CredentialId;
-        current.CredentialUrl = updated.CredentialUrl ?? current.CredentialUrl;
-        current.Type = updated.Type;
-
-        var updatedEntity = await _repository.UpdateAsync(current);
-        if (updatedEntity is null)
-            return Result<Certificate>.Failure("certificate", "Failed to update certificate.");
-
-        await _dbContext.CommitAsync();
-        return Result<Certificate>.Success(updatedEntity);
-    }
-
-    public async Task<Result<bool>> DeleteAsync(int id)
-    {
-        var exists = await _repository.GetByIdAsync(id);
-        if (exists is null)
-            return Result<bool>.Failure("id", "Certificate not found.");
-
-        var deleted = await _repository.DeleteAsync(id);
-        if (!deleted)
-            return Result<bool>.Failure("id", "Could not delete certificate.");
-
-        await _dbContext.CommitAsync();
-        return Result<bool>.Success(true);
+            return Result.Failure(nameof(Certificate), Certificate.InternalError);
+        }
     }
 }
