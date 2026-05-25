@@ -2,6 +2,7 @@ using Microsoft.OpenApi.Models;
 using Resumi.App.Services;
 using Resumi.App.Validators;
 using Resumi.Domain.Validators;
+using Resumi.Infra.Data.Mappers;
 
 namespace Resumi.Infra.Extensions;
 
@@ -68,5 +69,14 @@ public static class StartupExtensions
                 }
             );
         });
+    }
+
+    /// <summary>
+    /// Inclui os mapeadores de entidades para DTOs no contêiner de injeção de dependência.
+    /// </summary>
+    /// <param name="services">O contêiner de serviços onde os mapeadores serão registrados.</param>
+    public static void AddApiMappers(this IServiceCollection services)
+    {
+        services.AddScoped<UserMapper>();
     }
 }

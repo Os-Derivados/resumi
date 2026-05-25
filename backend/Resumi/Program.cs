@@ -70,6 +70,7 @@ builder.Services.AddProblemDetails();
 builder.AddJwtSettings();
 builder.AddJwtAuth();
 builder.Services.AddScoped<IAuthManager, AuthManager>();
+builder.Services.AddApiMappers();
 
 var app = builder.Build();
 
