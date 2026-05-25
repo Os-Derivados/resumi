@@ -1,3 +1,5 @@
+using Resumi.Domain.Models;
+
 namespace Resumi.Infra.Auth.Interfaces;
 
 /// <summary>
