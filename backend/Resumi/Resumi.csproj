@@ -21,6 +21,5 @@
     <Folder Include="Api\" />
     <Folder Include="App\Data\" />
     <Folder Include="Domain\" />
-    <Folder Include="Infra\Data\Mappers\" />
   </ItemGroup>
 </Project>
