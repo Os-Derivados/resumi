@@ -1,7 +1,7 @@
+using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Resumi.Domain.Models;
-using Resumi.Infra;
 using Resumi.Infra.Auth;
 using Resumi.Infra.Auth.Interfaces;
 using Resumi.Infra.Constants;
@@ -53,9 +53,9 @@ builder.Services.AddExceptionHandler((options) =>
     options.ExceptionHandler = async context =>
     {
         var logger = context.RequestServices.GetRequiredService<ILogger<Program>>();
-        var exception = context.Features.Get<Microsoft.AspNetCore.Diagnostics.IExceptionHandlerFeature>()?.Error;
+        var exception = context.Features.Get<IExceptionHandlerFeature>()?.Error;
 
-        logger.LogError(exception, "An unhandled exception occurred.");
+        logger.LogError(exception, "An unhandled exception occurred: {Message}", exception?.Message);
 
         context.Response.StatusCode = StatusCodes.Status500InternalServerError;
 
