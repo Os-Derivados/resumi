@@ -1,42 +1,96 @@
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Resumi.Api.Data.Models;
+using Resumi.App.Services;
+using Resumi.Domain.Models;
+using Resumi.Infra.Data.Mappers;
+using Resumi.Infra.Data.Models;
+using Resumi.Infra.Database.Context;
 
 namespace Resumi.Api.Controllers;
 
 [ApiController]
-[Route("api/resumes/{resumeId:int}/volunteerships")]
+[Route("api/volunteerships")]
 [Authorize]
-public class VolunteershipsController : ControllerBase
+[ProducesResponseType(StatusCodes.Status401Unauthorized)]
+[ProducesResponseType(StatusCodes.Status403Forbidden)]
+[ProducesResponseType<Result<VolunteershipModel>>(StatusCodes.Status400BadRequest)]
+[ProducesResponseType(StatusCodes.Status422UnprocessableEntity)]
+public class VolunteershipsController(
+    VolunteershipService service,
+    VolunteershipMapper mapper,
+    AppDbContext dbContext,
+    ILogger<VolunteershipsController> logger) : ControllerBase
 {
-    private readonly VolunteershipsModule _module;
-
-    public VolunteershipsController(VolunteershipsModule module)
-    {
-        _module = module;
-    }
+    private const string Route = "api/volunteerships";
 
     [HttpPost]
-    public IActionResult Create(int resumeId, [FromBody] AddVolunteershipModel model)
+    [ProducesResponseType<Result<VolunteershipModel>>(StatusCodes.Status201Created)]
+    public async Task<IActionResult> Create([FromBody] AddVolunteershipModel model)
     {
-        throw new NotImplementedException("Volunteership creation is not implemented yet.");
-    }
+        var newVolunteership = mapper.NewDomainModel(model);
 
-    [HttpGet]
-    public IActionResult ReadAll(int resumeId)
-    {
-        throw new NotImplementedException("Retrieving volunteerships for a resume is not implemented yet.");
+        if (newVolunteership is null)
+        {
+            return BadRequest(
+                Result<VolunteershipModel>.Failure(nameof(VolunteershipModel), Volunteership.InvalidState));
+        }
+
+        var creationResult = await service.CreateAsync(newVolunteership);
+
+        return !creationResult.Succeeded
+            ? BadRequest(creationResult)
+            : Created(uri: $"{Route}/{creationResult.Data.Id}", creationResult);
     }
 
     [HttpPut("{id:int}")]
-    public IActionResult Update(int resumeId, int id, [FromBody] UpdateVolunteershipModel model)
+    [ProducesResponseType<Result<VolunteershipModel>>(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> Update(int id, [FromBody] UpdateVolunteershipModel model)
     {
-        throw new NotImplementedException("Updating a volunteership is not implemented yet.");
+        try
+        {
+            var target = await dbContext.VolunteerExperiences.AsNoTracking().FirstOrDefaultAsync(v => v.Id == id);
+
+            if (target is null)
+            {
+                return NotFound();
+            }
+
+            if (model.Id != id)
+            {
+                return BadRequest(Result.Failure(nameof(VolunteershipModel), Entity.UpdatePrimaryKeyMismatch));
+            }
+
+            var updated = mapper.UpdatedDomainModel(model, target);
+
+            if (updated is null)
+            {
+                return BadRequest(
+                    Result<VolunteershipModel>.Failure(nameof(VolunteershipModel), Volunteership.InvalidState));
+            }
+
+            var updateResult = await service.UpdateAsync(target, updated);
+
+            return !updateResult.Succeeded ? BadRequest(updateResult) : Ok(updateResult);
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "An error occurred while updating volunteership with ID {VolunteershipId}: {Message}",
+                id, ex.Message);
+
+            return UnprocessableEntity();
+        }
     }
 
     [HttpDelete("{id:int}")]
-    public IActionResult Delete(int resumeId, int id)
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    public async Task<IActionResult> Delete(int id)
     {
-        throw new NotImplementedException("Deleting a volunteership is not implemented yet.");
+        var removalResult = await service.DeleteAsync(id);
+
+        return !removalResult.Succeeded ? BadRequest(removalResult) : NoContent();
     }
 }
