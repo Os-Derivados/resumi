@@ -79,5 +79,6 @@ public static class StartupExtensions
     {
         services.AddScoped<UserMapper>();
         services.AddScoped<ExperienceMapper>();
+        services.AddScoped<DegreeMapper>();
     }
 }
