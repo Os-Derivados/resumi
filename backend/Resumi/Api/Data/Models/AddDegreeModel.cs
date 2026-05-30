@@ -7,5 +7,5 @@ namespace Resumi.Api.Data.Models;
 public record AddDegreeModel : AddResumeNodeModel
 {
     public string? Highlights { get; init; }
-    public string? DegreeLevel { get; init; }
+    public string? Level { get; init; }
 }
