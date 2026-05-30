@@ -1,4 +1,3 @@
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -20,7 +19,7 @@ namespace Resumi.Api.Controllers;
 [ProducesResponseType(StatusCodes.Status401Unauthorized)]
 [ProducesResponseType(StatusCodes.Status403Forbidden)]
 [ProducesResponseType<Result<UserModel>>(StatusCodes.Status400BadRequest)]
-[ProducesResponseType<Result<UserModel>>(StatusCodes.Status422UnprocessableEntity)]
+[ProducesResponseType(StatusCodes.Status422UnprocessableEntity)]
 public class UsersController(
     IAuthManager authManager,
     UserMapper mapper,
@@ -35,12 +34,9 @@ public class UsersController(
         var newUser = mapper.NewDomainModel(model);
         var creationResult = await service.CreateAsync(newUser, model.Password);
 
-        if (!creationResult.Succeeded)
-        {
-            return BadRequest(creationResult);
-        }
-
-        return Created($"/api/users/{creationResult.Data.Id}", Result<UserModel>.Success(creationResult.Data));
+        return !creationResult.Succeeded
+            ? BadRequest(creationResult)
+            : Created($"/api/users/{creationResult.Data.Id}", creationResult);
     }
 
     [HttpGet("me")]
@@ -55,7 +51,7 @@ public class UsersController(
     }
 
     [HttpGet("{id:int}")]
-    [Authorize(Roles = "Admin")]
+    [Authorize(Roles = AuthConstants.AdminRole)]
     [ProducesResponseType<Result<UserModel>>(StatusCodes.Status200OK)]
     [ProducesResponseType<Result<UserModel>>(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> Read(int id)
@@ -68,7 +64,7 @@ public class UsersController(
     }
 
     [HttpGet]
-    [Authorize(Roles = "Admin")]
+    [Authorize(Roles = AuthConstants.AdminRole)]
     [ProducesResponseType<Result<List<UserModel>>>(StatusCodes.Status200OK)]
     public async Task<IActionResult> ReadAll(int skip = 0, int take = 20)
     {
@@ -86,7 +82,7 @@ public class UsersController(
         var sessionUser = UserModel.FromClaimsPrincipal(HttpContext.User)
                           ?? throw new InfrastructureException("An user should be authenticated at this point.");
 
-        if (sessionUser.Id != id && !User.IsInRole("Admin"))
+        if (sessionUser.Id != id && !User.IsInRole(AuthConstants.AdminRole))
         {
             return Forbid();
         }
@@ -101,7 +97,7 @@ public class UsersController(
     }
 
     [HttpDelete("{id:int}")]
-    [Authorize(Roles = "Admin")]
+    [Authorize(Roles = AuthConstants.AdminRole)]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     public async Task<IActionResult> Delete(int id)
     {
