@@ -65,22 +65,22 @@ public class DegreeMapper : IEntityMapper<Degree, DegreeModel, AddDegreeModel, U
 		{
 			if (entity is null || dtoUpdate is null) return null;
 
-			var shalowCopy = entity.ShallowCopy();
+			var shallowCopy = entity.ShallowCopy();
 
-			shalowCopy.Name = dtoUpdate.Name ?? shalowCopy.Name;
-			shalowCopy.Description = dtoUpdate.Description ?? shalowCopy.Description;
-			shalowCopy.InstitutionName = dtoUpdate.InstitutionName ?? shalowCopy.InstitutionName;
-			shalowCopy.Location = dtoUpdate.Location ?? shalowCopy.Location;
-			shalowCopy.IsRemote = dtoUpdate.IsRemote ?? shalowCopy.IsRemote;
-			shalowCopy.StartDate = dtoUpdate.StartDate ?? shalowCopy.StartDate;
-			shalowCopy.EndDate = dtoUpdate.EndDate ?? shalowCopy.EndDate;
-			shalowCopy.StillEngaged = dtoUpdate.StillEngaged ?? shalowCopy.StillEngaged;
-			shalowCopy.Highlights = dtoUpdate.Highlights ?? shalowCopy.Highlights;
-			shalowCopy.Level = DegreeLevelExtensions.TryGetValue(dtoUpdate.Level, out var level)
+			shallowCopy.Name = dtoUpdate.Name ?? shallowCopy.Name;
+			shallowCopy.Description = dtoUpdate.Description ?? shallowCopy.Description;
+			shallowCopy.InstitutionName = dtoUpdate.InstitutionName ?? shallowCopy.InstitutionName;
+			shallowCopy.Location = dtoUpdate.Location ?? shallowCopy.Location;
+			shallowCopy.IsRemote = dtoUpdate.IsRemote ?? shallowCopy.IsRemote;
+			shallowCopy.StartDate = dtoUpdate.StartDate ?? shallowCopy.StartDate;
+			shallowCopy.EndDate = dtoUpdate.EndDate ?? shallowCopy.EndDate;
+			shallowCopy.StillEngaged = dtoUpdate.StillEngaged ?? shallowCopy.StillEngaged;
+			shallowCopy.Highlights = dtoUpdate.Highlights ?? shallowCopy.Highlights;
+			shallowCopy.Level = DegreeLevelExtensions.TryGetValue(dtoUpdate.Level, out var level)
 				? level!.Value
-				: shalowCopy.Level;
+				: shallowCopy.Level;
 
-			return shalowCopy;
+			return shallowCopy;
 		}
 		catch (DomainException)
 		{

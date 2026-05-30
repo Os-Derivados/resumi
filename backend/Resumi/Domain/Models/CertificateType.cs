@@ -1,3 +1,5 @@
+using Resumi.App.Exceptions;
+
 namespace Resumi.Domain.Models;
 
 /// <summary>
@@ -44,5 +46,34 @@ public static class CertificateTypeExtensions
 			CertificateType.Nomination => "nomination",
 			_ => "unknown"
 		};
+	}
+
+	public static CertificateType FromDisplayString(string? type)
+	{
+		return type switch
+		{
+			"course" => CertificateType.Course,
+			"license" => CertificateType.License,
+			"badge" => CertificateType.Badge,
+			"extracurricular" => CertificateType.Extracurricular,
+			"nomination" => CertificateType.Nomination,
+			_ => throw new DomainException($"Unknown certificate type: {type}")
+		};
+	}
+
+	public static bool TryGetValue(string? type, out CertificateType? result)
+	{
+		try
+		{
+			result = FromDisplayString(type);
+
+			return true;
+		}
+		catch (DomainException)
+		{
+			result = null;
+
+			return false;
+		}
 	}
 }
