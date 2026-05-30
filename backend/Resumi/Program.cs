@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Resumi.Domain.Models;
 using Resumi.Infra.AuthZ;
-using Resumi.Infra.Auth.Interfaces;
+using Resumi.Infra.AuthZ.Interfaces;
 using Resumi.Infra.Constants;
 using Resumi.Infra.Database;
 using Resumi.Infra.Database.Context;
@@ -88,6 +88,8 @@ if (app.Environment.IsDevelopment())
 
 app.UseHsts();
 app.UseHttpsRedirection();
+app.UseAuthentication();
+app.UseAuthorization();
 app.MapControllers();
 app.Run();
 

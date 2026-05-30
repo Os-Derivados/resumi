@@ -3,7 +3,7 @@ using System.Security.Claims;
 using System.Text;
 using Microsoft.IdentityModel.Tokens;
 using Resumi.Domain.Models;
-using Resumi.Infra.Auth.Interfaces;
+using Resumi.Infra.AuthZ.Interfaces;
 
 namespace Resumi.Infra.AuthZ;
 

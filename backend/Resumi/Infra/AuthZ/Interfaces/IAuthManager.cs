@@ -1,6 +1,6 @@
 using Resumi.Domain.Models;
 
-namespace Resumi.Infra.Auth.Interfaces;
+namespace Resumi.Infra.AuthZ.Interfaces;
 
 /// <summary>
 /// Este contrato define APIs para controle de autenticação e autorização.

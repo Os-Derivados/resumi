@@ -5,7 +5,7 @@ using Resumi.Api.Data.Models;
 using Resumi.App.Services;
 using Resumi.Domain.Models;
 using Resumi.Infra.AuthZ;
-using Resumi.Infra.Auth.Interfaces;
+using Resumi.Infra.AuthZ.Interfaces;
 using Resumi.Infra.Constants;
 using Resumi.Infra.Data.Mappers;
 using Resumi.Infra.Data.Models;
