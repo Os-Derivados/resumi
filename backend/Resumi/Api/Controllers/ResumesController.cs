@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using Resumi.Api.Data.Models;
 using Resumi.App.Services;
 using Resumi.Domain.Models;
-using Resumi.Infra.Auth;
+using Resumi.Infra.AuthZ;
 using Resumi.Infra.Auth.Constants;
 using Resumi.Infra.Data.Models;
 using Resumi.Infra.Database.Context;

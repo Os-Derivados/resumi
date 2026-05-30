@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Resumi.Domain.Models;
-using Resumi.Infra.Auth;
+using Resumi.Infra.AuthZ;
 using Resumi.Infra.Auth.Interfaces;
 using Resumi.Infra.Constants;
 using Resumi.Infra.Database;
@@ -14,17 +14,17 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddCors(options =>
 {
-    var allowedOrigin = Environment.GetEnvironmentVariable(EnvironmentVariables.AllowedOrigin)
-                        ?? throw new InfrastructureException(
-                            $"Environment variable '{EnvironmentVariables.AllowedOrigin}' is not set.");
+	var allowedOrigin = Environment.GetEnvironmentVariable(EnvironmentVariables.AllowedOrigin)
+	                    ?? throw new InfrastructureException(
+		                    $"Environment variable '{EnvironmentVariables.AllowedOrigin}' is not set.");
 
-    options.AddDefaultPolicy(policy =>
-    {
-        policy.WithOrigins(allowedOrigin)
-            .AllowAnyHeader()
-            .AllowAnyMethod()
-            .AllowCredentials();
-    });
+	options.AddDefaultPolicy(policy =>
+	{
+		policy.WithOrigins(allowedOrigin)
+			.AllowAnyHeader()
+			.AllowAnyMethod()
+			.AllowCredentials();
+	});
 });
 
 builder.Services.AddControllers();
@@ -32,7 +32,7 @@ builder.Services.AddControllers();
 var defaultConnection = builder.Configuration.GetConnectionString("DefaultConnection");
 if (!string.IsNullOrEmpty(defaultConnection))
 {
-    builder.Services.AddDbContext<AppDbContext>(options => options.UseNpgsql(defaultConnection));
+	builder.Services.AddDbContext<AppDbContext>(options => options.UseNpgsql(defaultConnection));
 }
 
 builder.Services.AddEndpointsApiExplorer();
@@ -41,29 +41,29 @@ builder.Services.AddDomainValidators();
 builder.Services.AddQueryValidators();
 builder.Services.AddDomainServices();
 builder.Services.AddIdentityCore<AppUser>()
-    .AddRoles<IdentityRole<int>>()
-    .AddRoleManager<RoleManager<IdentityRole<int>>>()
-    .AddEntityFrameworkStores<AppDbContext>();
+	.AddRoles<IdentityRole<int>>()
+	.AddRoleManager<RoleManager<IdentityRole<int>>>()
+	.AddEntityFrameworkStores<AppDbContext>();
 
 builder.Services.AddScoped<UserContext>();
 builder.Services.AddHttpContextAccessor();
 
 builder.Services.AddExceptionHandler((options) =>
 {
-    options.ExceptionHandler = async context =>
-    {
-        var logger = context.RequestServices.GetRequiredService<ILogger<Program>>();
-        var exception = context.Features.Get<IExceptionHandlerFeature>()?.Error;
+	options.ExceptionHandler = async context =>
+	{
+		var logger = context.RequestServices.GetRequiredService<ILogger<Program>>();
+		var exception = context.Features.Get<IExceptionHandlerFeature>()?.Error;
 
-        logger.LogError(exception, "An unhandled exception occurred: {Message}", exception?.Message);
+		logger.LogError(exception, "An unhandled exception occurred: {Message}", exception?.Message);
 
-        context.Response.StatusCode = StatusCodes.Status500InternalServerError;
+		context.Response.StatusCode = StatusCodes.Status500InternalServerError;
 
-        await context.Response.WriteAsJsonAsync(new
-        {
-            Error = "An unexpected error occurred. Please try again later."
-        });
-    };
+		await context.Response.WriteAsJsonAsync(new
+		{
+			Error = "An unexpected error occurred. Please try again later."
+		});
+	};
 });
 
 builder.Services.AddProblemDetails();
@@ -82,8 +82,8 @@ app.UseCors();
 
 if (app.Environment.IsDevelopment())
 {
-    app.UseSwagger();
-    app.UseSwaggerUI(c => { c.SwaggerEndpoint("/swagger/v1/swagger.json", "Resumi API v1"); });
+	app.UseSwagger();
+	app.UseSwaggerUI(c => { c.SwaggerEndpoint("/swagger/v1/swagger.json", "Resumi API v1"); });
 }
 
 app.UseHsts();

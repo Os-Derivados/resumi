@@ -1,4 +1,4 @@
-namespace Resumi.Infra.Auth;
+namespace Resumi.Infra.AuthZ;
 
 /// <summary>
 /// Objeto de parâmetros que encapsula as configurações de autenticação.

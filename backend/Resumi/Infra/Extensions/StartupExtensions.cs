@@ -5,7 +5,7 @@ using Microsoft.OpenApi.Models;
 using Resumi.App.Services;
 using Resumi.App.Validators;
 using Resumi.Domain.Validators;
-using Resumi.Infra.Auth;
+using Resumi.Infra.AuthZ;
 using Resumi.Infra.Constants;
 using Resumi.Infra.Data.Mappers;
 using Resumi.Infra.Exceptions;

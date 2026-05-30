@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Resumi.Api.Data.Models;
-using Resumi.Infra.Auth;
+using Resumi.Infra.AuthZ;
 using Resumi.Infra.Database.Context;
 using Resumi.Infra.Data.Models;
 
