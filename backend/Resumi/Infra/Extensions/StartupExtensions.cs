@@ -87,6 +87,7 @@ public static class StartupExtensions
         services.AddScoped<ExperienceMapper>();
         services.AddScoped<DegreeMapper>();
         services.AddScoped<VolunteershipMapper>();
+        services.AddScoped<CertificateMapper>();
     }
 
     /// <summary>
