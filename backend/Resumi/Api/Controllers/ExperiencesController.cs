@@ -1,42 +1,81 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Resumi.Api.Data.Models;
+using Resumi.App.Services;
+using Resumi.Domain.Models;
+using Resumi.Infra.Data.Mappers;
+using Resumi.Infra.Data.Models;
+using Resumi.Infra.Database.Context;
 
 namespace Resumi.Api.Controllers;
 
 [ApiController]
-[Route("api/resumes/{resumeId:int}/experiences")]
+[Route("api/experiences")]
 [Authorize]
-public class ExperiencesController : ControllerBase
+[ProducesResponseType(StatusCodes.Status401Unauthorized)]
+[ProducesResponseType(StatusCodes.Status403Forbidden)]
+[ProducesResponseType<Result<ExperienceModel>>(StatusCodes.Status400BadRequest)]
+[ProducesResponseType<Result<ExperienceModel>>(StatusCodes.Status422UnprocessableEntity)]
+public class ExperiencesController(
+    AppDbContext dbContext,
+    ExperienceService service,
+    ExperienceMapper mapper,
+    ILogger<ExperiencesController> logger)
+    : ControllerBase
 {
-    private readonly ExperiencesModule _module;
-
-    public ExperiencesController(ExperiencesModule module)
-    {
-        _module = module;
-    }
-
     [HttpPost]
-    public IActionResult Create(int resumeId, [FromBody] AddExperienceModel model)
+    [ProducesResponseType<Result<ExperienceModel>>(StatusCodes.Status201Created)]
+    public async Task<IActionResult> Create([FromBody] AddExperienceModel model)
     {
-        throw new NotImplementedException("Experience creation is not implemented yet.");
-    }
+        var newExperience = mapper.NewDomainModel(model);
+        var creationResult = await service.CreateAsync(newExperience);
 
-    [HttpGet]
-    public IActionResult ReadAll(int resumeId)
-    {
-        throw new NotImplementedException("Retrieving experiences for a resume is not implemented yet.");
+        return !creationResult.Succeeded
+            ? BadRequest(creationResult)
+            : Created($"api/experiences/{creationResult.Data.Id}", creationResult);
     }
 
     [HttpPut("{id:int}")]
-    public IActionResult Update(int resumeId, int id, [FromBody] UpdateExperienceModel model)
+    public async Task<IActionResult> Update(int id, [FromBody] UpdateExperienceModel model)
     {
-        throw new NotImplementedException("Updating an experience is not implemented yet.");
+        try
+        {
+            var target = await dbContext.Experiences.AsNoTracking().FirstOrDefaultAsync(e => e.Id == id);
+
+            if (target is null) return NotFound();
+
+            var updated = mapper.UpdatedDomainModel(model, target);
+
+            if (updated is null)
+            {
+                return BadRequest(Result<ExperienceModel>.Failure(nameof(UpdateExperienceModel),
+                    Experience.InvalidState));
+            }
+
+            var updateResult = await service.UpdateAsync(target, updated);
+
+            return !updateResult.Succeeded ? BadRequest(updateResult) : Ok(updateResult);
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "An error occurred while updating experience with id {ExperienceId}: {Message}", id,
+                ex.Message);
+
+            return UnprocessableEntity();
+        }
     }
 
     [HttpDelete("{id:int}")]
-    public IActionResult Delete(int resumeId, int id)
+    public async Task<IActionResult> Delete(int id)
     {
-        throw new NotImplementedException("Deleting an experience is not implemented yet.");
+        var removalResult = await service.DeleteAsync(id);
+
+        if (!removalResult.Succeeded)
+        {
+            return BadRequest(removalResult);
+        }
+
+        return NoContent();
     }
 }

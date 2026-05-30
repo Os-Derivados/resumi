@@ -78,5 +78,6 @@ public static class StartupExtensions
     public static void AddApiMappers(this IServiceCollection services)
     {
         services.AddScoped<UserMapper>();
+        services.AddScoped<ExperienceMapper>();
     }
 }
