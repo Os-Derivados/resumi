@@ -1,3 +1,5 @@
+using Resumi.App.Exceptions;
+
 namespace Resumi.Domain.Models;
 
 /// <summary>
@@ -52,5 +54,36 @@ public static class DegreeLevelExtensions
             DegreeLevel.Other => "other",
             _ => level.ToString()
         };
+    }
+
+    public static DegreeLevel FromDisplayString(string? level)
+    {
+        return level?.ToLower() switch
+        {
+            "high_school" => DegreeLevel.HighSchool,
+            "technical" => DegreeLevel.Technical,
+            "associate" => DegreeLevel.Associate,
+            "bachelor" => DegreeLevel.Bachelor,
+            "master" => DegreeLevel.Master,
+            "doctorate" => DegreeLevel.Doctorate,
+            "other" => DegreeLevel.Other,
+            _ => throw new DomainException($"Invalid degree level: {level}")
+        };
+    }
+
+    public static bool TryGetValue(string? level, out DegreeLevel? degreeLevel)
+    {
+        try
+        {
+            degreeLevel = FromDisplayString(level);
+
+            return true;
+        }
+        catch (DomainException)
+        {
+            degreeLevel = null;
+
+            return false;
+        }
     }
 }
