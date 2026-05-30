@@ -17,16 +17,21 @@ namespace Resumi.Api.Controllers;
 [ApiController]
 [Route("api/resumes")]
 [Authorize]
+[ProducesResponseType(StatusCodes.Status401Unauthorized)]
+[ProducesResponseType(StatusCodes.Status403Forbidden)]
+[ProducesResponseType<Result<ResumeModel>>(StatusCodes.Status400BadRequest)]
+[ProducesResponseType(StatusCodes.Status422UnprocessableEntity)]
 public class ResumesController(
 	UserContext userContext,
 	ResumeService service,
 	AppDbContext dbContext,
 	ILogger<ResumesController> logger) : ControllerBase
 {
+	private const string Route = "api/resumes";
+
 	[HttpPost]
-	[ProducesResponseType(typeof(Result<ResumeModel>), StatusCodes.Status201Created)]
-	[ProducesResponseType(typeof(Result<ResumeModel>), StatusCodes.Status400BadRequest)]
-	public async Task<ActionResult<Result<ResumeModel>>> Create([Required] string title)
+	[ProducesResponseType<Result<ResumeModel>>(StatusCodes.Status201Created)]
+	public async Task<IActionResult> Create([Required] string title)
 	{
 		var userId = userContext.GetUserId();
 
@@ -41,57 +46,55 @@ public class ResumesController(
 
 		var result = await service.CreateAsync(newResume);
 
-		if (!result.Succeeded)
-
-		{
-			return BadRequest(result);
-		}
-
-		return Created($"api/resumes/{result.Data.Id}", result);
+		return !result.Succeeded
+			? BadRequest(result)
+			: Created($"{Route}/{result.Data.Id}", result);
 	}
 
 	[HttpPost("{id:int}")]
+	[ProducesResponseType<Result<ResumeModel>>(StatusCodes.Status200OK)]
 	public async Task<IActionResult> Read(int id)
 	{
-		var result = await service.FindAsync(id, ResumeProjectionMode.Full);
+		var readResult = await service.FindAsync(id, ResumeProjectionMode.Full);
 
-		if (!result.Succeeded) return BadRequest(result);
+		if (!readResult.Succeeded) return BadRequest(readResult);
 
-		return Ok(result);
+		return Ok(readResult);
 	}
 
 	[HttpGet]
+	[ProducesResponseType<Result<List<ResumeModel>>>(StatusCodes.Status200OK)]
 	public async Task<IActionResult> ReadAll([Required] int userId, int skip = 0, int take = 20)
 	{
-		var result = await service.FindByUserAsync(userId, ResumeProjectionMode.Full, skip, take);
+		var findByUserResult = await service.FindByUserAsync(userId, ResumeProjectionMode.Basic, skip, take);
 
-		if (!result.Succeeded) return BadRequest(result);
-
-		return Ok(result);
+		return !findByUserResult.Succeeded ? BadRequest(findByUserResult) : Ok(findByUserResult);
 	}
 
 	[HttpPut("{id:int}")]
+	[ProducesResponseType<Result<ResumeModel>>(StatusCodes.Status200OK)]
+	[ProducesResponseType(StatusCodes.Status404NotFound)]
 	public async Task<IActionResult> Update(int id, [FromBody] UpdateResumeModel model)
 	{
 		try
 		{
 			var current = await dbContext.Resumes.AsNoTracking().FirstOrDefaultAsync(r => r.Id == id);
-			var updated = current?.ShallowCopy();
 
-			if (current is not null && updated is not null)
-			{
-				updated.Title = model.Title ?? current.Title;
-				updated.OwnerName = model.OwnerName ?? current.OwnerName;
-				updated.Location = model.Location ?? current.Location;
-				updated.Email = model.Email ?? current.Email;
-				updated.PhoneNumber = model.PhoneNumber ?? current.PhoneNumber;
-			}
+			if (current is null) return NotFound();
+
+			var updated = current.ShallowCopy();
+
+			if (updated is null) return BadRequest(Result<ResumeModel>.Failure(nameof(Resume), Resume.InvalidState));
+
+			updated.Title = model.Title ?? current.Title;
+			updated.OwnerName = model.OwnerName ?? current.OwnerName;
+			updated.Location = model.Location ?? current.Location;
+			updated.Email = model.Email ?? current.Email;
+			updated.PhoneNumber = model.PhoneNumber ?? current.PhoneNumber;
 
 			var result = await service.UpdateAsync(current, updated);
 
-			if (!result.Succeeded) return BadRequest(result);
-
-			return Ok(result);
+			return !result.Succeeded ? BadRequest(result) : Ok(result);
 		}
 		catch (Exception ex)
 		{
@@ -102,12 +105,11 @@ public class ResumesController(
 	}
 
 	[HttpDelete("{id:int}")]
+	[ProducesResponseType(StatusCodes.Status204NoContent)]
 	public async Task<IActionResult> Delete(int id)
 	{
 		var result = await service.DeleteAsync(id);
 
-		if (!result.Succeeded) return BadRequest(result);
-
-		return NoContent();
+		return !result.Succeeded ? BadRequest(result) : NoContent();
 	}
 }
