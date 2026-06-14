@@ -113,19 +113,17 @@ public class UserService(
 
             var deleteResult = await userManager.DeleteAsync(target);
 
-            if (!deleteResult.Succeeded)
+            if (deleteResult.Succeeded) return Result.Success;
+            
+            ResultDictionary errors = [];
+
+            foreach (var error in deleteResult.Errors)
             {
-                ResultDictionary errors = [];
-
-                foreach (var error in deleteResult.Errors)
-                {
-                    errors.AddError(error.Code, error.Description);
-                }
-
-                return Result.Failure(errors);
+                errors.AddError(error.Code, error.Description);
             }
 
-            return Result.Success;
+            return Result.Failure(errors);
+
         }
         catch (Exception ex)
         {

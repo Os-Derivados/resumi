@@ -45,7 +45,7 @@ builder.Services.AddApiDocumentation();
 builder.Services.AddDomainValidators();
 builder.Services.AddQueryValidators();
 builder.Services.AddDomainServices();
-builder.Services.AddIdentityCore<AppUser>()
+builder.Services.AddIdentityCore<AppUser>(AppUserManager.IdentityOptionsSetup)
 	.AddRoles<IdentityRole<int>>()
 	.AddUserManager<AppUserManager>()
 	.AddRoleManager<RoleManager<IdentityRole<int>>>()
