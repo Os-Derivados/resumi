@@ -2,34 +2,38 @@
 	"version": "0.2.0",
 	"configurations": [
 		{
-			"name": "Debug Container (launch)",
+			"name": "Containers: .NET Attach (Compose)",
 			"type": "coreclr",
-			"request": "launch",
-			"preLaunchTask": "Docker Compose: Up",
-			"postDebugTask": "Docker Compose: Down",
-			"program": "/app/Resumi.dll",
-			"cwd": "/app",
-			"args": [],
+			"request": "attach",
+			// Anexa ao processo 'dotnet' do contêiner
+			"processName": "dotnet",
+			// Sobe e derruba o stack automaticamente
+			"preLaunchTask": "docker-compose: debug",
+			"postDebugTask": "docker-compose: down",
+			// Executa o vsdbg dentro do contêiner via docker exec
 			"pipeTransport": {
 				"pipeProgram": "docker",
 				"pipeArgs": [
 					"exec",
 					"-i",
-					"resumi-backend"
+					"portalaz"
 				],
 				"debuggerPath": "/vsdbg/vsdbg",
 				"quoteArgs": false
 			},
+			// Importante: mapeia caminhos de fonte gravados nos PDBs (construídos em /src)
 			"sourceFileMap": {
-				"/src/backend/Resumi": "${workspaceFolder}/backend/Resumi",
-				"/app": "${workspaceFolder}/backend/Resumi"
+				"/src": "${workspaceFolder}"
 			},
-			"stopAtEntry": false,
-			"justMyCode": true,
-			"requireExactSource": false,
+			// Ajuste conforme sua CPU no contêiner
+			"targetArchitecture": "x86_64",
+			// se o contêiner for arm64, use "arm64"
 			"logging": {
+				"programOutput": true,
 				"moduleLoad": false
-			}
+			},
+			"requireExactSource": false,
+			"justMyCode": true
 		}
 	]
 }
