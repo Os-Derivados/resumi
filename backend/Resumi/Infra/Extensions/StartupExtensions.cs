@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
@@ -170,5 +171,33 @@ public static class StartupExtensions
         };
 
         builder.Services.AddSingleton(jwtSettings);
+    }
+
+    /// <summary>
+    /// Habilita a espera pela conexão de um depurador, se a variável de ambiente "WAIT_FOR_DEBUGGER" estiver definida como "true".
+    /// </summary>
+    /// <exception cref="InfrastructureException">Se a configuração de depurador foi habilitada e o programa não conseguiu conectar ao depurador dentro do tempo limite.</exception>
+    public static async Task WaitForDebugger(bool wait = false)
+    {
+        if (!wait) return;
+
+        var timeoutSeconds = int.TryParse(
+            Environment.GetEnvironmentVariable("WAIT_FOR_DEBUGGER_TIMEOUT_SECONDS"),
+            out var configuredTimeoutSeconds)
+            ? configuredTimeoutSeconds
+            : 60;
+
+        var deadline = DateTime.UtcNow.AddSeconds(timeoutSeconds);
+
+        while (!Debugger.IsAttached && DateTime.UtcNow < deadline)
+        {
+            await Task.Delay(200);
+        }
+
+        if (!Debugger.IsAttached)
+        {
+            throw new InfrastructureException(
+                $"Waited for {timeoutSeconds} seconds, but the debugger was not attached.");
+        }
     }
 }

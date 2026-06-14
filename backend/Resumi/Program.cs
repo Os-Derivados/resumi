@@ -10,6 +10,11 @@ using Resumi.Infra.Database.Context;
 using Resumi.Infra.Exceptions;
 using Resumi.Infra.Extensions;
 
+if (bool.TryParse(Environment.GetEnvironmentVariable("WAIT_FOR_DEBUGGER"), out var wait))
+{
+	await StartupExtensions.WaitForDebugger(wait);
+}
+
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddCors(options =>
