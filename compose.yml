@@ -1,6 +1,7 @@
 services:
   resumi:
-    image: resumi-backend:development
+    image: ${DOCKER_REGISTRY-}resumi-backend:development
+    container_name: resumi
     build:
       context: .
       dockerfile: Dockerfile

@@ -16,7 +16,7 @@
 				"pipeArgs": [
 					"exec",
 					"-i",
-					"portalaz"
+					"resumi"
 				],
 				"debuggerPath": "/vsdbg/vsdbg",
 				"quoteArgs": false
