@@ -53,6 +53,7 @@ public static class StartupExtensions
     public static void AddQueryValidators(this IServiceCollection services)
     {
         services.AddScoped<UserQueryValidator>();
+        services.AddScoped<ResumeQueryValidator>();
     }
 
     /// <summary>

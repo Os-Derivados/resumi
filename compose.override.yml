@@ -7,7 +7,7 @@ services:
       - WAIT_FOR_DEBUGGER=true
       - WAIT_FOR_DEBUGGER_TIMEOUT_SECONDS=60
     volumes:
-      - ${HOME}/.aspnet/https/aspnet-dev-cert.pfx:/https/aspnet-dev-cert.pfx:ro
-      - ${HOME}/.aspnet/https:/home/app/.aspnet/https:ro
-      - ${HOME}/.aspnet/https:/root/.aspnet/https:ro
+      - ${HOME}/.aspnet/https/aspnet-dev-cert.pfx:/https/aspnet-dev-cert.pfx:ro,Z
+      - ${HOME}/.aspnet/https:/home/app/.aspnet/https:ro,Z
+      - ${HOME}/.aspnet/https:/root/.aspnet/https:ro,Z
       - ${HOME}/.vsdbg:/remote_debugger:ro
