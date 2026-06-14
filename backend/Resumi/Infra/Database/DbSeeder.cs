@@ -39,11 +39,15 @@ public static class DbSeeder
                                throw new InfrastructureException("Failed to map admin user model to domain model.");
             var createResult = await userManager.CreateAsync(newAdminUser, adminUserModel.Password);
 
-            if (!createResult.Succeeded) return false;
+            if (!createResult.Succeeded)
+                throw new InfrastructureException("Failed to create admin user: " +
+                                                  string.Join(", ", createResult.Errors.Select(e => e.Description)));
 
             var addToRoleResult = await userManager.AddToRoleAsync(newAdminUser, AuthConstants.AdminRole);
 
-            if (!addToRoleResult.Succeeded) return false;
+            if (!addToRoleResult.Succeeded)
+                throw new InfrastructureException("Failed to add admin user to role: " +
+                                                  string.Join(", ", addToRoleResult.Errors.Select(e => e.Description)));
 
             await transaction.CommitAsync();
 
