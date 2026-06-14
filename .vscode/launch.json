@@ -18,7 +18,7 @@
 					"-i",
 					"resumi"
 				],
-				"debuggerPath": "/vsdbg/vsdbg",
+				"debuggerPath": "/remote_debugger/vsdbg",
 				"quoteArgs": false
 			},
 			// Importante: mapeia caminhos de fonte gravados nos PDBs (construídos em /src)
