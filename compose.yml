@@ -1,19 +1,14 @@
 services:
-  backend:
-    container_name: resumi-backend
+  resumi:
+    image: resumi-backend:development
     build:
       context: .
       dockerfile: Dockerfile
       labels:
         - org.osderivados=resumi
-        - environment=production
-      args:
-        - configuration=Release
+        - environment=development
     environment:
-      - ASPNETCORE_ENVIRONMENT=Production
-      # Tell ASP.NET where the cert is and its password
-      - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/aspnet-dev-cert.pfx
-      - ASPNETCORE_Kestrel__Certificates__Default__Password=${CERT_PASSWORD}
+      - ASPNETCORE_ENVIRONMENT=${ASPNETCORE_ENVIRONMENT}
       - JWT_SIGNING_KEY=${JWT_SIGNING_KEY}
       - JWT_ISSUER=${JWT_ISSUER}
       - JWT_AUDIENCE=${JWT_AUDIENCE}
@@ -22,8 +17,6 @@ services:
       - "ConnectionStrings__DefaultConnection=Host=db;Port=5432;Database=resumi;Username=resumi;Password=postgres"
     ports:
       - "8081:8081" # HTTPS
-    volumes:
-      - ~/.aspnet/https/aspnet-dev-cert.pfx:/https/aspnet-dev-cert.pfx:ro
     depends_on:
       db:
         condition: service_healthy

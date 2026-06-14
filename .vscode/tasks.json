@@ -4,13 +4,13 @@
 		{
 			"label": "docker-compose: build",
 			"type": "shell",
-			"command": "docker compose -f compose.debug.yml build"
+			"command": "docker compose -f compose.debug.yml -f compose.override.yml build"
 		},
 		{
 			"label": "docker-compose: debug",
 			"type": "shell",
 			"dependsOn": "docker-compose: build",
-			"command": "docker compose -f compose.debug.yml up -d"
+			"command": "docker compose -f compose.debug.yml -f compose.override.yml up -d"
 		},
 		{
 			"label": "docker-compose: down",
