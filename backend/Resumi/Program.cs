@@ -81,7 +81,7 @@ builder.Services.AddApiMappers();
 var app = builder.Build();
 
 using var seedScope = app.Services.CreateScope();
-_ = await DbSeeder.SeedDatabaseAsync(seedScope.ServiceProvider);
+await DbSeeder.SeedDatabaseAsync(seedScope.ServiceProvider);
 
 app.UseExceptionHandler();
 app.UseCors();
