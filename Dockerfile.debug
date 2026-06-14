@@ -5,7 +5,7 @@ EXPOSE 8080
 EXPOSE 8081
 
 FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
-ARG BUILD_CONFIGURATION=Release
+ARG BUILD_CONFIGURATION=Debug
 WORKDIR /src
 
 COPY ["backend/Resumi/Resumi.csproj", "backend/Resumi/"]
@@ -16,7 +16,13 @@ WORKDIR "/src/backend/Resumi"
 RUN dotnet build "Resumi.csproj" -c $BUILD_CONFIGURATION -o /app/build
 
 FROM build AS publish
-RUN dotnet publish "Resumi.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false 
+RUN dotnet publish "Resumi.csproj" -c $BUILD_CONFIGURATION -o /app/publish \
+	/p:UseAppHost=false \
+	/p:DebugType=portable \
+	/p:DebugSymbols=true \
+	/p:PublishReadyToRun=false \
+	/p:PublishTrimmed=false
+
 
 FROM base AS final
 WORKDIR /app
