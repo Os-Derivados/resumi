@@ -1,7 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Resumi.Api.Data.Models;
 using Resumi.Domain.Models;
-using Resumi.Domain.Validators.Interfaces;
+using Resumi.Domain.Validators;
 using Resumi.Infra.Data.Models;
 using Resumi.Infra.Database.Context;
 using Resumi.Infra.Data.Projections;
@@ -9,7 +9,7 @@ using Resumi.Infra.Data.Projections;
 namespace Resumi.App.Services;
 
 public class DegreeService(
-	IDomainValidator<Degree> validator,
+	DegreeValidator validator,
 	ILogger<DegreeService> logger,
 	AppDbContext dbContext)
 {

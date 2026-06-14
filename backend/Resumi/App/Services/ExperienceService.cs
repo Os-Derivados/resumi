@@ -1,17 +1,17 @@
 using Microsoft.EntityFrameworkCore;
 using Resumi.Api.Data.Models;
 using Resumi.Domain.Models;
-using Resumi.Domain.Validators.Interfaces;
 using Resumi.Infra.Data.Models;
 using Resumi.Infra.Database.Context;
 using Resumi.Infra.Data.Projections;
+using Resumi.Domain.Validators;
 
 namespace Resumi.App.Services;
 
 public class ExperienceService(
     AppDbContext dbContext,
     ILogger<ExperienceService> logger,
-    IDomainValidator<Experience> validator)
+    ExperienceValidator validator)
 {
     public async Task<Result<ExperienceModel>> CreateAsync(Experience? newEntity)
     {

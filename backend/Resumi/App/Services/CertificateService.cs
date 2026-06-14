@@ -1,7 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Resumi.Api.Data.Models;
 using Resumi.Domain.Models;
-using Resumi.Domain.Validators.Interfaces;
+using Resumi.Domain.Validators;
 using Resumi.Infra.Data.Models;
 using Resumi.Infra.Data.Projections;
 using Resumi.Infra.Database.Context;
@@ -9,7 +9,7 @@ using Resumi.Infra.Database.Context;
 namespace Resumi.App.Services;
 
 public class CertificateService(
-    IDomainValidator<ResumeNode> validator,
+    CertificateValidator validator,
     ILogger<CertificateService> logger,
     AppDbContext dbContext)
 {
