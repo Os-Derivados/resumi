@@ -1,7 +1,7 @@
-using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Resumi.Api.Data.Models;
 using Resumi.Domain.Models;
+using Resumi.Infra.AuthZ;
 using Resumi.Infra.Data.Models;
 using Resumi.Infra.Database.Context;
 using Resumi.Infra.Data.Projections;
@@ -9,7 +9,7 @@ using Resumi.Infra.Data.Projections;
 namespace Resumi.App.Services;
 
 public class UserService(
-    UserManager<AppUser> userManager,
+    AppUserManager userManager,
     AppDbContext dbContext,
     ILogger<UserService> logger)
 {
