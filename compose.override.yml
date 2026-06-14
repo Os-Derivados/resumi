@@ -7,3 +7,4 @@ services:
     - ${HOME}/.aspnet/https/aspnet-dev-cert.pfx:/https/aspnet-dev-cert.pfx:ro
     - ${HOME}/.aspnet/https:/home/app/.aspnet/https:ro
     - ${HOME}/.aspnet/https:/root/.aspnet/https:ro
+    - ${HOME}/vsdbg:/vsdbg:ro
