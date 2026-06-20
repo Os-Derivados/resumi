@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace Resumi.Api.Data.Models;
+namespace Resumi.Api.Data.Requests;
 
 /// <summary>
 /// Representa um objeto de parâmetros para a atualização

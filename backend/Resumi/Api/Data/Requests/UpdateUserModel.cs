@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace Resumi.Api.Data.Models;
+namespace Resumi.Api.Data.Requests;
 
 /// <summary>
 /// Objeto de parâmetros para a atualização de um usuário <see cref="AppUser"/>.

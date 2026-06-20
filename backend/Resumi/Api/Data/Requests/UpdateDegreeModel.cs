@@ -1,4 +1,6 @@
-namespace Resumi.Api.Data.Models;
+using Resumi.Api.Data.Models;
+
+namespace Resumi.Api.Data.Requests;
 
 public record UpdateDegreeModel : UpdateResumeNodeModel
 {

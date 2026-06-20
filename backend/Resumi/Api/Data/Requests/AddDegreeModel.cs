@@ -1,6 +1,7 @@
+using Resumi.Api.Data.Models;
 using Resumi.Domain.Models;
 
-namespace Resumi.Api.Data.Models;
+namespace Resumi.Api.Data.Requests;
 
 /// <summary>
 /// Representa um objeto de parâmetros para a atribuição
