@@ -6,9 +6,9 @@ using Resumi.Infra.Data.Interfaces;
 
 namespace Resumi.Infra.Data.Mappers;
 
-public class DegreeMapper : IEntityMapper<Degree, DegreeModel, AddDegreeModel, UpdateDegreeModel>
+public class DegreeMapper : IEntityMapper<Degree, DegreeModel, AddDegreeRequest, UpdateDegreeRequest>
 {
-	public Degree? NewDomainModel(AddDegreeModel dtoCreate)
+	public Degree? NewDomainModel(AddDegreeRequest dtoCreate)
 	{
 		try
 		{
@@ -60,7 +60,7 @@ public class DegreeMapper : IEntityMapper<Degree, DegreeModel, AddDegreeModel, U
 		}
 	}
 
-	public Degree? UpdatedDomainModel(UpdateDegreeModel? dtoUpdate, Degree? entity)
+	public Degree? UpdatedDomainModel(UpdateDegreeRequest? dtoUpdate, Degree? entity)
 	{
 		try
 		{

@@ -7,9 +7,10 @@ using Resumi.Infra.Exceptions;
 
 namespace Resumi.Infra.Data.Mappers;
 
-public class ExperienceMapper : IEntityMapper<Experience, ExperienceModel, AddExperienceModel, UpdateExperienceModel>
+public class
+	ExperienceMapper : IEntityMapper<Experience, ExperienceModel, AddExperienceRequest, UpdateExperienceRequest>
 {
-	public Experience? NewDomainModel(AddExperienceModel dtoCreate)
+	public Experience? NewDomainModel(AddExperienceRequest dtoCreate)
 	{
 		try
 		{
@@ -60,7 +61,7 @@ public class ExperienceMapper : IEntityMapper<Experience, ExperienceModel, AddEx
 		}
 	}
 
-	public Experience? UpdatedDomainModel(UpdateExperienceModel? dtoUpdate, Experience? entity)
+	public Experience? UpdatedDomainModel(UpdateExperienceRequest? dtoUpdate, Experience? entity)
 	{
 		try
 		{

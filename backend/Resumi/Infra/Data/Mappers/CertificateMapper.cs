@@ -7,9 +7,9 @@ using Resumi.Infra.Data.Interfaces;
 namespace Resumi.Infra.Data.Mappers;
 
 public class CertificateMapper
-	: IEntityMapper<Certificate, CertificateModel, AddCertificateModel, UpdateCertificateModel>
+	: IEntityMapper<Certificate, CertificateModel, AddCertificateRequest, UpdateCertificateRequest>
 {
-	public Certificate? NewDomainModel(AddCertificateModel dtoCreate)
+	public Certificate? NewDomainModel(AddCertificateRequest dtoCreate)
 	{
 		try
 		{
@@ -63,7 +63,7 @@ public class CertificateMapper
 		}
 	}
 
-	public Certificate? UpdatedDomainModel(UpdateCertificateModel? dtoUpdate, Certificate? entity)
+	public Certificate? UpdatedDomainModel(UpdateCertificateRequest? dtoUpdate, Certificate? entity)
 	{
 		try
 		{

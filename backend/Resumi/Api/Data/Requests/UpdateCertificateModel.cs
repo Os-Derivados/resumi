@@ -1,8 +1,6 @@
-using Resumi.Api.Data.Models;
-
 namespace Resumi.Api.Data.Requests;
 
-public record UpdateCertificateModel : UpdateResumeNodeModel
+public record UpdateCertificateRequest : UpdateResumeNodeRequest
 {
     public string? CredentialId { get; init; }
     public string? CredentialUrl { get; init; }

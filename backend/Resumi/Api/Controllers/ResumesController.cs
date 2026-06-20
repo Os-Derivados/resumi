@@ -75,7 +75,7 @@ public class ResumesController(
 	[HttpPut("{id:int}")]
 	[ProducesResponseType<Result<ResumeModel>>(StatusCodes.Status200OK)]
 	[ProducesResponseType(StatusCodes.Status404NotFound)]
-	public async Task<IActionResult> Update(int id, [FromBody] UpdateResumeModel model)
+	public async Task<IActionResult> Update(int id, [FromBody] UpdateResumeRequest model)
 	{
 		try
 		{

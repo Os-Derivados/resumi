@@ -5,7 +5,7 @@ namespace Resumi.Api.Data.Requests;
 /// <summary>
 /// Objeto de parâmetros para a atualização de um usuário <see cref="AppUser"/>.
 /// </summary>
-public record UpdateUserModel
+public record UpdateUserRequest
 {
   public string? FullName { get; init; }
 

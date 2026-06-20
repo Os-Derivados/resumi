@@ -6,10 +6,10 @@ using Resumi.Infra.Data.Interfaces;
 
 namespace Resumi.Infra.Data.Mappers;
 
-public class VolunteershipMapper : IEntityMapper<Volunteership, VolunteershipModel, AddVolunteershipModel,
-	UpdateVolunteershipModel>
+public class VolunteershipMapper : IEntityMapper<Volunteership, VolunteershipModel, AddVolunteershipRequest,
+	UpdateVolunteershipRequest>
 {
-	public Volunteership? NewDomainModel(AddVolunteershipModel dtoCreate)
+	public Volunteership? NewDomainModel(AddVolunteershipRequest dtoCreate)
 	{
 		try
 		{
@@ -57,7 +57,7 @@ public class VolunteershipMapper : IEntityMapper<Volunteership, VolunteershipMod
 		}
 	}
 
-	public Volunteership? UpdatedDomainModel(UpdateVolunteershipModel? dtoUpdate, Volunteership? entity)
+	public Volunteership? UpdatedDomainModel(UpdateVolunteershipRequest? dtoUpdate, Volunteership? entity)
 	{
 		try
 		{

@@ -7,22 +7,22 @@ namespace Resumi.Api.Data.Requests;
 /// de elementos de um <see cref="Resume"/>, como
 /// <see cref="Experience"/>, <see cref="Degree"/> ou <see cref="Volunteership"/>
 /// </summary>
-public abstract record AddResumeNodeModel
+public abstract record AddResumeNodeRequest
 {
-    [Required] public int ResumeId { get; init; }
+	[Required] public int ResumeId { get; init; }
 
-    [Required] [StringLength(128)] public required string Name { get; init; }
+	[Required] [StringLength(128)] public required string Name { get; init; }
 
-    [Required] [StringLength(256)] public required string Description { get; init; }
+	[Required] [StringLength(256)] public required string Description { get; init; }
 
-    [Required] [StringLength(128)] public required string InstitutionName { get; init; }
+	[Required] [StringLength(128)] public required string InstitutionName { get; init; }
 
-    [StringLength(64)] public string? Location { get; init; }
+	[StringLength(64)] public string? Location { get; init; }
 
-    [Required] public bool IsRemote { get; init; }
+	[Required] public bool IsRemote { get; init; }
 
-    [Required] public required DateTime StartDate { get; init; }
-    public DateTime? EndDate { get; init; }
+	[Required] public required DateTime StartDate { get; init; }
+	public DateTime? EndDate { get; init; }
 
-    [Required] public bool StillEngaged { get; init; }
+	[Required] public bool StillEngaged { get; init; }
 }

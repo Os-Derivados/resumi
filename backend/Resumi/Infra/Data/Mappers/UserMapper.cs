@@ -7,9 +7,9 @@ using Resumi.Infra.Exceptions;
 
 namespace Resumi.Infra.Data.Mappers;
 
-public class UserMapper : IEntityMapper<AppUser, UserModel, CreateUserModel, UpdateUserModel>
+public class UserMapper : IEntityMapper<AppUser, UserModel, CreateUserRequest, UpdateUserRequest>
 {
-	public AppUser? NewDomainModel(CreateUserModel dtoCreate)
+	public AppUser? NewDomainModel(CreateUserRequest dtoCreate)
 	{
 		try
 		{
@@ -46,7 +46,7 @@ public class UserMapper : IEntityMapper<AppUser, UserModel, CreateUserModel, Upd
 		}
 	}
 
-	public AppUser? UpdatedDomainModel(UpdateUserModel? dtoUpdate, AppUser? entity)
+	public AppUser? UpdatedDomainModel(UpdateUserRequest? dtoUpdate, AppUser? entity)
 	{
 		try
 		{

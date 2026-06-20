@@ -30,7 +30,7 @@ public class UsersController(
 	[HttpPost]
 	[AllowAnonymous]
 	[ProducesResponseType<Result<UserModel>>(StatusCodes.Status201Created)]
-	public async Task<IActionResult> Create([FromBody] CreateUserModel model)
+	public async Task<IActionResult> Create([FromBody] CreateUserRequest model)
 	{
 		var newUser = mapper.NewDomainModel(model);
 		var creationResult = await service.CreateAsync(newUser, model.Password);
@@ -78,7 +78,7 @@ public class UsersController(
 
 	[HttpPut("{id:int}")]
 	[ProducesResponseType<Result<List<UserModel>>>(StatusCodes.Status200OK)]
-	public async Task<IActionResult> Update(int id, [FromBody] UpdateUserModel model)
+	public async Task<IActionResult> Update(int id, [FromBody] UpdateUserRequest model)
 	{
 		var sessionUser = UserModel.FromClaimsPrincipal(HttpContext.User)
 		                  ?? throw new InfrastructureException("An user should be authenticated at this point.");

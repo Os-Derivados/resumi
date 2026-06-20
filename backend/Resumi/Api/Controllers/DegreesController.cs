@@ -29,7 +29,7 @@ public class DegreesController(
 
 	[HttpPost]
 	[ProducesResponseType<Result<DegreeModel>>(StatusCodes.Status201Created)]
-	public async Task<IActionResult> Create([FromBody] AddDegreeModel model)
+	public async Task<IActionResult> Create([FromBody] AddDegreeRequest model)
 	{
 		var newDegree = mapper.NewDomainModel(model);
 		var creationResult = await service.CreateAsync(newDegree);
@@ -45,7 +45,7 @@ public class DegreesController(
 	[HttpPut("{id:int}")]
 	[ProducesResponseType(typeof(Result<DegreeModel>), StatusCodes.Status200OK)]
 	public async Task<IActionResult> Update(int id,
-		[FromBody] UpdateDegreeModel model)
+		[FromBody] UpdateDegreeRequest model)
 	{
 		try
 		{

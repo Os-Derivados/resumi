@@ -1,6 +1,5 @@
 using System.Text.Json;
 using Microsoft.AspNetCore.Identity;
-using Resumi.Api.Data.Models;
 using Resumi.Api.Data.Requests;
 using Resumi.App.Services;
 using Resumi.Domain.Models;
@@ -42,11 +41,11 @@ public static class DbSeeder
 		}
 	}
 
-	private static CreateUserModel GetAdminUserModel()
+	private static CreateUserRequest GetAdminUserModel()
 	{
 		var adminUserJson = Environment.GetEnvironmentVariable(EnvironmentVariables.AdminUser);
 
-		return JsonSerializer.Deserialize<CreateUserModel>(adminUserJson!)
+		return JsonSerializer.Deserialize<CreateUserRequest>(adminUserJson!)
 		       ?? throw new InfrastructureException("Failed to deserialize admin user data from environment variable.");
 	}
 
@@ -54,7 +53,7 @@ public static class DbSeeder
 		AppUserManager userManager,
 		UserService userService,
 		UserMapper userMapper,
-		CreateUserModel adminUserModel)
+		CreateUserRequest adminUserModel)
 	{
 		var existingAdmin = await userManager.FindByEmailAsync(adminUserModel.Email);
 

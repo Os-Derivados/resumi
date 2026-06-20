@@ -19,64 +19,64 @@ namespace Resumi.Api.Controllers;
 [ProducesResponseType<Result<ExperienceModel>>(StatusCodes.Status400BadRequest)]
 [ProducesResponseType<Result<ExperienceModel>>(StatusCodes.Status422UnprocessableEntity)]
 public class ExperiencesController(
-    AppDbContext dbContext,
-    ExperienceService service,
-    ExperienceMapper mapper,
-    ILogger<ExperiencesController> logger)
-    : ControllerBase
+	AppDbContext dbContext,
+	ExperienceService service,
+	ExperienceMapper mapper,
+	ILogger<ExperiencesController> logger)
+	: ControllerBase
 {
-    [HttpPost]
-    [ProducesResponseType<Result<ExperienceModel>>(StatusCodes.Status201Created)]
-    public async Task<IActionResult> Create([FromBody] AddExperienceModel model)
-    {
-        var newExperience = mapper.NewDomainModel(model);
-        var creationResult = await service.CreateAsync(newExperience);
+	[HttpPost]
+	[ProducesResponseType<Result<ExperienceModel>>(StatusCodes.Status201Created)]
+	public async Task<IActionResult> Create([FromBody] AddExperienceRequest model)
+	{
+		var newExperience = mapper.NewDomainModel(model);
+		var creationResult = await service.CreateAsync(newExperience);
 
-        return !creationResult.Succeeded
-            ? BadRequest(creationResult)
-            : Created($"api/experiences/{creationResult.Data.Id}", creationResult);
-    }
+		return !creationResult.Succeeded
+			? BadRequest(creationResult)
+			: Created($"api/experiences/{creationResult.Data.Id}", creationResult);
+	}
 
-    [HttpPut("{id:int}")]
-    public async Task<IActionResult> Update(int id, [FromBody] UpdateExperienceModel model)
-    {
-        try
-        {
-            var target = await dbContext.Experiences.AsNoTracking().FirstOrDefaultAsync(e => e.Id == id);
+	[HttpPut("{id:int}")]
+	public async Task<IActionResult> Update(int id, [FromBody] UpdateExperienceRequest model)
+	{
+		try
+		{
+			var target = await dbContext.Experiences.AsNoTracking().FirstOrDefaultAsync(e => e.Id == id);
 
-            if (target is null) return NotFound();
+			if (target is null) return NotFound();
 
-            var updated = mapper.UpdatedDomainModel(model, target);
+			var updated = mapper.UpdatedDomainModel(model, target);
 
-            if (updated is null)
-            {
-                return BadRequest(Result<ExperienceModel>.Failure(nameof(UpdateExperienceModel),
-                    Experience.InvalidState));
-            }
+			if (updated is null)
+			{
+				return BadRequest(Result<ExperienceModel>.Failure(nameof(UpdateExperienceRequest),
+					Experience.InvalidState));
+			}
 
-            var updateResult = await service.UpdateAsync(target, updated);
+			var updateResult = await service.UpdateAsync(target, updated);
 
-            return !updateResult.Succeeded ? BadRequest(updateResult) : Ok(updateResult);
-        }
-        catch (Exception ex)
-        {
-            logger.LogError(ex, "An error occurred while updating experience with id {ExperienceId}: {Message}", id,
-                ex.Message);
+			return !updateResult.Succeeded ? BadRequest(updateResult) : Ok(updateResult);
+		}
+		catch (Exception ex)
+		{
+			logger.LogError(ex, "An error occurred while updating experience with id {ExperienceId}: {Message}", id,
+				ex.Message);
 
-            return UnprocessableEntity();
-        }
-    }
+			return UnprocessableEntity();
+		}
+	}
 
-    [HttpDelete("{id:int}")]
-    public async Task<IActionResult> Delete(int id)
-    {
-        var removalResult = await service.DeleteAsync(id);
+	[HttpDelete("{id:int}")]
+	public async Task<IActionResult> Delete(int id)
+	{
+		var removalResult = await service.DeleteAsync(id);
 
-        if (!removalResult.Succeeded)
-        {
-            return BadRequest(removalResult);
-        }
+		if (!removalResult.Succeeded)
+		{
+			return BadRequest(removalResult);
+		}
 
-        return NoContent();
-    }
+		return NoContent();
+	}
 }
