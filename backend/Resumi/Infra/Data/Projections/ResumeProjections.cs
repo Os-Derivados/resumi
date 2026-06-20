@@ -55,9 +55,9 @@ public static class ResumeProjections
 		Location = r.Location,
 		Email = r.Email,
 		PhoneNumber = r.PhoneNumber,
-		Degrees = r.AcademicDegrees!.Select(DegreeProjections.Basic.Compile()).ToArray(),
-		Experiences = r.Experiences!.Select(ExperienceProjections.Basic.Compile()).ToArray(),
-		Volunteerships = r.VolunteerExperiences!.Select(VolunteershipProjections.Basic.Compile()).ToArray()
+		Degrees = r.AcademicDegrees!.AsQueryable().Select(DegreeProjections.Basic).ToArray(),
+		Experiences = r.Experiences!.AsQueryable().Select(ExperienceProjections.Basic).ToArray(),
+		Volunteerships = r.VolunteerExperiences!.AsQueryable().Select(VolunteershipProjections.Basic).ToArray()
 	};
 
 	public static readonly ResumeProjection Experiences = r => new ResumeModel
@@ -69,7 +69,7 @@ public static class ResumeProjections
 		Location = r.Location,
 		Email = r.Email,
 		PhoneNumber = r.PhoneNumber,
-		Experiences = r.Experiences!.Select(ExperienceProjections.Basic.Compile()).ToArray()
+		Experiences = r.Experiences!.AsQueryable().Select(ExperienceProjections.Basic).ToArray()
 	};
 }
 
