@@ -52,7 +52,7 @@ public class ResumesController(
 			: Created($"{Route}/{result.Data.Id}", result);
 	}
 
-	[HttpPost("{id:int}")]
+	[HttpGet("{id:int}")]
 	[ProducesResponseType<Result<ResumeModel>>(StatusCodes.Status200OK)]
 	public async Task<IActionResult> Read(int id)
 	{
