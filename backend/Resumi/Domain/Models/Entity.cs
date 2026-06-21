@@ -11,6 +11,10 @@ public abstract class Entity : ITrackable, ICloneableEntity<Entity>
 
     public static readonly string InvalidPrimaryKey = "A chave primária da entidade é inválida.";
 
+    public static readonly string InvalidState = "O estado da entidade é inválido.";
+
+    public static readonly string NotFound = "O registro não foi encontrado.";
+
     [Key] public int Id { get; set; }
     public DateTime CreatedAt { get; set; }
     public DateTime? UpdatedAt { get; set; }

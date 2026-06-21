@@ -10,6 +10,12 @@ namespace Resumi.Domain.Models;
 /// </summary>
 public abstract class ResumeNode : Entity
 {
+	public static readonly string NameTooLong = "O nome do item não pode exceder 128 caracteres.";
+	public static readonly string DescriptionTooLong = "A descrição do item não pode exceder 256 caracteres.";
+
+	public static readonly string InstitutionNameTooLong =
+		"O nome da instituição associada ao item não pode exceder 128 caracteres.";
+
 	public static readonly string InvalidEngagement =
 		"O voluntariado não pode ser marcado como 'ainda engajado' se a data de término estiver preenchida, e vice-versa.";
 
