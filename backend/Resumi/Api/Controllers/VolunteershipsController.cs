@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Resumi.Api.Data.Models;
 using Resumi.Api.Data.Requests;
 using Resumi.App.Services;
+using Resumi.Domain.Exceptions;
 using Resumi.Domain.Models;
 using Resumi.Infra.Data.Mappers;
 using Resumi.Infra.Data.Models;
@@ -30,19 +31,29 @@ public class VolunteershipsController(
 	[ProducesResponseType<Result<VolunteershipModel>>(StatusCodes.Status201Created)]
 	public async Task<IActionResult> Create([FromBody] AddVolunteershipRequest model)
 	{
-		var newVolunteership = mapper.NewDomainModel(model);
-
-		if (newVolunteership is null)
+		try
 		{
-			return BadRequest(
-				Result<VolunteershipModel>.Failure(nameof(VolunteershipModel), Volunteership.InvalidState));
+			var newVolunteership = mapper.NewDomainModel(model);
+
+			if (newVolunteership is null)
+			{
+				return BadRequest(
+					Result<VolunteershipModel>.Failure(nameof(VolunteershipModel), Volunteership.InvalidState));
+			}
+
+			var creationResult = await service.CreateAsync(newVolunteership);
+
+			return !creationResult.Succeeded
+				? BadRequest(creationResult)
+				: Created(uri: $"{Route}/{creationResult.Data.Id}", creationResult);
 		}
-
-		var creationResult = await service.CreateAsync(newVolunteership);
-
-		return !creationResult.Succeeded
-			? BadRequest(creationResult)
-			: Created(uri: $"{Route}/{creationResult.Data.Id}", creationResult);
+		catch (StillEngagedException)
+		{
+			return BadRequest(Result<VolunteershipModel>.Failure(
+				errorKey: nameof(VolunteershipModel),
+				errorMessage: ResumeNode.InvalidEngagement)
+			);
+		}
 	}
 
 	[HttpPut("{id:int}")]
