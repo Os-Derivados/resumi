@@ -1,6 +1,7 @@
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using Resumi.Domain.Exceptions;
 
 namespace Resumi.Domain.Models;
 
@@ -35,5 +36,20 @@ public abstract class ResumeNode : Entity
 
 	public DateTime? EndDate { get; set; }
 
-	[Required] public bool StillEngaged { get; set; }
+	private bool _stillEngaged;
+
+	[Required]
+	public bool StillEngaged
+	{
+		get => _stillEngaged;
+		set
+		{
+			if (value && EndDate is not null)
+			{
+				throw new StillEngagedException();
+			}
+
+			_stillEngaged = value;
+		}
+	}
 }
