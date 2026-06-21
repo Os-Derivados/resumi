@@ -10,8 +10,6 @@ namespace Resumi.Domain.Models;
 public class Resume : Entity
 {
     public static readonly string FailedToQuery = "Não foi possível buscar o Currículo.";
-    public static readonly string NotFound = "Currículo não encontrado.";
-    public static readonly string InvalidState = "O Currículo se encontra num estado inválido.";
     public static readonly string FailedToCreate = "Não foi pssível cadastrar o Currículo.";
     public static readonly string FailedToUpdate = "Não foi possível atualizar o Currículo.";
     public static readonly string FailedToDelete = "Não foi possível excluir o Currículo.";

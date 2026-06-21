@@ -11,9 +11,7 @@ public class Volunteership : ResumeNode
 	public static readonly string FailedToCreate = "Não foi possível cadastrar voluntariado.";
 	public static readonly string FailedToUpdate = "Não foi possível atualizar o voluntariado.";
 	public static readonly string FailedToDelete = "Não foi possível deletar o voluntariado.";
-	public static readonly string NotFound = "voluntariado não encontrado.";
 	public static readonly string InternalError = "Ocorreu um erro interno ao processar voluntariado.";
-	public static readonly string InvalidState = "O estado do voluntariado é inválido para esta operação.";
 
 	public override Volunteership ShallowCopy()
 	{

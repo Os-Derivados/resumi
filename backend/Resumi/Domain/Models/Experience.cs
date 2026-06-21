@@ -11,9 +11,7 @@ public class Experience : ResumeNode
 	public static readonly string FailedToCreate = "Não foi possível cadastrar experiência profissional.";
 	public static readonly string FailedToUpdate = "Não foi possível atualizar a experiência profissional.";
 	public static readonly string FailedToDelete = "Não foi possível deletar a experiência profissional.";
-	public static readonly string NotFound = "Experiência profissional não encontrada.";
 	public static readonly string InternalError = "Ocorreu um erro interno ao processar experiência profissional.";
-	public static readonly string InvalidState = "O estado da experiência profissional é inválido para esta operação.";
 
 	public string? Highlights { get; set; }
 

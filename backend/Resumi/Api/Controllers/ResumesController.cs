@@ -85,7 +85,7 @@ public class ResumesController(
 
 			var updated = current.ShallowCopy();
 
-			if (updated is null) return BadRequest(Result<ResumeModel>.Failure(nameof(Resume), Resume.InvalidState));
+			if (updated is null) return BadRequest(Result<ResumeModel>.Failure(nameof(Resume), Entity.InvalidState));
 
 			updated.Title = model.Title ?? current.Title;
 			updated.OwnerName = model.OwnerName ?? current.OwnerName;

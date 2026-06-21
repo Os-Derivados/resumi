@@ -21,7 +21,7 @@ public class ResumeValidator : IDomainValidator<Resume>
 
 		if (newResume is null)
 		{
-			errors.AddError(nameof(Resume), Resume.InvalidState);
+			errors.AddError(nameof(Resume), Entity.InvalidState);
 		}
 
 		if (newResume is not null && newResume.Title.Length > MaxTitleLength)
@@ -40,12 +40,12 @@ public class ResumeValidator : IDomainValidator<Resume>
 
 		if (current is null)
 		{
-			errors.AddError(nameof(Resume), Resume.NotFound);
+			errors.AddError(nameof(Resume), Entity.NotFound);
 		}
 
 		if (updated is null)
 		{
-			errors.AddError(nameof(Resume), Resume.InvalidState);
+			errors.AddError(nameof(Resume), Entity.InvalidState);
 		}
 
 		if (current is not null && updated is not null && current.Id != updated.Id)
@@ -79,7 +79,7 @@ public class ResumeValidator : IDomainValidator<Resume>
 
 		if (targetResume is null)
 		{
-			errors.AddError(nameof(Resume), Resume.NotFound);
+			errors.AddError(nameof(Resume), Entity.NotFound);
 		}
 
 		return errors.Count > 0

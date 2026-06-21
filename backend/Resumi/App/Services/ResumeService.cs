@@ -45,7 +45,7 @@ public class ResumeService(
 		{
 			logger.LogError(ex, "Failed to create '{Type}' entity: {Message}", nameof(Resume), ex.Message);
 
-			return Result<ResumeModel>.Failure(nameof(Resume), Resume.InvalidState);
+			return Result<ResumeModel>.Failure(nameof(Resume), Entity.InvalidState);
 		}
 	}
 
@@ -61,7 +61,7 @@ public class ResumeService(
 				.FirstOrDefaultAsync(r => r.Id == id);
 
 			return result is null
-				? Result<ResumeModel>.Failure(nameof(Resume), Resume.InvalidState)
+				? Result<ResumeModel>.Failure(nameof(Resume), Entity.InvalidState)
 				: Result<ResumeModel>.Success(result);
 		}
 		catch (Exception ex)
@@ -92,7 +92,7 @@ public class ResumeService(
 				.ToListAsync();
 
 			return result.Count is 0
-				? Result<List<ResumeModel>>.Failure(nameof(Resume), Resume.NotFound)
+				? Result<List<ResumeModel>>.Failure(nameof(Resume), Entity.NotFound)
 				: Result<List<ResumeModel>>.Success(result);
 		}
 		catch (Exception ex)
@@ -132,7 +132,7 @@ public class ResumeService(
 		{
 			logger.LogError(ex, "Failed to update '{Type}': {Message}", nameof(Resume), ex.Message);
 
-			return Result<ResumeModel>.Failure(nameof(Resume), Resume.InvalidState);
+			return Result<ResumeModel>.Failure(nameof(Resume), Entity.InvalidState);
 		}
 	}
 
@@ -160,7 +160,7 @@ public class ResumeService(
 		{
 			logger.LogError(ex, "Failed to delete '{Type}': {Message}", nameof(Resume), ex.Message);
 
-			return Result.Failure(nameof(Resume), Resume.InvalidState);
+			return Result.Failure(nameof(Resume), Entity.InvalidState);
 		}
 	}
 }

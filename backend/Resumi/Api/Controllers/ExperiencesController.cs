@@ -51,7 +51,7 @@ public class ExperiencesController(
 			if (updated is null)
 			{
 				return BadRequest(Result<ExperienceModel>.Failure(nameof(UpdateExperienceRequest),
-					Experience.InvalidState));
+					Entity.InvalidState));
 			}
 
 			var updateResult = await service.UpdateAsync(target, updated);

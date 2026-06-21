@@ -38,7 +38,7 @@ public class VolunteershipsController(
 			if (newVolunteership is null)
 			{
 				return BadRequest(
-					Result<VolunteershipModel>.Failure(nameof(VolunteershipModel), Volunteership.InvalidState));
+					Result<VolunteershipModel>.Failure(nameof(VolunteershipModel), Entity.InvalidState));
 			}
 
 			var creationResult = await service.CreateAsync(newVolunteership);
@@ -80,7 +80,7 @@ public class VolunteershipsController(
 			if (updated is null)
 			{
 				return BadRequest(
-					Result<VolunteershipModel>.Failure(nameof(VolunteershipModel), Volunteership.InvalidState));
+					Result<VolunteershipModel>.Failure(nameof(VolunteershipModel), Entity.InvalidState));
 			}
 
 			var updateResult = await service.UpdateAsync(target, updated);
