@@ -1,3 +1,4 @@
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -10,13 +11,13 @@ public abstract class ResumeNode : Entity
 {
 	[Required]
 	[ForeignKey(nameof(Resume))]
-	public int ResumeId { get; set; }
+	public required int ResumeId { get; set; }
 
 	public Resume? Resume { get; set; }
 
-	[Required] [StringLength(128)] public string? Name { get; set; }
+	[Required] [StringLength(128)] public required string Name { get; set; }
 
-	[Required] [StringLength(256)] public string? Description { get; set; }
+	[Required] [StringLength(256)] public required string Description { get; set; }
 
 	/// <summary>
 	/// Representa o nome da empresa, instituição de ensino ou ONG associada a <see cref="Experience"/>,
@@ -24,13 +25,13 @@ public abstract class ResumeNode : Entity
 	/// </summary>
 	[Required]
 	[StringLength(128)]
-	public string? InstitutionName { get; set; }
+	public required string InstitutionName { get; set; }
 
 	[StringLength(64)] public string? Location { get; set; }
 
-	[Required] public bool IsRemote { get; set; }
+	[DefaultValue(false)] [Required] public bool IsRemote { get; set; }
 
-	[Required] public DateTime StartDate { get; set; }
+	[Required] public required DateTime StartDate { get; set; }
 
 	public DateTime? EndDate { get; set; }
 
