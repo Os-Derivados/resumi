@@ -25,12 +25,13 @@ public class VolunteershipService(
 			}
 
 			var creationResult = await dbContext.VolunteerExperiences.AddAsync(newEntity!);
-			var changedEntries = await dbContext.SaveChangesAsync();
 
-			if (creationResult.State is not EntityState.Added || changedEntries is 0)
+			if (creationResult.State is not EntityState.Added)
 			{
 				return Result<VolunteershipModel>.Failure(nameof(Volunteership), Volunteership.FailedToCreate);
 			}
+
+			_ = await dbContext.SaveChangesAsync();
 
 			var createdVolunteership = await dbContext.VolunteerExperiences
 				.AsNoTracking()
@@ -59,12 +60,13 @@ public class VolunteershipService(
 			}
 
 			var updateResult = dbContext.VolunteerExperiences.Update(updated!);
-			var changedEntries = await dbContext.SaveChangesAsync();
 
-			if (updateResult.State is not EntityState.Modified || changedEntries is 0)
+			if (updateResult.State is not EntityState.Modified)
 			{
 				return Result<VolunteershipModel>.Failure(nameof(Volunteership), Volunteership.FailedToUpdate);
 			}
+
+			_ = await dbContext.SaveChangesAsync();
 
 			var updatedVolunteership = await dbContext.VolunteerExperiences
 				.AsNoTracking()
@@ -93,12 +95,13 @@ public class VolunteershipService(
 			}
 
 			var removalResult = dbContext.VolunteerExperiences.Remove(target);
-			var changedEntries = await dbContext.SaveChangesAsync();
 
-			if (removalResult.State is not EntityState.Deleted || changedEntries is 0)
+			if (removalResult.State is not EntityState.Deleted)
 			{
 				return Result.Failure(nameof(Volunteership), Volunteership.FailedToDelete);
 			}
+
+			_ = await dbContext.SaveChangesAsync();
 
 			return Result.Success;
 		}

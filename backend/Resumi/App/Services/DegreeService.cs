@@ -25,12 +25,13 @@ public class DegreeService(
 			}
 
 			var creationResult = await dbContext.AcademicDegrees.AddAsync(newEntity!);
-			var createdEntries = await dbContext.SaveChangesAsync();
 
-			if (creationResult.State is not EntityState.Added || createdEntries < 1)
+			if (creationResult.State is not EntityState.Added)
 			{
 				return Result<DegreeModel>.Failure(nameof(Degree), Degree.FailedToCreate);
 			}
+
+			_ = await dbContext.SaveChangesAsync();
 
 			var createdModel = await dbContext.AcademicDegrees.AsNoTracking()
 				.Select(DegreeProjections.Basic)
@@ -58,14 +59,15 @@ public class DegreeService(
 			}
 
 			var updateResult = dbContext.AcademicDegrees.Update(updated!);
-			var updatedEntities = await dbContext.SaveChangesAsync();
 
-			if (updateResult.State is not EntityState.Modified || updatedEntities < 1)
+			if (updateResult.State is not EntityState.Modified)
 			{
 				return Result<DegreeModel>.Failure(
 					nameof(Degree),
 					Degree.FailedToUpdate);
 			}
+
+			_ = await dbContext.SaveChangesAsync();
 
 			var updatedModel = await dbContext.AcademicDegrees.AsNoTracking()
 				.Select(DegreeProjections.Basic)
@@ -98,14 +100,15 @@ public class DegreeService(
 			}
 
 			var removalResult = dbContext.AcademicDegrees.Remove(existingEntity);
-			var deletedEntries = await dbContext.SaveChangesAsync();
 
-			if (removalResult.State is not EntityState.Deleted || deletedEntries < 1)
+			if (removalResult.State is not EntityState.Deleted)
 			{
 				return Result.Failure(
 					nameof(Degree),
 					Degree.FailedToDelete);
 			}
+
+			_ = await dbContext.SaveChangesAsync();
 
 			return Result.Success;
 		}

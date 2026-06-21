@@ -25,12 +25,13 @@ public class ExperienceService(
             }
 
             var creationResult = await dbContext.Experiences.AddAsync(newEntity!);
-            var createdEntries = await dbContext.SaveChangesAsync();
 
-            if (creationResult.State is not EntityState.Added || createdEntries == 0)
+            if (creationResult.State is not EntityState.Added)
             {
                 return Result<ExperienceModel>.Failure(nameof(Experience), Experience.FailedToCreate);
             }
+
+            _ = await dbContext.SaveChangesAsync();
 
             var createdExperience = await dbContext.Experiences.AsNoTracking()
                 .Select(ExperienceProjections.Basic).FirstOrDefaultAsync(e => e.Id == newEntity!.Id);
@@ -57,12 +58,13 @@ public class ExperienceService(
             }
 
             var updateResult = dbContext.Experiences.Update(updated!);
-            var updatedEntries = await dbContext.SaveChangesAsync();
 
-            if (updateResult.State is not EntityState.Modified || updatedEntries is 0)
+            if (updateResult.State is not EntityState.Modified)
             {
                 return Result<ExperienceModel>.Failure(nameof(Experience), Experience.FailedToUpdate);
             }
+
+            _ = await dbContext.SaveChangesAsync();
 
             var updatedExperience = await dbContext.Experiences
                 .AsNoTracking()
@@ -91,12 +93,13 @@ public class ExperienceService(
             }
 
             var removalResult = dbContext.Experiences.Remove(target);
-            var removedEntries = await dbContext.SaveChangesAsync();
 
-            if (removalResult.State is not EntityState.Deleted || removedEntries is 0)
+            if (removalResult.State is not EntityState.Deleted)
             {
                 return Result.Failure(nameof(Experience), Experience.FailedToDelete);
             }
+
+            _ = await dbContext.SaveChangesAsync();
 
             return Result.Success;
         }

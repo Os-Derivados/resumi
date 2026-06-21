@@ -25,12 +25,13 @@ public class CertificateService(
             }
 
             var creationResult = await dbContext.Certificates.AddAsync(newEntity!);
-            var changedEntries = await dbContext.SaveChangesAsync();
 
-            if (creationResult.State is not EntityState.Added || changedEntries is 0)
+            if (creationResult.State is not EntityState.Added)
             {
                 return Result<CertificateModel>.Failure(nameof(Certificate), Certificate.FailedToCreate);
             }
+
+            _ = await dbContext.SaveChangesAsync();
 
             var createdEntity = await dbContext.Certificates
                 .AsNoTracking()
@@ -57,12 +58,13 @@ public class CertificateService(
                 return Result<CertificateModel>.Failure(validationResult);
 
             var updateResult = dbContext.Certificates.Update(updated!);
-            var changedEntries = await dbContext.SaveChangesAsync();
 
-            if (updateResult.State is not EntityState.Modified || changedEntries is 0)
+            if (updateResult.State is not EntityState.Modified)
             {
                 return Result<CertificateModel>.Failure(nameof(Certificate), Certificate.FailedToUpdate);
             }
+
+            _ = await dbContext.SaveChangesAsync();
 
             var updatedEntity = await dbContext.Certificates
                 .AsNoTracking()
@@ -91,12 +93,13 @@ public class CertificateService(
             }
 
             var removalResult = dbContext.Certificates.Remove(target);
-            var changedEntries = await dbContext.SaveChangesAsync();
 
-            if (removalResult.State is not EntityState.Deleted || changedEntries is 0)
+            if (removalResult.State is not EntityState.Deleted)
             {
                 return Result.Failure(nameof(Certificate), Certificate.FailedToDelete);
             }
+
+            _ = await dbContext.SaveChangesAsync();
 
             return Result.Success;
         }

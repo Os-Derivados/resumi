@@ -28,12 +28,13 @@ public class ResumeService(
 			}
 
 			var createdResume = await dbContext.Resumes.AddAsync(newResume!);
-			var createdEntries = await dbContext.SaveChangesAsync();
 
-			if (createdResume.State is not EntityState.Added || createdEntries < 1)
+			if (createdResume.State is not EntityState.Added)
 			{
 				return Result<ResumeModel>.Failure(nameof(Resume), Resume.FailedToCreate);
 			}
+
+			_ = await dbContext.SaveChangesAsync();
 
 			var createdModel = await dbContext.Resumes.AsNoTracking().Select(ResumeProjections.Basic)
 				.FirstOrDefaultAsync(r => r.Id == newResume!.Id);
@@ -113,10 +114,12 @@ public class ResumeService(
 
 			var updateResult = dbContext.Resumes.Update(updated!);
 
-			await dbContext.SaveChangesAsync();
-
 			if (updateResult.State is not EntityState.Modified)
+			{
 				return Result<ResumeModel>.Failure(nameof(Resume), Resume.FailedToUpdate);
+			}
+
+			_ = await dbContext.SaveChangesAsync();
 
 			var updatedModel = await dbContext.Resumes
 				.AsNoTracking()
@@ -143,12 +146,13 @@ public class ResumeService(
 			if (!validationResult.Succeeded) return Result.Failure(validationResult);
 
 			var deleteResult = dbContext.Resumes.Remove(target!);
-			var deletedEntries = await dbContext.SaveChangesAsync();
 
-			if (deleteResult.State is not EntityState.Deleted || deletedEntries < 1)
+			if (deleteResult.State is not EntityState.Deleted)
 			{
 				return Result.Failure(nameof(Resume), Resume.FailedToDelete);
 			}
+
+			_ = await dbContext.SaveChangesAsync();
 
 			return Result.Success;
 		}
