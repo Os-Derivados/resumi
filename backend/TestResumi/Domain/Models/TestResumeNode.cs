@@ -42,4 +42,23 @@ public class TestResumeNode
             }
         );
     }
+
+    [Fact]
+    public void StartEndDate_ThrowsException_IfSetInInvalidOrder()
+    {
+        // Arrange
+        // Act
+        // Assert
+        Assert.Throws<InvalidEngagementPeriodException>(() => new Volunteership
+            {
+                ResumeId = 1,
+                Name = "Test Node",
+                Description = "Test Description",
+                InstitutionName = "Test Institution",
+                StartDate = DateTime.Now,
+                EndDate = DateTime.Now.AddYears(-1),
+                StillEngaged = false,
+            }
+        );
+    }
 }

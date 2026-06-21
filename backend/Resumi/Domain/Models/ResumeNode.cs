@@ -41,7 +41,22 @@ public abstract class ResumeNode : Entity
 
 	[DefaultValue(false)] [Required] public bool IsRemote { get; set; }
 
-	[Required] public required DateTime StartDate { get; set; }
+	private DateTime _startDate;
+
+	[Required]
+	public required DateTime StartDate
+	{
+		get => _startDate;
+		set
+		{
+			if (EndDate.HasValue && value > EndDate.Value)
+			{
+				throw new InvalidEngagementPeriodException();
+			}
+
+			_startDate = value;
+		}
+	}
 
 	private DateTime? _endDate;
 
@@ -50,9 +65,14 @@ public abstract class ResumeNode : Entity
 		get => _endDate;
 		set
 		{
-			if (value is not null && StillEngaged)
+			if (value.HasValue && StillEngaged)
 			{
 				throw new StillEngagedException();
+			}
+
+			if (value.HasValue && value.Value < StartDate)
+			{
+				throw new InvalidEngagementPeriodException();
 			}
 
 			_endDate = value;
