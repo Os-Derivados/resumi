@@ -10,6 +10,9 @@ namespace Resumi.Domain.Models;
 /// </summary>
 public abstract class ResumeNode : Entity
 {
+	public static readonly string InvalidEngagement =
+		"O voluntariado não pode ser marcado como 'ainda engajado' se a data de término estiver preenchida, e vice-versa.";
+
 	[Required]
 	[ForeignKey(nameof(Resume))]
 	public required int ResumeId { get; set; }

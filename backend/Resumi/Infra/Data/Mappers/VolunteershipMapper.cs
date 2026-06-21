@@ -3,6 +3,7 @@ using Resumi.Api.Data.Requests;
 using Resumi.Domain.Exceptions;
 using Resumi.Domain.Models;
 using Resumi.Infra.Data.Interfaces;
+using Resumi.Infra.Exceptions;
 
 namespace Resumi.Infra.Data.Mappers;
 
@@ -26,7 +27,7 @@ public class VolunteershipMapper : IEntityMapper<Volunteership, VolunteershipMod
 				StillEngaged = dtoCreate.StillEngaged,
 			};
 		}
-		catch (DomainException)
+		catch (Exception ex) when (ex is not DomainException)
 		{
 			return null;
 		}
@@ -51,7 +52,7 @@ public class VolunteershipMapper : IEntityMapper<Volunteership, VolunteershipMod
 				StillEngaged = entity.StillEngaged,
 			};
 		}
-		catch
+		catch (Exception ex) when (ex is not InfrastructureException)
 		{
 			return null;
 		}
@@ -68,15 +69,15 @@ public class VolunteershipMapper : IEntityMapper<Volunteership, VolunteershipMod
 			shallowCopy.Name = dtoUpdate.Name ?? shallowCopy.Name;
 			shallowCopy.Description = dtoUpdate.Description ?? shallowCopy.Description;
 			shallowCopy.InstitutionName = dtoUpdate.InstitutionName ?? shallowCopy.InstitutionName;
-			shallowCopy.Location = dtoUpdate.Location ?? shallowCopy.Location;
+			shallowCopy.Location ??= dtoUpdate.Location;
 			shallowCopy.IsRemote = dtoUpdate.IsRemote ?? shallowCopy.IsRemote;
 			shallowCopy.StartDate = dtoUpdate.StartDate ?? shallowCopy.StartDate;
-			shallowCopy.EndDate = dtoUpdate.EndDate ?? shallowCopy.EndDate;
+			shallowCopy.EndDate ??= dtoUpdate.EndDate;
 			shallowCopy.StillEngaged = dtoUpdate.StillEngaged ?? shallowCopy.StillEngaged;
 
 			return null;
 		}
-		catch (DomainException)
+		catch (Exception ex) when (ex is not DomainException)
 		{
 			return null;
 		}
