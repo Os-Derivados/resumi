@@ -14,7 +14,7 @@ public class ResumeQueryValidator(AppDbContext dbContext, ILogger<ResumeQueryVal
 		{
 			var exists = await dbContext.Resumes.AsNoTracking().AnyAsync(r => r.Id == id);
 
-			return exists ? Result.Success : Result.Failure(nameof(Resume), Resume.NotFound);
+			return exists ? Result.Success : Result.Failure(nameof(Resume), Entity.NotFound);
 		}
 		catch (Exception ex)
 		{

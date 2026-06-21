@@ -43,10 +43,6 @@ public static class StartupExtensions
     public static void AddDomainValidators(this IServiceCollection services)
     {
         services.AddScoped<ResumeValidator>();
-        services.AddScoped<DegreeValidator>();
-        services.AddScoped<CertificateValidator>();
-        services.AddScoped<ExperienceValidator>();
-        services.AddScoped<UserValidator>();
         services.AddScoped<ResumeNodeValidator>();
     }
 

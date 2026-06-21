@@ -9,7 +9,7 @@ using Resumi.Infra.Data.Projections;
 namespace Resumi.App.Services;
 
 public class DegreeService(
-	DegreeValidator validator,
+	ResumeNodeValidator validator,
 	ILogger<DegreeService> logger,
 	AppDbContext dbContext)
 {
@@ -21,7 +21,7 @@ public class DegreeService(
 
 			if (!validationResult.Succeeded)
 			{
-				return Result<DegreeModel>.Failure(validationResult.Errors!);
+				return Result<DegreeModel>.Failure(validationResult.Errors);
 			}
 
 			var creationResult = await dbContext.AcademicDegrees.AddAsync(newEntity!);
@@ -55,7 +55,7 @@ public class DegreeService(
 
 			if (!validationResult.Succeeded)
 			{
-				return Result<DegreeModel>.Failure(validationResult.Errors!);
+				return Result<DegreeModel>.Failure(validationResult.Errors);
 			}
 
 			var updateResult = dbContext.AcademicDegrees.Update(updated!);
@@ -96,7 +96,7 @@ public class DegreeService(
 
 			if (existingEntity is null)
 			{
-				return Result.Failure(nameof(Degree), Degree.NotFound);
+				return Result.Failure(nameof(Degree), Entity.NotFound);
 			}
 
 			var removalResult = dbContext.AcademicDegrees.Remove(existingEntity);

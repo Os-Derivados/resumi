@@ -9,7 +9,7 @@ using Resumi.Infra.Database.Context;
 namespace Resumi.App.Services;
 
 public class CertificateService(
-    CertificateValidator validator,
+    ResumeNodeValidator validator,
     ILogger<CertificateService> logger,
     AppDbContext dbContext)
 {
@@ -89,7 +89,7 @@ public class CertificateService(
 
             if (target is null)
             {
-                return Result.Failure(nameof(Certificate), Certificate.NotFound);
+                return Result.Failure(nameof(Certificate), Entity.NotFound);
             }
 
             var removalResult = dbContext.Certificates.Remove(target);

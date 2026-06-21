@@ -11,7 +11,7 @@ namespace Resumi.App.Services;
 public class ExperienceService(
     AppDbContext dbContext,
     ILogger<ExperienceService> logger,
-    ExperienceValidator validator)
+    ResumeNodeValidator validator)
 {
     public async Task<Result<ExperienceModel>> CreateAsync(Experience? newEntity)
     {
@@ -89,7 +89,7 @@ public class ExperienceService(
 
             if (target is null)
             {
-                return Result.Failure(nameof(Experience), Experience.NotFound);
+                return Result.Failure(nameof(Experience), Entity.NotFound);
             }
 
             var removalResult = dbContext.Experiences.Remove(target);

@@ -91,7 +91,7 @@ public class VolunteershipService(
 
 			if (target is null)
 			{
-				return Result.Failure(nameof(Volunteership), Volunteership.NotFound);
+				return Result.Failure(nameof(Volunteership), Entity.NotFound);
 			}
 
 			var removalResult = dbContext.VolunteerExperiences.Remove(target);
