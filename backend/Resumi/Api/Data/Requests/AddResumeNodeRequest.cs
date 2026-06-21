@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using Resumi.Domain.Models;
 
 namespace Resumi.Api.Data.Requests;
 
@@ -9,7 +10,7 @@ namespace Resumi.Api.Data.Requests;
 /// </summary>
 public abstract record AddResumeNodeRequest
 {
-	[Required] public int ResumeId { get; init; }
+	[Required] public required int ResumeId { get; init; }
 
 	[Required] [StringLength(128)] public required string Name { get; init; }
 

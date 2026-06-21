@@ -1,3 +1,5 @@
+using Resumi.Domain.Models;
+
 namespace Resumi.Api.Data.Requests;
 
 /// <summary>
