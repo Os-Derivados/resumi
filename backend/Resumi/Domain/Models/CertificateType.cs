@@ -1,4 +1,4 @@
-using Resumi.App.Exceptions;
+using Resumi.Domain.Exceptions;
 
 namespace Resumi.Domain.Models;
 

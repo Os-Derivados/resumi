@@ -1,4 +1,4 @@
-namespace Resumi.App.Exceptions;
+namespace Resumi.Domain.Exceptions;
 
 /// <summary>
 /// Representa uma violação de regra de negócio na camada de aplicação.
