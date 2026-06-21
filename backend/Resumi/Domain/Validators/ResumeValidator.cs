@@ -15,7 +15,7 @@ public class ResumeValidator : IDomainValidator<Resume>
 	private const int MaxTitleLength = 128;
 	private const int MaxOwnerNameLength = 128;
 
-	public Result<Resume> ValidateCreation(Resume? newResume)
+	public Result ValidateCreation(Resume? newResume)
 	{
 		ResultErrors errors = [];
 
@@ -30,11 +30,11 @@ public class ResumeValidator : IDomainValidator<Resume>
 		}
 
 		return errors.Count > 0
-			? Result<Resume>.Failure(errors)
-			: Result<Resume>.Success(newResume!);
+			? Result.Failure(errors)
+			: Result.Success;
 	}
 
-	public Result<Resume> ValidateUpdate(Resume? current, Resume? updated)
+	public Result ValidateUpdate(Resume? current, Resume? updated)
 	{
 		ResultErrors errors = [];
 
@@ -69,11 +69,11 @@ public class ResumeValidator : IDomainValidator<Resume>
 		}
 
 		return errors.Count > 0
-			? Result<Resume>.Failure(errors)
-			: Result<Resume>.Success(updated!);
+			? Result.Failure(errors)
+			: Result.Success;
 	}
 
-	public Result<Resume> ValidateDeletion(Resume? targetResume)
+	public Result ValidateDeletion(Resume? targetResume)
 	{
 		ResultErrors errors = [];
 
@@ -83,7 +83,7 @@ public class ResumeValidator : IDomainValidator<Resume>
 		}
 
 		return errors.Count > 0
-			? Result<Resume>.Failure(errors)
-			: Result<Resume>.Success(targetResume!);
+			? Result.Failure(errors)
+			: Result.Success;
 	}
 }

@@ -12,7 +12,7 @@ namespace Resumi.Domain.Validators.Interfaces;
 /// <remarks>
 /// Validações somente-leitura não devem ser feitas em implementações desta API, pois enquanto validações de escrita validam INVARIANTES de domínio, validações somente-leitura validam ESTADO de domínio.
 /// </remarks>
-public interface IDomainValidator<TEntity> where TEntity : ITrackable
+public interface IDomainValidator<in TEntity> where TEntity : ITrackable
 {
     /// <summary>
     /// Valida o estado da operação de criação da entidade <paramref name="newEntity"/>.
@@ -24,7 +24,7 @@ public interface IDomainValidator<TEntity> where TEntity : ITrackable
     ///	Uma instância de <see cref="Result{T}"/>,
     /// contendo o resultado da validação.
     /// </returns>
-    Result<TEntity> ValidateCreation(TEntity? newEntity);
+    Result ValidateCreation(TEntity? newEntity);
 
 
     /// <summary>
@@ -40,7 +40,7 @@ public interface IDomainValidator<TEntity> where TEntity : ITrackable
     ///	Uma instância de <see cref="Result{T}"/>,
     /// contendo o resultado da validação.
     /// </returns>
-    Result<TEntity> ValidateUpdate(TEntity? current, TEntity? updated);
+    Result ValidateUpdate(TEntity? current, TEntity? updated);
 
     /// <summary>
     /// Valida o estado da operação de exclusão da entidade <paramref name="targetEntity"/>.
@@ -52,5 +52,5 @@ public interface IDomainValidator<TEntity> where TEntity : ITrackable
     ///	Uma instância de <see cref="Result{T}"/>,
     /// contendo o resultado da validação.
     /// </returns>
-    Result<TEntity> ValidateDeletion(TEntity? targetEntity);
+    Result ValidateDeletion(TEntity? targetEntity);
 }

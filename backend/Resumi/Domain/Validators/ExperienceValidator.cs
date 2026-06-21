@@ -6,18 +6,18 @@ namespace Resumi.Domain.Validators;
 
 public class ExperienceValidator : IDomainValidator<Experience>
 {
-    public Result<Experience> ValidateCreation(Experience? newExperience)
-    {
-        throw new NotImplementedException();
-    }
+	public Result ValidateCreation(Experience? newExperience)
+	{
+		throw new NotImplementedException();
+	}
 
-    public Result<Experience> ValidateUpdate(Experience? current, Experience? updated)
-    {
-        throw new NotImplementedException();
-    }
+	public Result ValidateUpdate(Experience? current, Experience? updated)
+	{
+		throw new NotImplementedException();
+	}
 
-    public Result<Experience> ValidateDeletion(Experience? targetExperience)
-    {
-        throw new NotImplementedException();
-    }
+	public Result ValidateDeletion(Experience? targetExperience)
+	{
+		throw new NotImplementedException();
+	}
 }

@@ -12,14 +12,14 @@ public class DegreeValidator : IDomainValidator<Degree>
 	private const int MaxDescriptionLength = 256;
 	private const int MaxHighlightsLength = 1000;
 
-	public Result<Degree> ValidateCreation(Degree? newDegree)
+	public Result ValidateCreation(Degree? newDegree)
 	{
 		ResultErrors errors = [];
 
 		if (newDegree is null)
 		{
 			errors.AddError(nameof(Degree), "Estado inválido para cadastro de formação.");
-			return Result<Degree>.Failure(errors);
+			return Result.Failure(errors);
 		}
 
 		ValidateRequiredFields(newDegree, errors);
@@ -28,30 +28,30 @@ public class DegreeValidator : IDomainValidator<Degree>
 		ValidateDegreeLevel(newDegree, errors);
 
 		return errors.Count > 0
-			? Result<Degree>.Failure(errors)
-			: Result<Degree>.Success(newDegree);
+			? Result.Failure(errors)
+			: Result.Success;
 	}
 
-	public Result<Degree> ValidateUpdate(Degree? current, Degree? updated)
+	public Result ValidateUpdate(Degree? current, Degree? updated)
 	{
 		ResultErrors errors = [];
 
 		if (current is null)
 		{
 			errors.AddError(nameof(Degree), "Formação acadêmica atual não encontrada.");
-			return Result<Degree>.Failure(errors);
+			return Result.Failure(errors);
 		}
 
 		if (updated is null)
 		{
 			errors.AddError(nameof(Degree), "Dados atualizados são inválidos.");
-			return Result<Degree>.Failure(errors);
+			return Result.Failure(errors);
 		}
 
 		if (current.Id != updated.Id)
 		{
 			errors.AddError(nameof(Degree.Id), "IDs não correspondem entre as formações.");
-			return Result<Degree>.Failure(errors);
+			return Result.Failure(errors);
 		}
 
 		ValidateRequiredFields(updated, errors);
@@ -60,18 +60,18 @@ public class DegreeValidator : IDomainValidator<Degree>
 		ValidateDegreeLevel(updated, errors);
 
 		return errors.Count > 0
-			? Result<Degree>.Failure(errors)
-			: Result<Degree>.Success(updated);
+			? Result.Failure(errors)
+			: Result.Success;
 	}
 
-	public Result<Degree> ValidateDeletion(Degree? targetDegree)
+	public Result ValidateDeletion(Degree? targetDegree)
 	{
 		if (targetDegree is null || targetDegree.Id <= 0)
 		{
-			return Result<Degree>.Failure(nameof(Degree), "Formação acadêmica inválida para exclusão.");
+			return Result.Failure(nameof(Degree), "Formação acadêmica inválida para exclusão.");
 		}
 
-		return Result<Degree>.Success(targetDegree);
+		return Result.Success;
 	}
 
 	private static void ValidateRequiredFields(Degree degree, ResultErrors errors)
@@ -91,17 +91,17 @@ public class DegreeValidator : IDomainValidator<Degree>
 
 	private static void ValidateFieldLengths(Degree degree, ResultErrors errors)
 	{
-		if (degree.Name?.Length > MaxNameLength)
+		if (degree.Name.Length > MaxNameLength)
 			errors.AddError(nameof(Degree.Name), $"O nome não pode exceder {MaxNameLength} caracteres.");
 
-		if (degree.InstitutionName?.Length > MaxInstitutionNameLength)
+		if (degree.InstitutionName.Length > MaxInstitutionNameLength)
 			errors.AddError(nameof(Degree.InstitutionName),
 				$"O nome da instituição não pode exceder {MaxInstitutionNameLength} caracteres.");
 
 		if (degree.Location?.Length > MaxLocationLength)
 			errors.AddError(nameof(Degree.Location), $"A localização não pode exceder {MaxLocationLength} caracteres.");
 
-		if (degree.Description?.Length > MaxDescriptionLength)
+		if (degree.Description.Length > MaxDescriptionLength)
 			errors.AddError(nameof(Degree.Description),
 				$"A descrição não pode exceder {MaxDescriptionLength} caracteres.");
 

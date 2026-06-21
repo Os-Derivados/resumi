@@ -6,17 +6,17 @@ namespace Resumi.Domain.Validators;
 
 public class UserValidator : IDomainValidator<AppUser>
 {
-	public Result<AppUser> ValidateCreation(AppUser? newEntity)
+	public Result ValidateCreation(AppUser? newEntity)
 	{
 		throw new NotImplementedException();
 	}
 
-	public Result<AppUser> ValidateUpdate(AppUser? current, AppUser? updated)
+	public Result ValidateUpdate(AppUser? current, AppUser? updated)
 	{
 		throw new NotImplementedException();
 	}
 
-	public Result<AppUser> ValidateDeletion(AppUser? targetEntity)
+	public Result ValidateDeletion(AppUser? targetEntity)
 	{
 		throw new NotImplementedException();
 	}

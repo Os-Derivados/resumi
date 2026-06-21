@@ -15,11 +15,11 @@ public class CertificateValidator : IDomainValidator<Certificate>
     public static readonly string NotFound = "Certificado não encontrado.";
     public static readonly string InvalidUpdateModel = "O modelo de certificado para atualização é inválido.";
 
-    public Result<Certificate> ValidateCreation(Certificate? newEntity)
+    public Result ValidateCreation(Certificate? newEntity)
     {
         if (newEntity is null)
         {
-            return Result<Certificate>.Failure(nameof(Certificate), InvalidCreationModel);
+            return Result.Failure(nameof(Certificate), InvalidCreationModel);
         }
 
         ResultErrors errors = [];
@@ -34,19 +34,19 @@ public class CertificateValidator : IDomainValidator<Certificate>
             errors.AddError(nameof(Certificate), InvalidPeriodRange);
         }
 
-        return errors.Any() ? Result<Certificate>.Failure(errors) : Result<Certificate>.Success(newEntity);
+        return errors.Any() ? Result.Failure(errors) : Result.Success;
     }
 
-    public Result<Certificate> ValidateUpdate(Certificate? current, Certificate? updated)
+    public Result ValidateUpdate(Certificate? current, Certificate? updated)
     {
         if (current is null)
         {
-            return Result<Certificate>.Failure(nameof(Certificate), NotFound);
+            return Result.Failure(nameof(Certificate), NotFound);
         }
 
         if (updated is null)
         {
-            return Result<Certificate>.Failure(nameof(Certificate), InvalidUpdateModel);
+            return Result.Failure(nameof(Certificate), InvalidUpdateModel);
         }
 
         ResultErrors errors = [];
@@ -61,13 +61,13 @@ public class CertificateValidator : IDomainValidator<Certificate>
             errors.AddError(nameof(Certificate), InvalidPeriodRange);
         }
 
-        return errors.Any() ? Result<Certificate>.Failure(errors) : Result<Certificate>.Success(updated);
+        return errors.Any() ? Result.Failure(errors) : Result.Success;
     }
 
-    public Result<Certificate> ValidateDeletion(Certificate? targetEntity)
+    public Result ValidateDeletion(Certificate? targetEntity)
     {
         return targetEntity is null
-            ? Result<Certificate>.Failure(nameof(Certificate), NotFound)
-            : Result<Certificate>.Success(targetEntity);
+            ? Result.Failure(nameof(Certificate), NotFound)
+            : Result.Success;
     }
 }

@@ -6,17 +6,17 @@ namespace Resumi.Domain.Validators;
 
 public class VolunteershipValidator : IDomainValidator<Volunteership>
 {
-	public Result<Volunteership> ValidateCreation(Volunteership? newVolunteership)
+	public Result ValidateCreation(Volunteership? newVolunteership)
 	{
 		throw new NotImplementedException();
 	}
 
-	public Result<Volunteership> ValidateUpdate(Volunteership? current, Volunteership? updated)
+	public Result ValidateUpdate(Volunteership? current, Volunteership? updated)
 	{
 		throw new NotImplementedException();
 	}
 
-	public Result<Volunteership> ValidateDeletion(Volunteership? targetVolunteership)
+	public Result ValidateDeletion(Volunteership? targetVolunteership)
 	{
 		throw new NotImplementedException();
 	}
