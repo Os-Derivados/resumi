@@ -47,7 +47,7 @@ public static class StartupExtensions
         services.AddScoped<CertificateValidator>();
         services.AddScoped<ExperienceValidator>();
         services.AddScoped<UserValidator>();
-        services.AddScoped<VolunteershipValidator>();
+        services.AddScoped<ResumeNodeValidator>();
     }
 
     public static void AddQueryValidators(this IServiceCollection services)

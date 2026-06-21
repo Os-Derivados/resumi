@@ -11,7 +11,7 @@ namespace Resumi.App.Services;
 public class VolunteershipService(
 	AppDbContext dbContext,
 	ILogger<VolunteershipService> logger,
-	VolunteershipValidator validator)
+	ResumeNodeValidator validator)
 {
 	public async Task<Result<VolunteershipModel>> CreateAsync(Volunteership? newEntity)
 	{
