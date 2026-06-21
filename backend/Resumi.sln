@@ -5,6 +5,8 @@ VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Resumi", "Resumi\Resumi.csproj", "{D0D90B5D-F04D-4095-91AE-20BE6F00435F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestResumi", "TestResumi\TestResumi.csproj", "{A596B760-F128-438D-84E0-A667DE2EF8CC}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,18 @@ Global
 		{D0D90B5D-F04D-4095-91AE-20BE6F00435F}.Release|x64.Build.0 = Release|Any CPU
 		{D0D90B5D-F04D-4095-91AE-20BE6F00435F}.Release|x86.ActiveCfg = Release|Any CPU
 		{D0D90B5D-F04D-4095-91AE-20BE6F00435F}.Release|x86.Build.0 = Release|Any CPU
+		{A596B760-F128-438D-84E0-A667DE2EF8CC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A596B760-F128-438D-84E0-A667DE2EF8CC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A596B760-F128-438D-84E0-A667DE2EF8CC}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{A596B760-F128-438D-84E0-A667DE2EF8CC}.Debug|x64.Build.0 = Debug|Any CPU
+		{A596B760-F128-438D-84E0-A667DE2EF8CC}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{A596B760-F128-438D-84E0-A667DE2EF8CC}.Debug|x86.Build.0 = Debug|Any CPU
+		{A596B760-F128-438D-84E0-A667DE2EF8CC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A596B760-F128-438D-84E0-A667DE2EF8CC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A596B760-F128-438D-84E0-A667DE2EF8CC}.Release|x64.ActiveCfg = Release|Any CPU
+		{A596B760-F128-438D-84E0-A667DE2EF8CC}.Release|x64.Build.0 = Release|Any CPU
+		{A596B760-F128-438D-84E0-A667DE2EF8CC}.Release|x86.ActiveCfg = Release|Any CPU
+		{A596B760-F128-438D-84E0-A667DE2EF8CC}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
