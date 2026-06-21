@@ -3,12 +3,12 @@ namespace Resumi.Infra.Data.Models;
 /// <summary>
 /// Representa um dicionário de resultados que armazena listas de mensagens de erro associadas a chaves específicas.
 /// </summary>
-public class ResultDictionary : Dictionary<string, List<string>>
+public class ResultErrors : Dictionary<string, List<string>>
 {
-    public ResultDictionary()
+    public ResultErrors()
         : base() { }
 
-    public ResultDictionary(IDictionary<string, List<string>> dictionary)
+    public ResultErrors(IDictionary<string, List<string>> dictionary)
         : base(dictionary) { }
 
     /// <summary>

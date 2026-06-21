@@ -22,7 +22,7 @@ public class CertificateValidator : IDomainValidator<Certificate>
             return Result<Certificate>.Failure(nameof(Certificate), InvalidCreationModel);
         }
 
-        ResultDictionary errors = [];
+        ResultErrors errors = [];
 
         if (newEntity is { StillEngaged: false, EndDate: null })
         {
@@ -49,7 +49,7 @@ public class CertificateValidator : IDomainValidator<Certificate>
             return Result<Certificate>.Failure(nameof(Certificate), InvalidUpdateModel);
         }
 
-        ResultDictionary errors = [];
+        ResultErrors errors = [];
 
         if (updated is { StillEngaged: false, EndDate: null })
         {

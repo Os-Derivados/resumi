@@ -8,7 +8,7 @@ public class VolunteershipValidator : IDomainValidator<Volunteership>
 {
 	public Result<Volunteership> ValidateCreation(Volunteership? newVolunteership)
 	{
-		throw new NotImplementedException();
+		
 	}
 
 	public Result<Volunteership> ValidateUpdate(Volunteership? current, Volunteership? updated)

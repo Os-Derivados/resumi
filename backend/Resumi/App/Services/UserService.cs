@@ -76,7 +76,7 @@ public class UserService(
 
             if (!updateResult.Succeeded)
             {
-                ResultDictionary errors = [];
+                ResultErrors errors = [];
 
                 foreach (var error in updateResult.Errors)
                 {
@@ -115,7 +115,7 @@ public class UserService(
 
             if (deleteResult.Succeeded) return Result.Success;
             
-            ResultDictionary errors = [];
+            ResultErrors errors = [];
 
             foreach (var error in deleteResult.Errors)
             {

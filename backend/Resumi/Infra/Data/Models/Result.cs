@@ -8,7 +8,7 @@ namespace Resumi.Infra.Data.Models;
 /// </summary>
 public record Result
 {
-    protected Result(bool succeeded, ResultDictionary? errors)
+    protected Result(bool succeeded, ResultErrors? errors)
     {
         if (!succeeded && errors is null)
         {
@@ -29,7 +29,7 @@ public record Result
     /// <summary>
     /// Contém a relação chave-valor dos possíveis errors ocorridos na operação.
     /// </summary>
-    public ResultDictionary? Errors { get; }
+    public ResultErrors? Errors { get; }
 
     /// <summary>
     /// Representa a relação de erros <see cref="Errors"/> no formato de lista, sem as chaves de erro.
@@ -51,9 +51,9 @@ public record Result
     /// <summary>
     /// Indica o fracasso da operação.
     /// </summary>
-    /// <param name="errors">Uma instância de <see cref="ResultDictionary"/>, contendo a relação de erros da operação.</param>
+    /// <param name="errors">Uma instância de <see cref="ResultErrors"/>, contendo a relação de erros da operação.</param>
     /// <returns>Uma instância de <see cref="Result"/>, indicando o fracasso da operação.</returns>
-    public static Result Failure(ResultDictionary errors) => new(false, errors);
+    public static Result Failure(ResultErrors errors) => new(false, errors);
 
     /// <summary>
     /// Indica o fracasso da operação.
@@ -63,7 +63,7 @@ public record Result
     /// <returns>Uma instância de <see cref="Result"/>, indicando o fracasso da operação.</returns>
     public static Result Failure(string errorKey, string errorMessage)
     {
-        ResultDictionary errors = [];
+        ResultErrors errors = [];
 
         errors.AddError(errorKey, errorMessage);
 
@@ -77,7 +77,7 @@ public record Result
 /// <typeparam name="T">Tipo do valor retornado em caso de sucesso.</typeparam>
 public record Result<T> : Result
 {
-    protected Result(bool succeeded, ResultDictionary? errors, T? data) : base(succeeded, errors)
+    protected Result(bool succeeded, ResultErrors? errors, T? data) : base(succeeded, errors)
     {
         if (succeeded && data is null)
         {
@@ -113,9 +113,9 @@ public record Result<T> : Result
     /// <summary>
     /// Indica o fracasso da operação.
     /// </summary>
-    /// <param name="errors">Uma instância de <see cref="ResultDictionary"/>, contendo a relação de erros da operação.</param>
+    /// <param name="errors">Uma instância de <see cref="ResultErrors"/>, contendo a relação de erros da operação.</param>
     /// <returns>Uma instância de <see cref="Result"/>, indicando o fracasso da operação.</returns>
-    public new static Result<T> Failure(ResultDictionary errors) => new(false, errors, data: default);
+    public new static Result<T> Failure(ResultErrors errors) => new(false, errors, data: default);
 
     /// <summary>
     /// Indica o fracasso da operação.
@@ -125,7 +125,7 @@ public record Result<T> : Result
     /// <returns>Uma instância de <see cref="Result{T}"/>, indicando o fracasso da operação.</returns>
     public new static Result<T> Failure(string errorKey, string errorMessage)
     {
-        ResultDictionary errors = [];
+        ResultErrors errors = [];
 
         errors.AddError(errorKey, errorMessage);
 
