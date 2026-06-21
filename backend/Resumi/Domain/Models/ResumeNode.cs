@@ -34,7 +34,21 @@ public abstract class ResumeNode : Entity
 
 	[Required] public required DateTime StartDate { get; set; }
 
-	public DateTime? EndDate { get; set; }
+	private DateTime? _endDate;
+
+	public DateTime? EndDate
+	{
+		get => _endDate;
+		set
+		{
+			if (value is not null && StillEngaged)
+			{
+				throw new StillEngagedException();
+			}
+
+			_endDate = value;
+		}
+	}
 
 	private bool _stillEngaged;
 
