@@ -1,11 +1,11 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace Resumi.Api.Data.Models;
+namespace Resumi.Api.Data.Requests;
 
 /// <summary>
 /// Objeto de parâmetros para autenticação de usuários.
 /// </summary>
-public record LoginModel
+public record LoginRequest
 {
     [Required] public required string Email { get; init; }
 

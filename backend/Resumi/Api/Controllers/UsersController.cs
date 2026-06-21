@@ -111,7 +111,7 @@ public class UsersController(
 
 	[HttpPost("login")]
 	[AllowAnonymous]
-	public async Task<IActionResult> Login([FromBody] LoginModel model)
+	public async Task<IActionResult> Login([FromBody] LoginRequest model)
 	{
 		var user = await userManager.FindByEmailAsync(model.Email);
 
