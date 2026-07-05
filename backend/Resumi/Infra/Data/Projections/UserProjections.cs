@@ -1,6 +1,7 @@
 using System.Linq.Expressions;
 using Resumi.Api.Data.Models;
 using Resumi.Domain.Models;
+using Resumi.Infra.Constants;
 
 namespace Resumi.Infra.Data.Projections;
 
@@ -13,6 +14,7 @@ public static class UserProjections
 		Id = u.Id,
 		FullName = u.FullName,
 		PhoneNumber = u.PhoneNumber,
-		Email = u.Email
+		Email = u.Email!,
+		IsAdmin = u.UserRoles!.AsQueryable().Any(ur => ur.Role!.Name == AuthConstants.AdminRole)
 	};
 }
