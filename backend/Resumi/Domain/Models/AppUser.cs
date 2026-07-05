@@ -17,7 +17,8 @@ public class AppUser : IdentityUser<int>, ITrackable, ICloneableEntity<AppUser>
 	public DateTime CreatedAt { get; set; }
 	public DateTime? UpdatedAt { get; set; }
 
-	public ICollection<Resume> Resumes { get; set; } = [];
+	public ICollection<Resume>? Resumes { get; set; }
+	public ICollection<AppUserRole>? UserRoles { get; set; }
 
 	public AppUser ShallowCopy()
 	{
