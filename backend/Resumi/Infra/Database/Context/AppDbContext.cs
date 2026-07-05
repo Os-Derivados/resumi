@@ -7,7 +7,7 @@ using Resumi.Infra.Database.Interfaces;
 namespace Resumi.Infra.Database.Context;
 
 public class AppDbContext(DbContextOptions<AppDbContext> options)
-    : IdentityDbContext<AppUser, IdentityRole<int>, int, IdentityUserClaim<int>, AppUserRole, IdentityUserLogin<int>,
+    : IdentityDbContext<AppUser, AppRole, int, IdentityUserClaim<int>, AppUserRole, IdentityUserLogin<int>,
         IdentityRoleClaim<int>, IdentityUserToken<int>>(options), IDbTracker
 {
     public DbSet<Resume> Resumes => Set<Resume>();
@@ -22,9 +22,15 @@ public class AppDbContext(DbContextOptions<AppDbContext> options)
 
         // Configure AppUserRole to use the existing RoleId column (prevents RoleId1 shadow property)
         builder.Entity<AppUserRole>()
-            .HasOne<IdentityRole<int>>()
-            .WithMany()
+            .HasOne(ur => ur.Role)
+            .WithMany(r => r.UserRoles)
             .HasForeignKey(ur => ur.RoleId)
+            .IsRequired();
+
+        builder.Entity<AppUserRole>()
+            .HasOne(ur => ur.User)
+            .WithMany(u => u.UserRoles)
+            .HasForeignKey(ur => ur.UserId)
             .IsRequired();
     }
 
