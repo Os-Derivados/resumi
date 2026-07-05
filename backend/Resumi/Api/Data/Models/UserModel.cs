@@ -9,9 +9,10 @@ namespace Resumi.Api.Data.Models;
 public record UserModel
 {
     public int Id { get; init; }
-    public string? FullName { get; init; }
+    public required string FullName { get; init; }
+    public required string Email { get; init; }
     public string? PhoneNumber { get; init; }
-    public string? Email { get; init; }
+    public bool IsAdmin { get; init; }
 
     /// <summary>
     /// Cria uma instância de <see cref="UserModel"/> a partir de um <see cref="ClaimsPrincipal"/>.
@@ -25,7 +26,7 @@ public record UserModel
     public static UserModel? FromClaimsPrincipal(ClaimsPrincipal? claimsPrincipal)
     {
         if (claimsPrincipal is null) return null;
-        
+
         return new UserModel
         {
             Id = int.Parse(claimsPrincipal.FindFirst(SessionConstants.UserIdClaim)!.Value),
