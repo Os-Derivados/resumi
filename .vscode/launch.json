@@ -16,7 +16,7 @@
 				"pipeArgs": [
 					"exec",
 					"-i",
-					"resumi"
+					"resumi_backend"
 				],
 				"debuggerPath": "/remote_debugger/vsdbg",
 				"quoteArgs": false

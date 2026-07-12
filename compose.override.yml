@@ -1,5 +1,7 @@
+name: resumi
+
 services:
-  resumi:
+  backend:
     # Linux Only
     environment:
       - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/aspnet-dev-cert.pfx

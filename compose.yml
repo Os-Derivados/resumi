@@ -1,7 +1,9 @@
+name: resumi
+
 services:
-  resumi:
+  backend:
     image: ${DOCKER_REGISTRY-}resumi-backend:development
-    container_name: resumi
+    container_name: resumi_backend
     build:
       context: .
       dockerfile: Dockerfile.debug
@@ -30,8 +32,8 @@ services:
       - resumi-network
 
   db:
-    container_name: resumi-db
     image: docker.io/library/postgres:18-alpine
+    container_name: resumi_db
     environment:
       - POSTGRES_DB=resumi
       - POSTGRES_USER=resumi
@@ -39,7 +41,7 @@ services:
     ports:
       - "5432:5432"
     volumes:
-      - postgres_data:/var/lib/postgresql/data
+      - db_data:/var/lib/postgresql/data
       - ./backend/Resumi/Infra/Database/Migrations/Schema.sql:/docker-entrypoint-initdb.d/schema.sql:ro
     healthcheck:
       test: [ "CMD-SHELL", "pg_isready -U resumi -d resumi" ]
@@ -50,7 +52,7 @@ services:
       - resumi-network
 
 volumes:
-  postgres_data:
+  db_data:
 
 networks:
   resumi-network:
