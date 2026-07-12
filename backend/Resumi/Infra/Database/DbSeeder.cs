@@ -14,7 +14,7 @@ public static class DbSeeder
 {
 	public static async Task SeedDatabaseAsync(IServiceProvider provider)
 	{
-		var roleManager = provider.GetRequiredService<RoleManager<IdentityRole<int>>>();
+		var roleManager = provider.GetRequiredService<RoleManager<AppRole>>();
 		var userManager = provider.GetRequiredService<AppUserManager>();
 		var userMapper = provider.GetRequiredService<UserMapper>();
 		var userService = provider.GetRequiredService<UserService>();
@@ -26,14 +26,14 @@ public static class DbSeeder
 		await EnsureUserIsInRoleAsync(userManager, adminUser, AuthConstants.AdminRole);
 	}
 
-	private static async Task EnsureRoleExistsAsync(RoleManager<IdentityRole<int>> roleManager, string roleName)
+	private static async Task EnsureRoleExistsAsync(RoleManager<AppRole> roleManager, string roleName)
 	{
 		if (await roleManager.RoleExistsAsync(roleName))
 		{
 			return;
 		}
 
-		var createRoleResult = await roleManager.CreateAsync(new IdentityRole<int>(roleName));
+		var createRoleResult = await roleManager.CreateAsync(new AppRole(roleName));
 		if (!createRoleResult.Succeeded)
 		{
 			throw new InfrastructureException(

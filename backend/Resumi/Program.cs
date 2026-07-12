@@ -46,9 +46,9 @@ builder.Services.AddDomainValidators();
 builder.Services.AddQueryValidators();
 builder.Services.AddDomainServices();
 builder.Services.AddIdentityCore<AppUser>(AppUserManager.IdentityOptionsSetup)
-	.AddRoles<IdentityRole<int>>()
+	.AddRoles<AppRole>()
 	.AddUserManager<AppUserManager>()
-	.AddRoleManager<RoleManager<IdentityRole<int>>>()
+	.AddRoleManager<RoleManager<AppRole>>()
 	.AddEntityFrameworkStores<AppDbContext>();
 
 builder.Services.AddScoped<UserContext>();
