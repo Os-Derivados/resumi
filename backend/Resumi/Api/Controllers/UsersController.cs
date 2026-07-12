@@ -12,7 +12,6 @@ using Resumi.Infra.AuthZ.Interfaces;
 using Resumi.Infra.Constants;
 using Resumi.Infra.Data.Mappers;
 using Resumi.Infra.Data.Models;
-using Resumi.Infra.Data.Projections;
 using Resumi.Infra.Database.Context;
 using Resumi.Infra.Exceptions;
 
@@ -28,17 +27,17 @@ namespace Resumi.Api.Controllers;
 public class UsersController(
 	IAuthManager authManager,
 	UserMapper mapper,
-	UserService service,
-	UserManager<AppUser> manager,
+	UserManager manager,
+	UserManager<AppUser> identityManager,
 	AppDbContext dbContext) : ControllerBase
 {
 	[HttpPost]
 	[AllowAnonymous]
 	[ProducesResponseType<Result<UserModel>>(StatusCodes.Status201Created)]
-	public async Task<IActionResult> Create([FromBody] CreateUserRequest model)
+	public async Task<IActionResult> Create([FromBody] CreateUserRequest model, CancellationToken cancellation)
 	{
 		var newUser = mapper.NewDomainModel(model);
-		var creationResult = await service.CreateAsync(newUser, model.Password);
+		var creationResult = await manager.CreateAsync(newUser, model.Password, cancellation);
 
 		return !creationResult.Succeeded
 			? BadRequest(creationResult)
@@ -60,9 +59,9 @@ public class UsersController(
 	[Authorize(Roles = AuthConstants.AdminRole)]
 	[ProducesResponseType<Result<UserModel>>(StatusCodes.Status200OK)]
 	[ProducesResponseType<Result<UserModel>>(StatusCodes.Status404NotFound)]
-	public async Task<IActionResult> Read(int id)
+	public async Task<IActionResult> Read(int id, CancellationToken cancellation)
 	{
-		var result = await service.FindAsync(id);
+		var result = await manager.FindAsync(id, cancellation);
 
 		if (!result.Succeeded) return BadRequest(result);
 
@@ -72,9 +71,9 @@ public class UsersController(
 	[HttpGet]
 	[Authorize(Roles = AuthConstants.AdminRole)]
 	[ProducesResponseType<Result<List<UserModel>>>(StatusCodes.Status200OK)]
-	public async Task<IActionResult> ReadAll(int skip = 0, int take = 20)
+	public async Task<IActionResult> ReadAll(CancellationToken cancellation, int skip = 0, int take = 20)
 	{
-		var result = await service.FindAllAsync(skip, take);
+		var result = await manager.FindAllAsync(cancellation, skip, take);
 
 		if (!result.Succeeded) return BadRequest(result);
 
@@ -83,7 +82,7 @@ public class UsersController(
 
 	[HttpPut("{id:int}")]
 	[ProducesResponseType<Result<List<UserModel>>>(StatusCodes.Status200OK)]
-	public async Task<IActionResult> Update(int id, [FromBody] UpdateUserRequest model)
+	public async Task<IActionResult> Update(int id, [FromBody] UpdateUserRequest model, CancellationToken cancellation)
 	{
 		var sessionUser = UserModel.FromClaimsPrincipal(HttpContext.User)
 		                  ?? throw new InfrastructureException("An user should be authenticated at this point.");
@@ -93,9 +92,9 @@ public class UsersController(
 			return Forbid();
 		}
 
-		var current = await manager.FindByEmailAsync(id.ToString());
+		var current = await identityManager.FindByEmailAsync(id.ToString());
 		var updated = mapper.UpdatedDomainModel(model, current);
-		var result = await service.UpdateAsync(current, updated);
+		var result = await manager.UpdateAsync(current, updated, cancellation);
 
 		if (!result.Succeeded) return BadRequest(result);
 
@@ -105,18 +104,29 @@ public class UsersController(
 	[HttpDelete("{id:int}")]
 	[Authorize(Roles = AuthConstants.AdminRole)]
 	[ProducesResponseType(StatusCodes.Status204NoContent)]
-	public async Task<IActionResult> Delete(int id)
+	public async Task<IActionResult> Delete(int id, CancellationToken cancellation)
 	{
-		var result = await service.DeleteAsync(id);
+		try
+		{
+			var result = await manager.DeleteAsync(id, cancellation);
 
-		if (!result.Succeeded) return BadRequest(result);
+			if (!result.Succeeded) return BadRequest(result);
 
-		return NoContent();
+			return NoContent();
+		}
+		catch (Exception ex) when (ex is TimeoutException or OperationCanceledException)
+		{
+			return UnprocessableEntity();
+		}
+		catch (DomainException ex)
+		{
+			return BadRequest(Result.Failure(nameof(AppUser), ex.Message));
+		}
 	}
 
 	[HttpPost("login")]
 	[AllowAnonymous]
-	public async Task<IActionResult> Login([FromBody] LoginRequest model)
+	public async Task<IActionResult> Login([FromBody] LoginRequest model, CancellationToken cancellation)
 	{
 		try
 		{
@@ -125,11 +135,11 @@ public class UsersController(
 				.AsNoTracking()
 				.Include(u => u.UserRoles!)
 				.ThenInclude(ur => ur.Role)
-				.FirstOrDefaultAsync(u => u.NormalizedEmail == emailUpper);
+				.FirstOrDefaultAsync(u => u.NormalizedEmail == emailUpper, cancellation);
 
 			if (user is null) return NotFound();
 
-			var passwordValid = await manager.CheckPasswordAsync(user, model.Password);
+			var passwordValid = await identityManager.CheckPasswordAsync(user, model.Password);
 
 			if (!passwordValid) return Unauthorized();
 
@@ -145,7 +155,7 @@ public class UsersController(
 
 			return Ok(Result<AuthResponse>.Success(authResponse with { Token = null }));
 		}
-		catch (TimeoutException)
+		catch (Exception ex) when (ex is TimeoutException or OperationCanceledException)
 		{
 			return UnprocessableEntity();
 		}

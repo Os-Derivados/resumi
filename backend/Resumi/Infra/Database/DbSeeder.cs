@@ -17,7 +17,7 @@ public static class DbSeeder
 		var roleManager = provider.GetRequiredService<RoleManager<AppRole>>();
 		var userManager = provider.GetRequiredService<AppUserManager>();
 		var userMapper = provider.GetRequiredService<UserMapper>();
-		var userService = provider.GetRequiredService<UserService>();
+		var userService = provider.GetRequiredService<UserManager>();
 
 		await EnsureRoleExistsAsync(roleManager, AuthConstants.AdminRole);
 
@@ -51,7 +51,7 @@ public static class DbSeeder
 
 	private static async Task<AppUser> GetOrCreateAdminUserAsync(
 		AppUserManager userManager,
-		UserService userService,
+		UserManager userService,
 		UserMapper userMapper,
 		CreateUserRequest adminUserModel)
 	{
@@ -60,7 +60,7 @@ public static class DbSeeder
 		if (existingAdmin is not null) return existingAdmin;
 
 		var newUser = userMapper.NewDomainModel(adminUserModel);
-		var createUserResult = await userService.CreateAsync(newUser, adminUserModel.Password);
+		var createUserResult = await userService.CreateAsync(newUser, adminUserModel.Password, CancellationToken.None);
 
 		if (!createUserResult.Succeeded)
 		{
