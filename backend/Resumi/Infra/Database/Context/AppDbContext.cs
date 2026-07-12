@@ -2,13 +2,12 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Resumi.Domain.Models;
-using Resumi.Infra.Database.Interfaces;
 
 namespace Resumi.Infra.Database.Context;
 
 public class AppDbContext(DbContextOptions<AppDbContext> options)
     : IdentityDbContext<AppUser, AppRole, int, IdentityUserClaim<int>, AppUserRole, IdentityUserLogin<int>,
-        IdentityRoleClaim<int>, IdentityUserToken<int>>(options), IDbTracker
+        IdentityRoleClaim<int>, IdentityUserToken<int>>(options)
 {
     public DbSet<Resume> Resumes => Set<Resume>();
     public DbSet<Experience> Experiences => Set<Experience>();
@@ -32,27 +31,5 @@ public class AppDbContext(DbContextOptions<AppDbContext> options)
             .WithMany(u => u.UserRoles)
             .HasForeignKey(ur => ur.UserId)
             .IsRequired();
-    }
-
-    public async Task<bool> CommitAsync()
-    {
-        var now = DateTime.UtcNow;
-
-        foreach (var entry in ChangeTracker.Entries<ITrackable>())
-        {
-            switch (entry.State)
-            {
-                case EntityState.Added:
-                    entry.Entity.CreatedAt = now;
-                    entry.Entity.UpdatedAt = null;
-                    break;
-                case EntityState.Modified:
-                    entry.Entity.UpdatedAt = now;
-                    entry.Property(e => e.CreatedAt).IsModified = false;
-                    break;
-            }
-        }
-
-        return await SaveChangesAsync() > 0;
     }
 }

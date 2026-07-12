@@ -51,6 +51,7 @@ builder.Services.AddIdentityCore<AppUser>(AppUserManager.IdentityOptionsSetup)
 	.AddRoleManager<RoleManager<AppRole>>()
 	.AddEntityFrameworkStores<AppDbContext>();
 
+builder.Services.AddSingleton<AuditInterceptor>();
 builder.Services.AddScoped<UserContext>();
 builder.Services.AddHttpContextAccessor();
 
