@@ -1,15 +1,19 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Resumi.Api.Data.Models;
 using Resumi.Api.Data.Requests;
 using Resumi.App.Services;
+using Resumi.Domain.Exceptions;
 using Resumi.Domain.Models;
 using Resumi.Infra.AuthZ;
 using Resumi.Infra.AuthZ.Interfaces;
 using Resumi.Infra.Constants;
 using Resumi.Infra.Data.Mappers;
 using Resumi.Infra.Data.Models;
+using Resumi.Infra.Data.Projections;
+using Resumi.Infra.Database.Context;
 using Resumi.Infra.Exceptions;
 
 namespace Resumi.Api.Controllers;
@@ -25,7 +29,8 @@ public class UsersController(
 	IAuthManager authManager,
 	UserMapper mapper,
 	UserService service,
-	UserManager<AppUser> userManager) : ControllerBase
+	UserManager<AppUser> manager,
+	AppDbContext dbContext) : ControllerBase
 {
 	[HttpPost]
 	[AllowAnonymous]
@@ -88,7 +93,7 @@ public class UsersController(
 			return Forbid();
 		}
 
-		var current = await userManager.FindByEmailAsync(id.ToString());
+		var current = await manager.FindByEmailAsync(id.ToString());
 		var updated = mapper.UpdatedDomainModel(model, current);
 		var result = await service.UpdateAsync(current, updated);
 
@@ -113,24 +118,40 @@ public class UsersController(
 	[AllowAnonymous]
 	public async Task<IActionResult> Login([FromBody] LoginRequest model)
 	{
-		var user = await userManager.FindByEmailAsync(model.Email);
-
-		if (user is null) return NotFound();
-
-		var passwordValid = await userManager.CheckPasswordAsync(user, model.Password);
-
-		if (!passwordValid) return Unauthorized();
-
-		var authResponse = authManager.NewAuthResponse(user);
-
-		HttpContext.Response.Cookies.Append(AuthConstants.JwtCookie, authResponse.Token!, new CookieOptions
+		try
 		{
-			HttpOnly = true,
-			Secure = true,
-			SameSite = SameSiteMode.None,
-			Expires = authResponse.ExpiresAt
-		});
+			var emailUpper = model.Email.ToUpperInvariant();
+			var user = await dbContext.Users
+				.AsNoTracking()
+				.Include(u => u.UserRoles!)
+				.ThenInclude(ur => ur.Role)
+				.FirstOrDefaultAsync(u => u.NormalizedEmail == emailUpper);
 
-		return Ok(Result<AuthResponse>.Success(authResponse with { Token = null }));
+			if (user is null) return NotFound();
+
+			var passwordValid = await manager.CheckPasswordAsync(user, model.Password);
+
+			if (!passwordValid) return Unauthorized();
+
+			var authResponse = authManager.NewAuthResponse(user);
+
+			HttpContext.Response.Cookies.Append(AuthConstants.JwtCookie, authResponse.Token!, new CookieOptions
+			{
+				HttpOnly = true,
+				Secure = true,
+				SameSite = SameSiteMode.None,
+				Expires = authResponse.ExpiresAt
+			});
+
+			return Ok(Result<AuthResponse>.Success(authResponse with { Token = null }));
+		}
+		catch (TimeoutException)
+		{
+			return UnprocessableEntity();
+		}
+		catch (DomainException ex)
+		{
+			return BadRequest(Result.Failure(nameof(AppUser), ex.Message));
+		}
 	}
 }
