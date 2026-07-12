@@ -35,9 +35,17 @@ builder.Services.AddCors(options =>
 builder.Services.AddControllers();
 
 var defaultConnection = builder.Configuration.GetConnectionString("DefaultConnection");
+
 if (!string.IsNullOrEmpty(defaultConnection))
 {
-	builder.Services.AddDbContext<AppDbContext>(options => options.UseNpgsql(defaultConnection));
+	builder.Services.AddDbContext<AppDbContext>((sp, options) =>
+	{
+		var auditInterceptor = sp.GetRequiredService<AuditInterceptor>();
+        
+		options.UseNpgsql(defaultConnection);
+		options.AddInterceptors(auditInterceptor);
+	});
+    
 }
 
 builder.Services.AddEndpointsApiExplorer();
