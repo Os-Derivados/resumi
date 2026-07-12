@@ -114,7 +114,7 @@ public class UserService(
             var deleteResult = await userManager.DeleteAsync(target);
 
             if (deleteResult.Succeeded) return Result.Success;
-            
+
             ResultErrors errors = [];
 
             foreach (var error in deleteResult.Errors)
@@ -123,7 +123,6 @@ public class UserService(
             }
 
             return Result.Failure(errors);
-
         }
         catch (Exception ex)
         {
@@ -163,6 +162,25 @@ public class UserService(
                 .FirstOrDefaultAsync(u => u.Id == newEntity!.Id);
 
             return Result<UserModel>.Success(createdEntity!);
+        }
+        catch (ArgumentNullException ex)
+        {
+            logger.LogError(ex, "Null source found while creating user: {Source}", ex.ParamName);
+
+            return Result<UserModel>.Failure(nameof(AppUser), AppUser.InternalError);
+        }
+        catch (DbUpdateConcurrencyException)
+        {
+            logger.LogError("Concurrency error occurred while creating user.");
+
+            return Result<UserModel>.Failure(nameof(AppUser), AppUser.InternalError);
+        }
+        catch (OperationCanceledException)
+
+        {
+            logger.LogError("Transaction has been canceled during user creation.");
+
+            return Result<UserModel>.Failure(nameof(AppUser), AppUser.InternalError);
         }
         catch (Exception ex)
         {
