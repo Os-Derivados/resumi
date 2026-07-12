@@ -22,7 +22,8 @@ public class AuthManager(JwtAuthSettings jwtAuthSettings) : IAuthManager
 			new(ClaimTypes.Email, user.Email!),
 			new(ClaimTypes.Name, user.FullName),
 			new(ClaimTypes.Expiration, DateTime.UtcNow.AddMinutes(ExpiryDurationMinutes).ToString("o")),
-			new(ClaimTypes.MobilePhone, user.PhoneNumber!)
+			new(ClaimTypes.MobilePhone, user.PhoneNumber!),
+            ..user.UserRoles!.Select(ur => new Claim(ClaimTypes.Role, ur.Role!.Name!))
 		];
 
 		SymmetricSecurityKey symetricKey = new(Encoding.UTF8.GetBytes(jwtAuthSettings.Secret));

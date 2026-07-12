@@ -123,12 +123,13 @@ public static class StartupExtensions
                         ValidAudience = jwtAudience,
                         ValidateIssuerSigningKey = true,
                         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSigningKey)),
-                        ValidateLifetime = true
+                        ValidateLifetime = true,
+                        RoleClaimType = "role",
+                        NameClaimType = "nameid"
                     };
                     options.RequireHttpsMetadata = false;
                     options.MapInboundClaims = false;
                     options.Events = new JwtBearerEvents
-
                     {
                         OnMessageReceived = context =>
                         {
