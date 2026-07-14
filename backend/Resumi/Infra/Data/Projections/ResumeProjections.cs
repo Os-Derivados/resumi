@@ -55,6 +55,7 @@ public static class ResumeProjections
 		Location = r.Location,
 		Email = r.Email,
 		PhoneNumber = r.PhoneNumber,
+		Certificates = r.Certificates!.AsQueryable().Select(CertificateProjections.Basic).ToArray(),
 		Degrees = r.AcademicDegrees!.AsQueryable().Select(DegreeProjections.Basic).ToArray(),
 		Experiences = r.Experiences!.AsQueryable().Select(ExperienceProjections.Basic).ToArray(),
 		Volunteerships = r.VolunteerExperiences!.AsQueryable().Select(VolunteershipProjections.Basic).ToArray()

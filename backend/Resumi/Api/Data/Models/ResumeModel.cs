@@ -16,7 +16,8 @@ public record ResumeModel
     public string? Email { get; init; }
     public string? PhoneNumber { get; init; }
     public string? Keyword { get; init; }
-    public ExperienceModel[]? Experiences { get; init; }
+    public CertificateModel[]? Certificates { get; init; }
     public DegreeModel[]? Degrees { get; init; }
+    public ExperienceModel[]? Experiences { get; init; }
     public VolunteershipModel[]? Volunteerships { get; init; }
 }
