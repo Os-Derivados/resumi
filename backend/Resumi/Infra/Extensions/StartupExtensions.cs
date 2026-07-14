@@ -3,7 +3,7 @@ using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
-using Resumi.App.Services;
+using Resumi.App.Managers;
 using Resumi.App.Validators;
 using Resumi.Domain.Validators;
 using Resumi.Infra.AuthZ;

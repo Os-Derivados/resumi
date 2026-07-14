@@ -6,7 +6,7 @@ using Resumi.Infra.Data.Models;
 using Resumi.Infra.Database.Context;
 using Resumi.Infra.Data.Projections;
 
-namespace Resumi.App.Services;
+namespace Resumi.App.Managers;
 
 public class UserManager(
 	AppUserManager identityManager,

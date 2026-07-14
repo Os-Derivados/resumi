@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Resumi.Api.Data.Models;
 using Resumi.Api.Data.Requests;
-using Resumi.App.Services;
+using Resumi.App.Managers;
 using Resumi.Domain.Models;
 using Resumi.Infra.Data.Mappers;
 using Resumi.Infra.Data.Models;

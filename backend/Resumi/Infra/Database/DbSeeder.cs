@@ -1,7 +1,7 @@
 using System.Text.Json;
 using Microsoft.AspNetCore.Identity;
 using Resumi.Api.Data.Requests;
-using Resumi.App.Services;
+using Resumi.App.Managers;
 using Resumi.Domain.Models;
 using Resumi.Infra.AuthZ;
 using Resumi.Infra.Constants;

@@ -6,7 +6,7 @@ using Resumi.Api.Data.Models;
 using Resumi.Api.Data.Requests;
 using Resumi.Infra.Database.Context;
 using Resumi.Infra.Data.Models;
-using Resumi.App.Services;
+using Resumi.App.Managers;
 using Resumi.Infra.Data.Mappers;
 using Resumi.Domain.Models;
 
