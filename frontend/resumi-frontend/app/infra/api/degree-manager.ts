@@ -1,39 +1,20 @@
 import type { ValueResult } from "../result";
-import type { ReadDegreeModel, CreateDegreeModel, UpdateDegreeModel } from "~/data/api/degree-models";
+import type { ReadDegreeModel, CreateDegreeModel as AddDegreeModel, UpdateDegreeModel } from "~/data/api/degree-models";
 
-/**
- * Recupera todas as formações acadêmicas de um currículo
- * @param resumeId ID do currículo
- * @returns Uma Promise contendo a lista de formações
- */
-export async function getDegreesAsync(resumeId: number): Promise<ValueResult<ReadDegreeModel[]>> {
-    const { $clientApi } = useNuxtApp();
-
-    const result = await $clientApi<ValueResult<ReadDegreeModel[]>>(
-        `/resumes/${resumeId}/degrees`,
-        {
-            method: "GET",
-            credentials: "include"
-        }
-    );
-
-    return result;
-}
+const route = '/degrees';
 
 /**
  * Cria uma nova formação acadêmica
- * @param resumeId ID do currículo
  * @param degree Dados da formação a ser criada
  * @returns Uma Promise contendo a formação criada
  */
-export async function createDegreeAsync(
-    resumeId: number,
-    degree: CreateDegreeModel
+export async function addDegreeAsync(
+    degree: AddDegreeModel
 ): Promise<ValueResult<ReadDegreeModel>> {
     const { $clientApi } = useNuxtApp();
 
     const result = await $clientApi<ValueResult<ReadDegreeModel>>(
-        `/resumes/${resumeId}/degrees`,
+        route,
         {
             method: "POST",
             credentials: "include",
@@ -46,20 +27,18 @@ export async function createDegreeAsync(
 
 /**
  * Atualiza uma formação acadêmica existente
- * @param resumeId ID do currículo
  * @param degreeId ID da formação
  * @param degree Dados atualizados da formação
  * @returns Uma Promise contendo a formação atualizada
  */
 export async function updateDegreeAsync(
-    resumeId: number,
     degreeId: number,
     degree: UpdateDegreeModel
 ): Promise<ValueResult<ReadDegreeModel>> {
     const { $clientApi } = useNuxtApp();
 
     const result = await $clientApi<ValueResult<ReadDegreeModel>>(
-        `/resumes/${resumeId}/degrees/${degreeId}`,
+        `${route}/${degreeId}`,
         {
             method: "PUT",
             credentials: "include",
@@ -72,18 +51,16 @@ export async function updateDegreeAsync(
 
 /**
  * Deleta uma formação acadêmica
- * @param resumeId ID do currículo
  * @param degreeId ID da formação a ser deletada
  * @returns Uma Promise contendo o resultado da operação
  */
 export async function deleteDegreeAsync(
-    resumeId: number,
     degreeId: number
 ): Promise<ValueResult<boolean>> {
     const { $clientApi } = useNuxtApp();
 
     const result = await $clientApi<ValueResult<boolean>>(
-        `/resumes/${resumeId}/degrees/${degreeId}`,
+        `${route}/${degreeId}`,
         {
             method: "DELETE",
             credentials: "include"

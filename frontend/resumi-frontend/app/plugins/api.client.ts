@@ -17,7 +17,7 @@ export default defineNuxtPlugin(() => {
     }
 
     const config = useRuntimeConfig()
-
+ 
     const clientApi = $fetch.create({
         baseURL: config.public.backendUrl,
         credentials: 'include',
