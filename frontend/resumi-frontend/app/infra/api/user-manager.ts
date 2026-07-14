@@ -2,57 +2,61 @@ import type { CreateUserModel } from "~/data/api/create-user-model";
 import type { ReadUserModel } from "~/data/api/read-user-model";
 import type { LoginModel } from "~/data/api/login-model";
 import type { AuthResponse } from "~/data/api/auth-response";
-import { BackendUrl } from "./api.constants";
-import { getEnvironmentVariable } from "~/infra/utils/environment-utils";
 import type { ValueResult } from "~/infra/result";
+import { ApiPagination } from "~/data/api/models/api-pagination";
+import type { UpdateUserRequest } from "~/data/api/requests/update-user.request";
 
-export async function createUserAsync(backendUrl: string, model: CreateUserModel): Promise<ValueResult<ReadUserModel>> {
-	try {
-		const createUserResult = await useFetch(`${backendUrl}/users`, {
-			method: "POST",
-			headers: {
-				"Content-Type": "application/json",
-			},
-			body: JSON.stringify(model),
-		})
+const route = '/users'
 
-		return createUserResult.data.value as ValueResult<ReadUserModel>
-	}
-	catch {
-		return {
-			succeeded: false,
-			errors: new Map<string, string[]>([
-				["unknown", ["An unexpected error occurred while creating the user."]],
-			]),
-			allErrors: ["An unexpected error occurred while creating the user."],
-		}
-	}
+export async function createUserAsync(model: CreateUserModel): Promise<ValueResult<ReadUserModel>> {
+	const { $clientApi } = useNuxtApp()
+
+	return await $clientApi<ValueResult<ReadUserModel>>(route, {
+		method: 'POST',
+		body: model
+	})
+}
+
+export async function readAllUsersAsync(pagination: ApiPagination = new ApiPagination()): Promise<ValueResult<ReadUserModel[]>> {
+	const { $clientApi } = useNuxtApp()
+	
+	return await $clientApi<ValueResult<ReadUserModel[]>>(route, {
+		method: 'GET',
+		query: pagination.isDefault() ? { } : pagination
+	})
+}
+
+export async function aboutMeAsync(): Promise<ValueResult<ReadUserModel>> {
+	const { $clientApi } = useNuxtApp()
+
+	return await $clientApi<ValueResult<ReadUserModel>>(`${route}/me`, {
+		method: 'GET'
+	})
+}
+
+export async function findUserAsync(id: number): Promise<ValueResult<ReadUserModel>> {
+	const { $clientApi } = useNuxtApp()
+
+	return await $clientApi<ValueResult<ReadUserModel>>(`${route}/${id}`, {
+		method: 'GET'
+	})
 }
 
 export async function loginAsync(model: LoginModel): Promise<ValueResult<AuthResponse>> {
-	try {
-		const backendUrl = getEnvironmentVariable(BackendUrl)
+	const { $clientApi } = useNuxtApp()
 
-		if (!backendUrl) throw new Error('Backend URL is not defined.')
+	return await $clientApi<ValueResult<AuthResponse>>(`${route}/login`, {
+		method: 'POST',
+		body: model,
+		credentials: 'omit'
+	})
+}
 
-		const loginResult = await useFetch(`${backendUrl}/users/login`, {
-			method: "POST",
-			headers: {
-				"Content-Type": "application/json",
-			},
-			body: JSON.stringify(model),
-			credentials: 'include'
-		})
+export async function updateUserAsync(id: number, model: UpdateUserRequest): Promise<ValueResult<ReadUserModel>> {
+	const { $clientApi } = useNuxtApp()
 
-		return loginResult.data.value as ValueResult<AuthResponse>
-	}
-	catch {
-		return {
-			succeeded: false,
-			errors: new Map<string, string[]>([
-				["unknown", ["An unexpected error occurred while logging in."]],
-			]),
-			allErrors: ["An unexpected error occurred while logging in."],
-		}
-	}
+	return await $clientApi<ValueResult<ReadUserModel>>(`${route}/${id}`, {
+		method: 'PUT',
+		body: model
+	})
 }
