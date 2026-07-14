@@ -7,5 +7,5 @@ export class ApiPagination {
 		this.take = take
 	}
 
-	public static readonly isDefault = (pagination: ApiPagination) => pagination.skip === 0 && pagination.take === 20
+	public readonly isDefault = () => this.skip === 0 && this.take === 20
 }
