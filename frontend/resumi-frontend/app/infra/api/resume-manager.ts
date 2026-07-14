@@ -1,5 +1,8 @@
+import type { UpdateResumeRequest } from "~/data/api/requests/update-resume.request";
 import type { ValueResult } from "../result";
 import type { ReadResumeModel } from "~/data/api/read-resume-model";
+
+const route = '/resumes';
 
 /**
  * Efetua o cadastro de um currículo no back-end
@@ -9,13 +12,48 @@ import type { ReadResumeModel } from "~/data/api/read-resume-model";
 export async function createResumeAsync(title: string): Promise<ValueResult<ReadResumeModel>> {
 	const { $clientApi } = useNuxtApp()
 
-	const result = await $clientApi<ValueResult<ReadResumeModel>>('/resumes', {
+	return await $clientApi<ValueResult<ReadResumeModel>>(route, {
 		method: 'POST',
-		credentials: 'include',
+		query: { title }
+	})
+}
+
+export async function findResumeAsync(id: number): Promise<ValueResult<ReadResumeModel>> {
+	const { $clientApi } = useNuxtApp()
+
+	return await $clientApi<ValueResult<ReadResumeModel>>(`${route}/${id}`, {
+		method: 'GET',
+	})
+}
+
+export async function readAllResumeAsync(userId: number): Promise<ValueResult<ReadResumeModel[]>> {
+	const { $clientApi } = useNuxtApp()
+
+	return await $clientApi<ValueResult<ReadResumeModel[]>>(route, {
+		method: 'GET',
 		query: {
-			title
+			userId
 		}
 	})
+}
 
-	return result
+export async function updateResumeAsync(resumeId: number, model: UpdateResumeRequest)
+: Promise<ValueResult<ReadResumeModel>> {
+	const { $clientApi } = useNuxtApp()
+
+	return await $clientApi<ValueResult<ReadResumeModel>>(`${route}/${resumeId}`, {
+		method: 'PUT',
+		credentials: 'include',
+		body: model
+	})
+}
+
+
+export async function deleteResumeAsync(resumeId: number): Promise<ValueResult<ReadResumeModel>> {
+	const { $clientApi } = useNuxtApp()
+
+	return await $clientApi<ValueResult<ReadResumeModel>>(`${route}/${resumeId}`, {
+		method: 'DELETE',
+		credentials: 'include'
+	})
 }
