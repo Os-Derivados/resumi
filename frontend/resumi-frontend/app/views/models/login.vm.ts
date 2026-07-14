@@ -1,7 +1,7 @@
 import type { FormSubmitEvent } from "@nuxt/ui"
 import z from "zod"
 import type { LoginModel } from "~/data/api/login-model"
-import { loginAsync } from "~/infra/api/user-service"
+import { loginAsync } from "~/infra/api/user-manager"
 import { isDevelopment } from "~/infra/utils/environment-utils"
 
 export class LoginViewModel {

@@ -1,6 +1,6 @@
 import type { FormSubmitEvent } from "@nuxt/ui";
 import z from "zod";
-import { createResumeAsync } from "~/infra/api/resume-service";
+import { createResumeAsync } from "~/infra/api/resume-manager";
 import { isDevelopment } from "~/infra/utils/environment-utils";
 
 export class CreateResumeViewModel {

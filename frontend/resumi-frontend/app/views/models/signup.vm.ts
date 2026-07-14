@@ -1,7 +1,7 @@
 import type { FormSubmitEvent } from "@nuxt/ui";
 import { z } from "zod";
 import type { CreateUserModel } from "~/data/api/create-user-model";
-import { createUserAsync } from "~/infra/api/user-service";
+import { createUserAsync } from "~/infra/api/user-manager";
 import { getEnvironmentVariable, isDevelopment } from "~/infra/utils/environment-utils";
 
 export class SignupViewModel {
