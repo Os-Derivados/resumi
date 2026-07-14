@@ -1,5 +1,5 @@
 import type { ReadUserModel } from "~/data/api/read-user-model"
-import type { Result } from "../result"
+import type { ValueResult } from "../result"
 
 /**
  * Efetua a obtenção do usuário da sessão atual.
@@ -14,7 +14,7 @@ export async function getSessionUserAsync(): Promise<ReadUserModel | undefined> 
 			const event = useRequestEvent()
 			const cookies = event?.headers.get('cookie') || ''
 
-			const getSessionResult = await $fetch<Result<ReadUserModel>>('users/me', {
+			const getSessionResult = await $fetch<ValueResult<ReadUserModel>>('users/me', {
 				baseURL: config.public.backendUrl,
 				method: 'GET',
 				credentials: 'include',
@@ -34,7 +34,7 @@ export async function getSessionUserAsync(): Promise<ReadUserModel | undefined> 
 	// On client-side, use the $clientApi plugin
 	const { $clientApi } = useNuxtApp()
 
-	const getSessionResult = await $clientApi<Result<ReadUserModel>>('users/me', {
+	const getSessionResult = await $clientApi<ValueResult<ReadUserModel>>('users/me', {
 		method: 'GET',
 		credentials: 'include'
 	})

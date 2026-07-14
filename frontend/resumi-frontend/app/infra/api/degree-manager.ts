@@ -1,4 +1,4 @@
-import type { Result } from "../result";
+import type { ValueResult } from "../result";
 import type { ReadDegreeModel, CreateDegreeModel, UpdateDegreeModel } from "~/data/api/degree-models";
 
 /**
@@ -6,10 +6,10 @@ import type { ReadDegreeModel, CreateDegreeModel, UpdateDegreeModel } from "~/da
  * @param resumeId ID do currículo
  * @returns Uma Promise contendo a lista de formações
  */
-export async function getDegreesAsync(resumeId: number): Promise<Result<ReadDegreeModel[]>> {
+export async function getDegreesAsync(resumeId: number): Promise<ValueResult<ReadDegreeModel[]>> {
     const { $clientApi } = useNuxtApp();
 
-    const result = await $clientApi<Result<ReadDegreeModel[]>>(
+    const result = await $clientApi<ValueResult<ReadDegreeModel[]>>(
         `/resumes/${resumeId}/degrees`,
         {
             method: "GET",
@@ -29,10 +29,10 @@ export async function getDegreesAsync(resumeId: number): Promise<Result<ReadDegr
 export async function createDegreeAsync(
     resumeId: number,
     degree: CreateDegreeModel
-): Promise<Result<ReadDegreeModel>> {
+): Promise<ValueResult<ReadDegreeModel>> {
     const { $clientApi } = useNuxtApp();
 
-    const result = await $clientApi<Result<ReadDegreeModel>>(
+    const result = await $clientApi<ValueResult<ReadDegreeModel>>(
         `/resumes/${resumeId}/degrees`,
         {
             method: "POST",
@@ -55,10 +55,10 @@ export async function updateDegreeAsync(
     resumeId: number,
     degreeId: number,
     degree: UpdateDegreeModel
-): Promise<Result<ReadDegreeModel>> {
+): Promise<ValueResult<ReadDegreeModel>> {
     const { $clientApi } = useNuxtApp();
 
-    const result = await $clientApi<Result<ReadDegreeModel>>(
+    const result = await $clientApi<ValueResult<ReadDegreeModel>>(
         `/resumes/${resumeId}/degrees/${degreeId}`,
         {
             method: "PUT",
@@ -79,10 +79,10 @@ export async function updateDegreeAsync(
 export async function deleteDegreeAsync(
     resumeId: number,
     degreeId: number
-): Promise<Result<boolean>> {
+): Promise<ValueResult<boolean>> {
     const { $clientApi } = useNuxtApp();
 
-    const result = await $clientApi<Result<boolean>>(
+    const result = await $clientApi<ValueResult<boolean>>(
         `/resumes/${resumeId}/degrees/${degreeId}`,
         {
             method: "DELETE",

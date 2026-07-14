@@ -1,4 +1,4 @@
-import type { Result } from "../result";
+import type { ValueResult } from "../result";
 import type { ReadResumeModel } from "~/data/api/read-resume-model";
 
 /**
@@ -6,10 +6,10 @@ import type { ReadResumeModel } from "~/data/api/read-resume-model";
  * @param title Título do currículo a ser criado
  * @returns Uma Promise contendo o resultado da operação
  */
-export async function createResumeAsync(title: string): Promise<Result<ReadResumeModel>> {
+export async function createResumeAsync(title: string): Promise<ValueResult<ReadResumeModel>> {
 	const { $clientApi } = useNuxtApp()
 
-	const result = await $clientApi<Result<ReadResumeModel>>('/resumes', {
+	const result = await $clientApi<ValueResult<ReadResumeModel>>('/resumes', {
 		method: 'POST',
 		credentials: 'include',
 		query: {
