@@ -24,7 +24,7 @@ namespace Resumi.Api.Controllers;
 [ProducesResponseType(StatusCodes.Status422UnprocessableEntity)]
 public class ResumesController(
 	UserContext userContext,
-	ResumeService service,
+	ResumeManager service,
 	AppDbContext dbContext,
 	ILogger<ResumesController> logger) : ControllerBase
 {

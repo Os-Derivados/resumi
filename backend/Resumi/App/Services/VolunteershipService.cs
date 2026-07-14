@@ -8,9 +8,9 @@ using Resumi.Infra.Data.Projections;
 
 namespace Resumi.App.Services;
 
-public class VolunteershipService(
+public class VolunteershipManager(
 	AppDbContext dbContext,
-	ILogger<VolunteershipService> logger,
+	ILogger<VolunteershipManager> logger,
 	ResumeNodeValidator validator)
 {
 	public async Task<Result<VolunteershipModel>> CreateAsync(Volunteership? newEntity)

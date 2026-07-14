@@ -19,7 +19,7 @@ namespace Resumi.Api.Controllers;
 [ProducesResponseType<Result<DegreeModel>>(StatusCodes.Status400BadRequest)]
 [ProducesResponseType(StatusCodes.Status422UnprocessableEntity)]
 public class DegreesController(
-	DegreeService service,
+	DegreeManager service,
 	DegreeMapper mapper,
 	AppDbContext dbContext,
 	ILogger<DegreesController> logger)

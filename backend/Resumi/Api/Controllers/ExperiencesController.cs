@@ -20,7 +20,7 @@ namespace Resumi.Api.Controllers;
 [ProducesResponseType<Result<ExperienceModel>>(StatusCodes.Status422UnprocessableEntity)]
 public class ExperiencesController(
 	AppDbContext dbContext,
-	ExperienceService service,
+	ExperienceManager service,
 	ExperienceMapper mapper,
 	ILogger<ExperiencesController> logger)
 	: ControllerBase

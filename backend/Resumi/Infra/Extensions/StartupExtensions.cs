@@ -24,12 +24,12 @@ public static class StartupExtensions
 	/// </param>
 	public static void AddDomainServices(this IServiceCollection services)
 	{
-		services.AddScoped<ResumeService>();
+		services.AddScoped<ResumeManager>();
 		services.AddScoped<UserManager>();
-		services.AddScoped<CertificateService>();
-		services.AddScoped<DegreeService>();
-		services.AddScoped<ExperienceService>();
-		services.AddScoped<VolunteershipService>();
+		services.AddScoped<CertificateManager>();
+		services.AddScoped<DegreeManager>();
+		services.AddScoped<ExperienceManager>();
+		services.AddScoped<VolunteershipManager>();
 	}
 
 	/// <summary>

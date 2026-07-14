@@ -9,11 +9,11 @@ using Resumi.Infra.Data.Projections;
 
 namespace Resumi.App.Services;
 
-public class ResumeService(
+public class ResumeManager(
 	ResumeValidator domainValidator,
 	ResumeQueryValidator queryValidator,
 	UserQueryValidator userQueryValidator,
-	ILogger<ResumeService> logger,
+	ILogger<ResumeManager> logger,
 	AppDbContext dbContext)
 {
 	public async Task<Result<ResumeModel>> CreateAsync(Resume? newResume)

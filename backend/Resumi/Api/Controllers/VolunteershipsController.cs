@@ -20,7 +20,7 @@ namespace Resumi.Api.Controllers;
 [ProducesResponseType<Result<VolunteershipModel>>(StatusCodes.Status400BadRequest)]
 [ProducesResponseType(StatusCodes.Status422UnprocessableEntity)]
 public class VolunteershipsController(
-	VolunteershipService service,
+	VolunteershipManager service,
 	VolunteershipMapper mapper,
 	AppDbContext dbContext,
 	ILogger<VolunteershipsController> logger) : ControllerBase

@@ -8,9 +8,9 @@ using Resumi.Domain.Validators;
 
 namespace Resumi.App.Services;
 
-public class ExperienceService(
+public class ExperienceManager(
     AppDbContext dbContext,
-    ILogger<ExperienceService> logger,
+    ILogger<ExperienceManager> logger,
     ResumeNodeValidator validator)
 {
     public async Task<Result<ExperienceModel>> CreateAsync(Experience? newEntity)

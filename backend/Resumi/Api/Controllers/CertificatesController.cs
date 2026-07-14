@@ -20,7 +20,7 @@ namespace Resumi.Api.Controllers;
 [ProducesResponseType<Result<CertificateModel>>(StatusCodes.Status400BadRequest)]
 [ProducesResponseType(StatusCodes.Status422UnprocessableEntity)]
 public class CertificatesController(
-	CertificateService service,
+	CertificateManager service,
 	CertificateMapper mapper,
 	AppDbContext dbContext,
 	ILogger<CertificatesController> logger)

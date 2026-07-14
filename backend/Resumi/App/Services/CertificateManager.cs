@@ -8,9 +8,9 @@ using Resumi.Infra.Database.Context;
 
 namespace Resumi.App.Services;
 
-public class CertificateService(
+public class CertificateManager(
     ResumeNodeValidator validator,
-    ILogger<CertificateService> logger,
+    ILogger<CertificateManager> logger,
     AppDbContext dbContext)
 {
     public async Task<Result<CertificateModel>> CreateAsync(Certificate? newEntity)

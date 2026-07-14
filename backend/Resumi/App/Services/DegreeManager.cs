@@ -8,9 +8,9 @@ using Resumi.Infra.Data.Projections;
 
 namespace Resumi.App.Services;
 
-public class DegreeService(
+public class DegreeManager(
 	ResumeNodeValidator validator,
-	ILogger<DegreeService> logger,
+	ILogger<DegreeManager> logger,
 	AppDbContext dbContext)
 {
 	public async Task<Result<DegreeModel>> CreateAsync(Degree? newEntity)
