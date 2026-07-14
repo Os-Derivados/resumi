@@ -1,37 +1,18 @@
 import type { AddCertificateModel } from "~/data/api/add-certificate-model";
 import type { ReadCertificateModel } from "~/data/api/read-certificate-model";
-import type { Result } from "~/infra/result";
+import type { ValueResult } from "~/infra/result";
 import { getEnvironmentVariable } from "~/infra/utils/environment-utils";
 import { BackendUrl } from "./api.constants";
+import type { UpdateCertificateModel } from "~/data/api/update-certificate-model";
 
-export async function getCertificatesAsync(resumeId: number): Promise<Result<ReadCertificateModel[]>> {
+const backendUrl = getEnvironmentVariable(BackendUrl);
+const route = `${backendUrl}/certificates`;
+
+export async function createCertificateAsync(model: AddCertificateModel): Promise<ValueResult<ReadCertificateModel>> {
   try {
-    const backendUrl = getEnvironmentVariable(BackendUrl);
-
     if (!backendUrl) throw new Error("Backend URL is not defined.");
 
-    const result = await useFetch(`${backendUrl}/resumes/${resumeId}/certificates`, {
-      method: "GET",
-      credentials: "include",
-    });
-
-    return result.data.value as Result<ReadCertificateModel[]>;
-  } catch {
-    return {
-      succeeded: false,
-      errors: new Map<string, string[]>([["unknown", ["Erro ao buscar certificados."]]]),
-      allErrors: ["Erro ao buscar certificados."],
-    };
-  }
-}
-
-export async function createCertificateAsync(resumeId: number, model: AddCertificateModel): Promise<Result<ReadCertificateModel>> {
-  try {
-    const backendUrl = getEnvironmentVariable(BackendUrl);
-
-    if (!backendUrl) throw new Error("Backend URL is not defined.");
-
-    const result = await useFetch(`${backendUrl}/resumes/${resumeId}/certificates`, {
+    const result = await useFetch(`${route}/certificates`, {
       method: "POST",
       credentials: "include",
       body: JSON.stringify(model),
@@ -40,7 +21,7 @@ export async function createCertificateAsync(resumeId: number, model: AddCertifi
       },
     });
 
-    return result.data.value as Result<ReadCertificateModel>;
+    return result.data.value as ValueResult<ReadCertificateModel>;
   } catch {
     return {
       succeeded: false,
@@ -50,13 +31,11 @@ export async function createCertificateAsync(resumeId: number, model: AddCertifi
   }
 }
 
-export async function updateCertificateAsync(resumeId: number, id: number, model: unknown): Promise<Result<ReadCertificateModel>> {
+export async function updateCertificateAsync(id: number, model: UpdateCertificateModel): Promise<ValueResult<ReadCertificateModel>> {
   try {
-    const backendUrl = getEnvironmentVariable(BackendUrl);
-
     if (!backendUrl) throw new Error("Backend URL is not defined.");
 
-    const result = await useFetch(`${backendUrl}/resumes/${resumeId}/certificates/${id}`, {
+    const result = await useFetch(`${route}/${id}`, {
       method: "PUT",
       credentials: "include",
       body: JSON.stringify(model),
@@ -65,7 +44,7 @@ export async function updateCertificateAsync(resumeId: number, id: number, model
       },
     });
 
-    return result.data.value as Result<ReadCertificateModel>;
+    return result.data.value as ValueResult<ReadCertificateModel>;
   } catch {
     return {
       succeeded: false,
@@ -75,18 +54,16 @@ export async function updateCertificateAsync(resumeId: number, id: number, model
   }
 }
 
-export async function deleteCertificateAsync(resumeId: number, id: number): Promise<Result<null>> {
+export async function deleteCertificateAsync(id: number): Promise<ValueResult<null>> {
   try {
-    const backendUrl = getEnvironmentVariable(BackendUrl);
-
     if (!backendUrl) throw new Error("Backend URL is not defined.");
 
-    const result = await useFetch(`${backendUrl}/resumes/${resumeId}/certificates/${id}`, {
+    const result = await useFetch(`${route}/${id}`, {
       method: "DELETE",
       credentials: "include",
     });
 
-    return result.data.value as Result<null>;
+    return result.data.value as ValueResult<null>;
   } catch {
     return {
       succeeded: false,
