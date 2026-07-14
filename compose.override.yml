@@ -4,7 +4,7 @@ services:
     environment:
       - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/aspnet-dev-cert.pfx
       - ASPNETCORE_Kestrel__Certificates__Default__Password=${CERT_PASSWORD}
-      - WAIT_FOR_DEBUGGER=true
+      - WAIT_FOR_DEBUGGER=${WAIT_FOR_DEBUGGER}
       - WAIT_FOR_DEBUGGER_TIMEOUT_SECONDS=60
     volumes:
       - ${HOME}/.aspnet/https/aspnet-dev-cert.pfx:/https/aspnet-dev-cert.pfx:ro,Z
